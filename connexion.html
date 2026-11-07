@@ -182,7 +182,7 @@ async function connecter(e){
           const fauxId="test-"+login.replace(/[^0-9a-z]/gi,'').toLowerCase();
           localStorage.setItem('user_id', fauxId); localStorage.setItem('email_user', email); localStorage.setItem('role_user','acheteur');
         }
-        await sb.from('logs').insert([{ user_id: localStorage.getItem('user_id'), action: "connexion_test", date: new Date().toISOString() }]).catch(()=>{});
+        await sb.from('logs').insert([{ user_id: localStorage.getItem('user_id'), action: "connexion_test", date: new Date().toISOString() }]);
       } else {
         const fauxId="test-"+login.replace(/[^0-9a-z]/gi,'').toLowerCase();
         localStorage.setItem('user_id', fauxId); localStorage.setItem('email_user', email); localStorage.setItem('role_user','acheteur');
@@ -210,7 +210,7 @@ async function connecter(e){
     localStorage.setItem('telephone_user', profil?.telephone || '');
     localStorage.setItem('ville_user', profil?.ville || '');
     localStorage.setItem('user_id', data.user.id);
-    await sb.from('logs').insert([{ user_id: data.user.id, action: "connexion", date: new Date().toISOString() }]).catch(()=>{});
+    await sb.from('logs').insert([{ user_id: data.user.id, action: "connexion", date: new Date().toISOString() }]);
     if(profil?.email_technique){ alert('Bienvenue ! Tu es connecté. Ajoute ton vrai email pour publier / acheter.'); afficherBlocEmail(); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
     alert('Bienvenue ! Tu es connecté !');
     redirigerSelonRole(email, role);
@@ -230,8 +230,8 @@ async function motDePasseOublie(){
   }
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/connexion.html' });
   if(error){ alert(error.message); return; }
-  await sb.from('recuperations').insert([{ email: email, telephone: login.includes('@') ? null : login, type: 'mot_de_passe_oublie' }]).catch(()=>{});
-  await sb.from('logs').insert([{ action: "demande_mot_de_passe_oublie_"+email, date: new Date().toISOString() }]).catch(()=>{});
+  await sb.from('recuperations').insert([{ email: email, telephone: login.includes('@') ? null : login, type: 'mot_de_passe_oublie' }]);
+  await sb.from('logs').insert([{ action: "demande_mot_de_passe_oublie_"+email, date: new Date().toISOString() }]);
   alert('Lien envoyé à '+email+'. Vérifie aussi dans Spam.');
 }
 window.connecter = connecter;
