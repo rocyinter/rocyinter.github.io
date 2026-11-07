@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial;background:#f4f4f4;margin:0;padding:10px}
+.header{background:#111;color:#fff;padding:15px;text-align:center;border-radius:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.carte{background:#fff;padding:15px;border-radius:10px;text-align:center}
+.carte b{font-size:24px;display:block}
+.carte span{font-size:12px;color:#666}
+.box{background:#fff;padding:15px;border-radius:10px;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{border:1px solid #eee;padding:8px;text-align:left}
+th{background:#111;color:#fff}
+tr{cursor:pointer}
+tr:hover{background:#fff7e6}
+.btnVert{background:#27ae60;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+.btnNoir{background:#111;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;width:100%;margin-top:10px}
+input,select{padding:10px;width:100%;margin:5px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+.badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:bold;color:#fff}
+.badge-vendeur{background:#ff6b00}
+.badge-acheteur{background:#3498db}
+.badge-admin{background:#111}
+#modalProfil{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:99;padding:15px;overflow:auto}
+#modalProfil .contenu{background:#fff;max-width:480px;margin:20px auto;padding:18px;border-radius:12px}
+.ligneProfil{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.ligneProfil b{color:#111}
+.ligneProfil span{text-align:right}
+.btnOrange{background:#ff6b00;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;width:100%;margin-top:10px;font-weight:bold}
+.btnBilan{background:#eee;border:none;padding:8px 12px;border-radius:20px;cursor:pointer;font-weight:bold}
+.btnBilan.actif{background:#111;color:#fff}
+.ligneBilan{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
+  🌍 Langue :
+  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="yo">Yoruba</option>
+    <option value="fon">Fon</option>
+    <option value="goun">Goun</option>
+    <option value="autre">Autre langue... (Google)</option>
+  </select>
+</div>
+<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
+<div class="header">
+  👑 ROCYINTER - ADMIN<br>
+  <span style="font-size:12px;opacity:.7" id="adminEmailTxt"></span> | 
+  <a href="index.html" style="color:#ffcc00">Voir le site</a>
+</div>
+
+<div class="grid">
+  <div class="carte"><b id="nbTotal">0</b><span>Total inscrits</span></div>
+  <div class="carte"><b id="nbVendeurs">0</b><span>Vendeurs</span></div>
+  <div class="carte"><b id="nbAcheteurs">0</b><span>Acheteurs</span></div>
+  <div class="carte"><b id="nbVisites">0</b><span>Visites site</span></div>
+  <div class="carte" style="background:#fff7e6"><b id="revenuTotal">0 FCFA</b><span>Revenu total (commissions)</span></div>
+  <div class="carte" style="background:#e8f5e9"><b id="totalPaye">0 FCFA</b><span>Total payé par acheteurs</span></div>
+  <div class="carte" style="background:#e3f2fd"><b id="totalRetire">0 FCFA</b><span>Montant retiré</span></div>
+  <div class="carte" style="background:#fce4ec"><b id="totalBloque">0 FCFA</b><span>Montant bloqué (Escrow)</span></div>
+</div>
+<div class="box">
+  <h3>📊 Mon Bilan - Mes revenus</h3>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <button class="btnBilan actif" id="btnSemaine" onclick="afficherBilan('semaine')">📅 Semaine</button>
+    <button class="btnBilan" id="btnMois" onclick="afficherBilan('mois')">📅 Mois</button>
+    <button class="btnBilan" id="btnAnnee" onclick="afficherBilan('annee')">📅 Année</button>
+  </div>
+  <div style="display:flex;gap:10px;text-align:center">
+    <div style="flex:1;background:#fff7e6;padding:10px;border-radius:10px"><b id="bilanCommission" style="font-size:18px">0 FCFA</b><br><span style="font-size:11px;color:#666" id="bilanCommissionTxt">Commission cette semaine</span></div>
+    <div style="flex:1;background:#e8f5e9;padding:10px;border-radius:10px"><b id="bilanVentes" style="font-size:18px">0 FCFA</b><br><span style="font-size:11px;color:#666" id="bilanVentesTxt">Ventes cette semaine</span></div>
+    <div style="flex:1;background:#e3f2fd;padding:10px;border-radius:10px"><b id="bilanNb" style="font-size:18px">0</b><br><span style="font-size:11px;color:#666">Commandes</span></div>
+  </div>
+  <div id="listeBilan" style="margin-top:10px"></div>
+  <canvas id="graphBilan" width="340" height="180" style="width:100%;background:#fff;border:1px solid #eee;border-radius:10px;margin-top:10px"></canvas>
+</div>
+
+<div class="box">
+  <h3>💸 Demandes de Retrait - FedaPay Mondial</h3>
+  <div id="listeRetraits">Chargement...</div>
+  <button onclick="chargerRetraits()" style="margin-top:8px;padding:8px 12px;border:1px solid #ddd;background:#fff;border-radius:8px;cursor:pointer">🔄 Actualiser</button>
+</div>
+
+<div class="box">
+  <b>🔍 Filtrer les commandes</b>
+  <input id="rechercheAdmin" placeholder="Chercher email, nom, commande..." oninput="filtrerAdmin()">
+  <select id="filtreStatut" onchange="filtrerAdmin()">
+    <option value="tous">Toutes les commandes</option>
+    <option value="argent_bloque">Argent bloqué</option>
+    <option value="Colis envoyé">Colis envoyé</option>
+    <option value="Colis reçu">Colis reçu</option>
+    <option value="litige">Litige</option>
+  </select>
+</div>
+
+<div class="box">
+  <h3>💰 Commissions par opération - Détail</h3>
+  <div style="overflow:auto">
+  <table><thead><tr><th>Date</th><th>Article</th><th>Acheteur</th><th>Vendeur</th><th>Total payé</th><th>Commission</th><th>Vendeur touche</th><th>Statut</th></tr></thead>
+  <tbody id="tableCommandes"><tr><td colspan="8">Chargement...</td></tr></tbody></table>
+  </div>
+</div>
+
+<div class="box">
+  <h3>👥 Personnes inscrites - Clique sur une personne pour voir tout son profil</h3>
+  <input id="rechercheUser" placeholder="Chercher un nom, email, téléphone, ville..." oninput="filtrerUsers()">
+  <select id="filtreRole" onchange="filtrerUsers()">
+    <option value="tous">Tous les rôles</option>
+    <option value="vendeur">Vendeurs seulement</option>
+    <option value="acheteur">Acheteurs seulement</option>
+    <option value="admin">Admin seulement</option>
+  </select>
+  <div style="overflow:auto">
+  <table><thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Rôle</th><th>Ville</th><th>Date</th><th>Voir</th></tr></thead>
+  <tbody id="tableUsers"><tr><td colspan="7">Chargement...</td></tr></tbody></table>
+  </div>
+</div>
+
+<div id="modalProfil">
+  <div class="contenu">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0">👤 Profil complet</h3>
+      <button onclick="fermerProfil()" style="border:none;background:#eee;padding:8px 12px;border-radius:8px;cursor:pointer">✕ Fermer</button>
+    </div>
+    <div id="detailProfil" style="margin-top:10px">Chargement...</div>
+    <div id="activiteProfil" style="margin-top:12px"></div>
+    <div id="actionsProfil"></div>
+    <button class="btnNoir" onclick="fermerProfil()">Fermer</button>
+  </div>
+</div>
+
+<div style="background:#fff;padding:14px;border-radius:12px;margin-top:14px">
+  <h3>💸 Retraits à payer</h3>
+  <button onclick="chargerRetraitsAdmin()" style="padding:10px 14px;border-radius:10px;border:none;background:#111;color:#fff;font-weight:bold;cursor:pointer">🔄 Actualiser</button>
+  <div id="listeRetraitsAdmin" style="margin-top:10px">Chargement...</div>
+</div>
+
+<script>
+function getRole(){ return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur"; }
+function getUser(){ return localStorage.getItem("rocy_user") || null; }
+function protegerPage(rolesAutorises){
+  const role = getRole();
+  if(role === "visiteur"){
+    alert("Connecte-toi d'abord.");
+    window.location.href = "connexion.html";
+    return false;
+  }
+  if(!rolesAutorises.includes(role)){
+    alert("⛔ Accès refus. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname.includes('portals') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+const EMAIL_ADMIN = "rocyinter@gmail.com";
+const supabaseAdmin = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+let toutesCommandes = [];
+let tousUsers = [];
+let profilOuvert = null;
+let periodeBilan = 'semaine';
+
+async function chargerAdmin(){
+  var email = (localStorage.getItem('email_user') || "").trim().toLowerCase();
+  document.getElementById('adminEmailTxt').textContent = email || "Non connecté";
+  if(!MODE_TEST && email !== EMAIL_ADMIN.trim().toLowerCase()){
+    alert("Accès réservé au propriétaire Rocyinter.");
+    window.location.href = "index.html";
+    return;
+  }
+  var resUsers = await supabaseAdmin.from('profils').select('*').order('created_at',{ascending:false});
+  if(resUsers.error){ document.getElementById('tableUsers').innerHTML = '<tr><td colspan="7">Erreur profils : '+resUsers.error.message+'</td></tr>'; }
+  tousUsers = resUsers.data || [];
+  document.getElementById('nbTotal').textContent = tousUsers.length;
+  document.getElementById('nbVendeurs').textContent = tousUsers.filter(u=>u.role==='vendeur').length;
+  document.getElementById('nbAcheteurs').textContent = tousUsers.filter(u=>u.role==='acheteur').length;
+  afficherUsers(tousUsers);
+  var resLogs = await supabaseAdmin.from('logs').select('*');
+  document.getElementById('nbVisites').textContent = (resLogs.data||[]).length;
+  var resCmd = await supabaseAdmin.from('commandes').select('*').order('created_at',{ascending:false});
+  toutesCommandes = resCmd.data || [];
+  afficherCommandes(toutesCommandes);
+  var totalPaye=0, totalComm=0, totalBloque=0;
+  toutesCommandes.forEach(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); var cm=Number(c.commission||t*0.085); totalPaye+=t; totalComm+=cm; if(c.statut!=='Colis reçu' && c.statut!=='colis_recu'){ totalBloque+=(t-cm); } });
+  document.getElementById('totalPaye').textContent = totalPaye.toLocaleString()+" FCFA";
+  document.getElementById('revenuTotal').textContent = totalComm.toLocaleString()+" FCFA";
+  document.getElementById('totalBloque').textContent = totalBloque.toLocaleString()+" FCFA";
+  afficherBilan('semaine');
+  chargerRetraits();
+  chargerRetraitsAdmin();
+}
+function badgeRole(role){
+  if(role==='vendeur') return '<span class="badge badge-vendeur">VENDEUR</span>';
+  if(role==='admin') return '<span class="badge badge-admin">ADMIN</span>';
+  return '<span class="badge badge-acheteur">ACHETEUR</span>';
+}
+function afficherUsers(liste){
+  if(!liste.length){ document.getElementById('tableUsers').innerHTML = '<tr><td colspan="7">Aucun inscrit</td></tr>'; return; }
+  document.getElementById('tableUsers').innerHTML = liste.map(u=>{
+    var dateTxt = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '';
+    return '<tr onclick="voirProfil(\''+u.id+'\')">'
+      + '<td><b>'+(u.nom || u.nom_complet || 'Sans nom')+'</b></td>'
+      + '<td>'+(u.email||'')+'</td>'
+      + '<td>'+(u.telephone||'—')+'</td>'
+      + '<td>'+badgeRole(u.role)+'</td>'
+      + '<td>'+(u.ville||'—')+'</td>'
+      + '<td>'+dateTxt+'</td>'
+      + '<td><button class="btnVert" onclick="event.stopPropagation(); voirProfil(\''+u.id+'\')">Voir 👁️</button></td>'
+      + '</tr>';
+  }).join('');
+}
+function filtrerUsers(){
+  var txt = document.getElementById('rechercheUser').value.toLowerCase();
+  var role = document.getElementById('filtreRole').value;
+  var filtres = tousUsers.filter(u=>{
+    var tout = JSON.stringify(u).toLowerCase();
+    var okTxt = tout.includes(txt);
+    var okRole = (role==='tous' || u.role===role);
+    return okTxt && okRole;
+  });
+  afficherUsers(filtres);
+}
+function afficherCommandes(liste){
+  if(!liste.length){ document.getElementById('tableCommandes').innerHTML = '<tr><td colspan="8">Aucune commande</td></tr>'; return; }
+  document.getElementById('tableCommandes').innerHTML = liste.map(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); var cm=Number(c.commission||t*0.085); return '<tr><td>'+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</td><td>'+(c.nom||c.titre_article||c.produit_titre||'')+'</td><td>'+(c.email_acheteur||c.acheteur_nom||'')+'</td><td>'+(c.email_vendeur||c.vendeur_nom||c.nom_vendeur||'')+'</td><td>'+t.toLocaleString()+' FCFA</td><td><b>'+cm.toLocaleString()+' FCFA</b></td><td>'+(t-cm).toLocaleString()+' FCFA</td><td>'+(c.statut||'')+'</td></tr>'; }).join('');
+}
+function filtrerAdmin(){
+  var txt=document.getElementById('rechercheAdmin').value.toLowerCase();
+  var st=document.getElementById('filtreStatut').value;
+  afficherCommandes(toutesCommandes.filter(c=> JSON.stringify(c).toLowerCase().includes(txt) && (st==='tous'||c.statut===st)));
+}
+async function voirProfil(userId){
+  document.getElementById('modalProfil').style.display = 'block';
+  document.getElementById('detailProfil').innerHTML = 'Chargement...';
+  document.getElementById('activiteProfil').innerHTML = '';
+  document.getElementById('actionsProfil').innerHTML = '';
+  var res = await supabaseAdmin.from('profils').select('*').eq('id', userId).single();
+  var u = res.data;
+  if(res.error || !u){ document.getElementById('detailProfil').innerHTML = 'Profil introuvable : ' + (res.error?res.error.message:''); return; }
+  profilOuvert = u;
+  var dateIns = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR', {day:'2-digit', month:'long', year:'numeric'}) + ' à ' + new Date(u.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : '—';
+  var aEmail = u.email && !String(u.email).endsWith('@rocyinter.bj') ? '✅ Oui' : '⚠️ Non - email technique / sans vrai email';
+  document.getElementById('detailProfil').innerHTML =
+    '<div style="text-align:center;background:#f8f8f8;padding:12px;border-radius:10px;margin-bottom:10px">'
+    + '<div style="font-size:32px">👤</div>'
+    + '<b style="font-size:18px">'+(u.nom || u.nom_complet || 'Sans nom')+'</b><br>'
+    + badgeRole(u.role)
+    + '</div>'
+    + '<div class="ligneProfil"><b>ID</b><span style="font-size:11px;word-break:break-all">'+u.id+'</span></div>'
+    + '<div class="ligneProfil"><b>Nom complet</b><span>'+(u.nom || u.nom_complet || '—')+'</span></div>'
+    + '<div class="ligneProfil"><b>Email</b><span>'+(u.email || '—')+'</span></div>'
+    + '<div class="ligneProfil"><b>Téléphone</b><span>'+(u.telephone || '—')+'</span></div>'
+    + '<div class="ligneProfil"><b>Ville</b><span>'+(u.ville || '—')+'</span></div>'
+    + '<div class="ligneProfil"><b>Rôle</b><span>'+(u.role || '—')+'</span></div>'
+    + '<div class="ligneProfil"><b>A un vrai email ?</b><span>'+aEmail+'</span></div>'
+    + '<div class="ligneProfil"><b>Inscrit le</b><span>'+dateIns+'</span></div>'
+    + (u.email_technique ? '<div class="ligneProfil"><b>Compte téléphone seul</b><span>Oui</span></div>' : '');
+  var htmlAct = '<h4 style="margin:8px 0">📦 Son activité</h4>';
+  if(u.role === 'vendeur'){
+    var resP = await supabaseAdmin.from('produits').select('*').eq('vendeur_id', userId).order('created_at',{ascending:false});
+    var prods = resP.data || [];
+    if(prods.length){
+      htmlAct += prods.map(p=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🛍️ <b>'+(p.nom||p.titre||'')+'</b> - '+(Number(p.prix||0)).toLocaleString()+' FCFA - Statut : '+(p.statut||'')+'</div>').join('');
+    } else {
+      htmlAct += '<p style="font-size:13px;color:#666">Ce vendeur n’a encore publié aucun produit.</p>';
+    }
+    var resCV = await supabaseAdmin.from('commandes').select('*').eq('vendeur_id', userId).order('created_at',{ascending:false});
+    var cmdsV = resCV.data || [];
+    if(cmdsV.length){
+      htmlAct += '<h4 style="margin:10px 0 6px">🧾 Commandes reçues comme vendeur</h4>';
+      htmlAct += cmdsV.map(c=>'<div style="background:#fff7e6;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(c.statut||'')+'</div>').join('');
+    }
+  } else {
+    var resC = await supabaseAdmin.from('commandes').select('*').eq('acheteur_id', userId).order('created_at',{ascending:false});
+    var cmds = resC.data || [];
+    if(cmds.length){
+      htmlAct += cmds.map(c=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(Number(c.montant_total||c.total||c.prix||0)).toLocaleString()+' FCFA - '+(c.statut||'')+'</div>').join('');
+    } else {
+      htmlAct += '<p style="font-size:13px;color:#666">Cet acheteur n’a encore fait aucune commande.</p>';
+    }
+  }
+  document.getElementById('activiteProfil').innerHTML = htmlAct;
+  if(u.email && !String(u.email).endsWith('@rocyinter.bj')){
+    document.getElementById('actionsProfil').innerHTML =
+      '<button class="btnOrange" onclick="envoyerLienMotDePasse()">🔑 Envoyer un lien pour changer son mot de passe</button>'
+      + '<p id="msgReset" style="font-size:12px;text-align:center;color:#666"></p>';
+  } else {
+    document.getElementById('actionsProfil').innerHTML = '<p style="font-size:12px;text-align:center;color:#e74c3c;background:#fce4ec;padding:8px;border-radius:8px">⚠️ Cette personne n\'a pas de vrai email (compte téléphone seul). Tu ne peux pas lui envoyer de lien.</p>';
+  }
+}
+function fermerProfil(){ document.getElementById('modalProfil').style.display = 'none'; }
+async function envoyerLienMotDePasse(){
+  if(!profilOuvert || !profilOuvert.email){ alert("Pas d'email pour cette personne"); return; }
+  if(!confirm("Envoyer un lien de changement de mot de passe à " + profilOuvert.email + " ?")) return;
+  document.getElementById('msgReset').textContent = "Envoi en cours...";
+  var res = await supabaseAdmin.auth.resetPasswordForEmail(profilOuvert.email, { redirectTo: window.location.origin + '/reset.html' });
+  if(res.error){
+    document.getElementById('msgReset').textContent = "Erreur : " + res.error.message;
+  } else {
+    document.getElementById('msgReset').textContent = "✅ Lien envoyé à " + profilOuvert.email + ". Dis à la personne de vérifier sa boîte mail et ses spams.";
+  }
+}
+function afficherBilan(periode){
+  periodeBilan = periode;
+  document.getElementById('btnSemaine').classList.toggle('actif', periode==='semaine');
+  document.getElementById('btnMois').classList.toggle('actif', periode==='mois');
+  document.getElementById('btnAnnee').classList.toggle('actif', periode==='annee');
+  var maintenant = new Date();
+  var debut = new Date();
+  if(periode==='semaine') debut.setDate(maintenant.getDate()-7);
+  if(periode==='mois') debut.setMonth(maintenant.getMonth()-1);
+  if(periode==='annee') debut.setFullYear(maintenant.getFullYear()-1);
+  var filtres = toutesCommandes.filter(c=>{ var d = c.created_at ? new Date(c.created_at) : new Date(0); return d >= debut; });
+  var totalVentes = 0, totalComm = 0;
+  filtres.forEach(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); totalVentes+=t; totalComm+=Number(c.commission||t*0.085); });
+  var label = periode==='semaine' ? 'semaine' : periode==='mois' ? 'mois' : 'année';
+  document.getElementById('bilanCommission').textContent = Math.round(totalComm).toLocaleString()+" FCFA";
+  document.getElementById('bilanVentes').textContent = Math.round(totalVentes).toLocaleString()+" FCFA";
+  document.getElementById('bilanNb').textContent = filtres.length;
+  document.getElementById('bilanCommissionTxt').textContent = "Commission cette "+label;
+  document.getElementById('bilanVentesTxt').textContent = "Ventes cette "+label;
+  if(!filtres.length){ document.getElementById('listeBilan').innerHTML = '<p style="font-size:13px;color:#666">Aucune commande sur cette période.</p>'; }
+  else {
+    document.getElementById('listeBilan').innerHTML = filtres.slice(0,10).map(c=>'<div class="ligneBilan"><span>'+(c.nom||c.titre_article||'Produit')+' - '+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</span><b>'+Number(c.montant_total||c.total||c.prix||0).toLocaleString()+' FCFA</b></div>').join('');
+  }
+  dessinerGraph(filtres);
+}
+function dessinerGraph(liste){
+  var canvas = document.getElementById('graphBilan');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!liste.length){ ctx.fillStyle='#999'; ctx.font='13px Arial'; ctx.fillText('Aucune donnée pour ce graphique', 20, 90); return; }
+  var max = Math.max.apply(null, liste.map(c=>Number(c.montant_total||c.total||c.prix||0))) || 1;
+  var barW = canvas.width / Math.max(liste.length,1);
+  liste.slice(0,20).forEach(function(c,i){
+    var h = (Number(c.montant_total||c.total||c.prix||0)/max)*120;
+    ctx.fillStyle = '#ff6b00';
+    ctx.fillRect(i*barW+4, 160-h, barW-8, h);
+  });
+  ctx.fillStyle='#666'; ctx.font='12px Arial'; ctx.fillText('Ventes - '+liste.length+' commandes', 10, 15);
+}
+async function chargerRetraits(){
+  var box = document.getElementById('listeRetraits');
+  if(!box) return;
+  var res = await supabaseAdmin.from('retraits').select('*').order('created_at',{ascending:false});
+  if(res.error){ box.innerHTML = 'Erreur : '+res.error.message; return; }
+  var liste = res.data || [];
+  if(!liste.length){ box.innerHTML = 'Aucune demande de retrait.'; return; }
+  var totalPayeRetraits = liste.filter(r=>r.statut==='paye').reduce((s,r)=>s+Number(r.montant||0),0);
+  document.getElementById('totalRetire').textContent = totalPayeRetraits.toLocaleString()+" FCFA";
+  box.innerHTML = liste.map(r=>{
+    var coul = r.statut==='paye' ? 'green' : r.statut==='refuse' ? 'red' : 'orange';
+    var btns = '';
+    if(r.statut==='en_attente'){
+      btns = '<br><button class="btnVert" onclick="changerStatutRetrait(\''+r.id+'\',\'paye\')">✅ Marquer Payé</button> <button onclick="changerStatutRetrait(\''+r.id+'\',\'refuse\')" style="background:#e74c3c;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">❌ Refuser</button>';
+    }
+    return '<div style="border:1px solid #eee;padding:10px;border-radius:10px;margin-top:8px"><b>'+Number(r.montant||0).toLocaleString()+' '+(r.devise||'XOF')+'</b> - '+(r.methode||'')+'<br>Vendeur : '+(r.vendeur_id||'')+' - '+(r.pays||'')+' - '+(r.numero||'')+'<br>Statut : <b style="color:'+coul+'">'+(r.statut||'')+'</b>'+btns+'</div>';
+  }).join('');
+}
+async function chargerRetraitsAdmin(){
+  var box = document.getElementById('listeRetraitsAdmin');
+  if(!box) return;
+  var res = await supabaseAdmin.from('retraits').select('*').order('created_at',{ascending:false});
+  if(res.error){ box.innerHTML = 'Erreur : '+res.error.message; return; }
+  var liste = res.data || [];
+  if(!liste.length){ box.innerHTML = 'Aucun retrait à payer.'; return; }
+  box.innerHTML = liste.map(r=>'<div style="border:1px solid #eee;padding:10px;border-radius:10px;margin-top:8px"><b>'+Number(r.montant||0).toLocaleString()+' '+(r.devise||'XOF')+'</b> - '+(r.methode||'')+' - '+(r.pays||'')+' - '+(r.numero||'')+'<br>Statut : <b>'+(r.statut||'')+'</b></div>').join('');
+}
+async function changerStatutRetrait(id, statut){
+  if(!confirm('Marquer ce retrait comme '+statut+' ?')) return;
+  var res = await supabaseAdmin.from('retraits').update({ statut: statut }).eq('id', id);
+  if(res.error){ alert('Erreur : '+res.error.message); return; }
+  alert('Retrait mis à jour : '+statut);
+  chargerRetraits();
+  chargerRetraitsAdmin();
+}
+function googleTranslateElementInit(){
+  try{ new google.translate.TranslateElement({pageLanguage:'fr', includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN', autoDisplay:false}, 'google_translate_element'); }catch(e){}
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var gt = document.getElementById("google_translate_element");
+    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
+    alert("Choisis ta langue dans le menu Google");
+    return;
+  }
+  if(lang === "fon" || lang === "goun"){
+    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
+    return;
+  }
+  if(lang === "fr"){
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    location.reload();
+    return;
+  }
+  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
+  location.reload();
+}
+window.changerLangue = changerLangue;
+window.voirProfil = voirProfil;
+window.fermerProfil = fermerProfil;
+window.afficherBilan = afficherBilan;
+window.chargerRetraits = chargerRetraits;
+window.chargerRetraitsAdmin = chargerRetraitsAdmin;
+window.changerStatutRetrait = changerStatutRetrait;
+window.filtrerAdmin = filtrerAdmin;
+window.filtrerUsers = filtrerUsers;
+window.envoyerLienMotDePasse = envoyerLienMotDePasse;
+if(!window._googleTranslateLoaded){
+  window._googleTranslateLoaded = true;
+  let s = document.createElement("script");
+  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  document.head.appendChild(s);
+}
+chargerAdmin();
+</script>
+</body>
+</html>
