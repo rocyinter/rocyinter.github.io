@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau Vendeur - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.rocy{color:white}
+.inter{color:#ffc107}
+.container{max-width:480px;margin:20px auto;background:white;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.profil{display:flex;gap:12px;align-items:center}
+.avatar{width:50px;height:50px;background:#ff6b00;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold}
+.profil h2{margin:0;font-size:18px;color:#0a1a2f}
+.profil p{margin:4px 0;color:#666;font-size:13px}
+.badge{background:#e8f5e9;color:#2e7d32;padding:4px 8px;border-radius:20px;font-size:12px;font-weight:bold}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+.card{background:#f9f9f9;padding:14px;border-radius:10px;text-align:center}
+.card b{display:block;font-size:18px;color:#0a1a2f}
+.card span{font-size:12px;color:#666}
+h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px}
+.btn{width:100%;background:#ff6b00;color:white;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:bold;margin-top:10px;cursor:pointer}
+.produit{display:flex;gap:12px;background:#f9f9f9;padding:10px;border-radius:10px;margin-top:10px}
+.produit img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.produit span{font-size:13px;color:#666}
+.produit a{font-size:13px;color:#ff6b00;text-decoration:none;font-weight:bold}
+.produit a.red{color:#e53935}
+.vente{background:#fff8f0;border:1px solid #ffe0b2;padding:12px;border-radius:10px;margin-top:10px;font-size:14px;line-height:1.6}
+.orange{color:#ff6b00;font-weight:bold}
+.green{color:#2e7d32;font-weight:bold}
+.btn-small{background:#0a1a2f;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;margin-top:8px;cursor:pointer}
+.green-bg{background:#2e7d32}
+.argent{background:#f4f8ff;padding:14px;border-radius:10px;margin-top:10px;line-height:1.8;font-size:14px}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap">
+  <div>
+    🌍 Langue :
+    <select id="langue" onchange="changerLangue(this.value)">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="fon">Fon</option>
+      <option value="goun">Goun</option>
+    </select>
+  </div>
+  <div>
+    💰 Devise :
+    <select id="devise">
+      <option value="XOF">FCFA</option>
+      <option value="EUR">Euro €</option>
+      <option value="USD">Dollar $</option>
+      <option value="NGN">Naira ₦</option>
+      <option value="GHS">Cedi GH₵</option>
+      <option value="GBP">Livre £</option>
+    </select>
+  </div>
+</div>
+<div class="header"><a href="index.html"><span class="rocy">ROCY</span><span class="inter">INTER</span></a></div>
+
+<div class="container">
+<div class="profil">
+<div class="avatar" id="avatarVendeur">R</div>
+<div>
+<h2 id="nomVendeur">Bonjour... 👋</h2>
+<p id="villeVendeur">Chargement...</p>
+<span class="badge" id="badgeKYC">Vérification...</span>
+</div>
+</div>
+
+<div class="stats">
+<div class="card"><b id="statArgent">0 F</b><span id="lblArgent">Mon argent</span></div>
+<div class="card"><b id="statProduits">0</b><span id="lblProduits">Produits</span></div>
+<div class="card"><b id="statVentes">0</b><span id="lblVentes">Ventes</span></div>
+<div class="card"><b id="statCommandes">0</b><span id="lblCommandes">Commande</span></div>
+</div>
+
+<button class="btn" id="btnPublier" onclick="allerPublier()">+ PUBLIER UN PRODUIT</button>
+
+<h3 id="titreMesProduits">Mes produits</h3>
+<div id="listeProduits"><p style="font-size:13px;color:#666">Chargement de tes produits...</p></div>
+
+<h3 id="titreMesVentes">Mes ventes / Commandes reçues</h3>
+<p id="txtAideVentes" style="font-size:12px;color:#666;margin:-5px 0 10px">Tu cliques <b>📦 J'AI ENVOYÉ</b> quand tu envoies + tu mets ta preuve. Tu es payé seulement quand l'acheteur clique <b>COLIS REÇU</b>.</p>
+<div id="listeVentes"><p style="font-size:13px;color:#666">Chargement de tes commandes...</p></div>
+
+<div id="formEnvoi" style="display:none;border:2px solid #FF6B00;padding:12px;border-radius:10px;margin-top:10px;background:#FFF8E1">
+  <b>📦 Preuve d'envoi - <span id="nomProduitEnvoi"></span></b><br>
+  <small id="txtAidePreuve" style="color:#666">L'acheteur verra ça dans son Tableau Acheteur. Sans preuve, il ne cliquera pas COLIS REÇU.</small><br><br>
+  <label id="lblTransporteur">Transporteur</label>
+  <select id="transporteurEnvoi" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+    <option value="DHL">DHL - Mondial</option>
+    <option value="Bus">Bus - Afrique</option>
+    <option value="STM">STM - Bénin / Afrique</option>
+    <option value="Autre">Autre - Préciser dans la note</option>
+  </select>
+  <label id="lblNumeroColis">Numéro de colis / Suivi</label>
+  <input id="numeroColis" placeholder="Ex: DHL 1234567890 ou Bus Cotonou-Dakar N°45" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+  <label id="lblPhotoColis">Photo du colis / Vidéo d'emballage</label>
+  <input id="preuveEnvoi" type="file" accept="image/*,video/*" style="width:100%;padding:10px;margin:5px 0">
+  <label id="lblNote">Note pour l'acheteur (optionnel)</label>
+  <input id="noteEnvoi" placeholder="Ex: Colis déposé à DHL Cotonou, arrivée dans 3 jours" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+  <input type="hidden" id="idCommandeEnvoi">
+  <button id="btnConfirmerEnvoi" onclick="confirmerEnvoi()" style="width:100%;padding:12px;background:#FF6B00;color:#fff;border:none;border-radius:10px;font-weight:bold;margin-top:8px;cursor:pointer">📦 CONFIRMER - J'AI ENVOYÉ</button>
+  <button id="btnAnnulerEnvoi" onclick="fermerEnvoi()" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:6px;cursor:pointer">Annuler</button>
+</div>
+
+<h3 id="titreArgent">Mon argent (Escrow)</h3>
+<div>
+<span id="lblSoldeDispo">Solde disponible :</span> <b id="soldeDispo">0 F</b><br>
+<span id="lblSoldeEscrow">En attente Escrow :</span> <b id="soldeEscrow">0 F</b><br>
+<small id="txtEscrow" style="color:#666;font-size:12px">En attente = argent bloqué, tu le reçois après COLIS REÇU. Commission déjà déduite : 8,5% jusqu'à 500 000F - 7,5% jusqu'à 2 000 000F - 6,5% au-delà.</small><br>
+<button class="btn" id="btnRetirer" onclick="retirerArgent()" style="margin-top:8px">RETIRER MON ARGENT</button>
+</div>
+
+<div id="formRetrait" style="display:none;border:1px solid #eee;padding:12px;border-radius:10px;margin-top:10px">
+  <b id="titreRetrait">💸 Demander mon Retrait</b><br><br>
+  <label id="lblMontant">Montant à retirer</label>
+  <input id="montantRetrait" type="number" placeholder="Ex: 15000" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+  <label id="lblMethode">Moyen - FedaPay / Autre</label>
+  <select id="methodeRetrait" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+    <option value="FedaPay - MTN MoMo">FedaPay - MTN MoMo</option>
+    <option value="FedaPay - Moov Money">FedaPay - Moov Money</option>
+    <option value="FedaPay - Orange Money">FedaPay - Orange Money</option>
+    <option value="FedaPay - Wave">FedaPay - Wave</option>
+    <option value="FedaPay - Airtel Money">FedaPay - Airtel Money</option>
+    <option value="FedaPay - Carte bancaire">FedaPay - Carte bancaire</option>
+    <option value="PayPal">PayPal</option>
+    <option value="Virement bancaire">Virement bancaire</option>
+  </select>
+  <label id="lblPays">Pays</label>
+  <input id="paysRetrait" placeholder="Ex: Sénégal, Bénin, France..." style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+  <label id="lblDeviseRetrait">Devise</label>
+  <select id="deviseRetrait" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+    <option value="XOF">XOF - Franc CFA</option>
+    <option value="EUR">EUR - Euro</option>
+    <option value="USD">USD - Dollar</option>
+    <option value="NGN">NGN - Naira</option>
+    <option value="GHS">GHS - Cedi</option>
+  </select>
+  <label id="lblNumero">Numéro / Compte pour recevoir</label>
+  <input id="numeroRetrait" placeholder="Ex: 221770000000 ou email PayPal" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+  <button id="btnDemanderRetrait" onclick="demanderRetrait()" style="width:100%;padding:12px;background:#FF6B00;color:#fff;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:8px">💸 DEMANDER MON RETRAIT</button>
+  <h4 id="titreMesDemandes">Mes demandes</h4>
+  <div id="mesRetraits">Chargement...</div>
+</div>
+
+<div style="text-align:center;margin-top:20px;font-size:13px">
+  <a href="index.html">Accueil</a> • <a href="publier.html">Publier un produit</a> • <a href="acheteur.html">Tableau Acheteur</a> • <a href="connexion.html">Connexion</a>
+</div>
+</div>
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+<script>
+function getRole(){ var r1 = localStorage.getItem("rocy_role"); var r2 = localStorage.getItem("role_user"); return r1 || r2 || "visiteur"; }
+function getUser(){ return localStorage.getItem("rocy_user") || null; }
+function protegerPage(rolesAutorises){
+  var role = getRole();
+  if(role === "visiteur"){ alert("Connecte-toi d'abord."); window.location.href = "connexion.html"; return false; }
+  if(rolesAutorises.indexOf(role) === -1){
+    alert("Acces refuse. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function afficherSelonRole(){
+  var role = getRole();
+  var bVendeur = document.getElementById("btn-vendeur");
+  var bAcheteur = document.getElementById("btn-acheteur");
+  var bPublier = document.getElementById("btn-publier");
+  var bAdmin = document.getElementById("btn-admin");
+  var bConnexion = document.getElementById("btn-connexion");
+  var bInscription = document.getElementById("btn-inscription");
+  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
+  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
+  if(role !== "visiteur"){ if(bConnexion) bConnexion.style.display = "none"; if(bInscription) bInscription.style.display = "none"; }
+}
+document.addEventListener("DOMContentLoaded", afficherSelonRole);
+function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); window.location.href = "index.html"; }
+window.allerPublier = function(){ window.location.href = "publier.html"; };
+window.retirerArgent = function(){ var f = document.getElementById('formRetrait'); if(f) f.style.display = f.style.display === 'block' ? 'none' : 'block'; };
+window.jaiEnvoyeColis = function(id, nom){ ouvrirPreuveEnvoi(id, nom); };
+var MODE_TEST = window.location.hostname.indexOf('codepen') !== -1 || window.location.hostname.indexOf('cdpn') !== -1 || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+var supabaseClient = null;
+var vendeurIdActuel = "";
+var emailVendeurActuel = localStorage.getItem('email_user') || "";
+var commandeEnCoursEnvoi = null;
+function chargerSupabaseVendeur(){
+  if(window.supabase){ try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; } chargerVendeur(); return; }
+  var sc = document.createElement('script'); sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  sc.onload = function(){ try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; } chargerVendeur(); };
+  document.head.appendChild(sc);
+}
+chargerSupabaseVendeur();
+function calculerCommission(prix){ if(prix <= 500000) return prix * 0.085; if(prix <= 2000000) return prix * 0.075; return prix * 0.065; }
+function vendeurRecoit(c){ var total = Number(c.total || 0); var comm = c.commission ? Number(c.commission) : calculerCommission(total); return total - comm; }
+async function verifierVendeur(){
+  var estConnecte = false, userId = "";
+  userId = localStorage.getItem('user_id') || "";
+  if(!userId && emailVendeurActuel && MODE_TEST){ userId = emailVendeurActuel; }
+  estConnecte = !!userId || !!emailVendeurActuel;
+  if(!estConnecte){
+    localStorage.setItem('retour_apres_connexion', 'vendeur.html');
+    if(MODE_TEST){ alert("MODE TEST : Ca marche ! Tu n'as pas de compte, sur le vrai site on t'enverrait a connexion.html."); var p = document.getElementById('listeProduits'); if(p) p.innerHTML = "<p>Connecte-toi pour voir tes produits.</p>"; var v = document.getElementById('listeVentes'); if(v) v.innerHTML = "<p>Connecte-toi pour voir tes commandes.</p>"; return false; }
+    alert('Pour voir ton tableau vendeur, connecte-toi ou cree ton compte.'); window.location.href = "connexion.html"; return false;
+  }
+  vendeurIdActuel = userId; return true;
+}
+async function chargerVendeur(){
+  var ok = await verifierVendeur(); if(!ok) return;
+  if(supabaseClient){
+    try{
+      var profRes = await supabaseClient.from('profils').select('*').eq('id', vendeurIdActuel).single();
+      var profil = profRes.data;
+      if(profil){
+        var nv = document.getElementById('nomVendeur'); if(nv) nv.innerText = "Bonjour, " + (profil.nom || "Vendeur") + " 👋";
+        var vv = document.getElementById('villeVendeur'); if(vv) vv.innerText = "Vendeur - " + (profil.ville || "Benin");
+        var av = document.getElementById('avatarVendeur'); if(av) av.innerText = (profil.nom || "V").charAt(0);
+        var kyc = document.getElementById('badgeKYC'); if(kyc) kyc.innerText = profil.kyc_verifie ? "Compte verifie KYC" : "KYC en attente - Verifie ton identite pour retirer";
+      }
+    }catch(e){}
+  }
+  var produits = [];
+  if(supabaseClient){
+    try{
+      var pr = await supabaseClient.from('produits').select('*').eq('vendeur_id', vendeurIdActuel).order('created_at', {ascending:false});
+      if(pr.data) produits = pr.data;
+      if(!produits.length && MODE_TEST){ var res2 = await supabaseClient.from('produits').select('*').order('created_at', {ascending:false}).limit(20); if(res2.data) produits = res2.data; }
+    }catch(e){}
+  }
+  var zoneP = document.getElementById('listeProduits');
+  if(zoneP){
+    if(!produits || produits.length === 0){ zoneP.innerHTML = "<p style='font-size:13px;color:#666'>Tu n'as encore publie aucun produit. Clique sur + PUBLIER UN PRODUIT.</p>"; }
+    else { zoneP.innerHTML = ""; produits.forEach(function(p){ zoneP.innerHTML += '<div class="produit"><img src="' + (p.photo || "") + '"><div><b>' + p.nom + ' - <span class="prix" data-prix="' + Number(p.prix||0) + '">' + Number(p.prix||0).toLocaleString() + ' F</span></b><br><span>En ligne - ' + (p.vues || 0) + ' vues</span><br><a href="publier.html?id=' + p.id + '">Modifier</a> | <a href="#" class="red" onclick="supprimerProduit(\'' + p.id + '\');return false;">Supprimer</a></div></div>'; }); }
+  }
+  var commandes = [];
+  if(supabaseClient){
+    try{
+      var cr = await supabaseClient.from('commandes').select('*').eq('vendeur_id', vendeurIdActuel).order('created_at', {ascending:false});
+      if(cr.data && cr.data.length) commandes = cr.data;
+      if(!commandes.length && MODE_TEST){ var res3 = await supabaseClient.from('commandes').select('*').order('created_at', {ascending:false}).limit(20); if(res3.data) commandes = res3.data; }
+    }catch(e){}
+  }
+  if(!commandes.length){ try{ var enCours = JSON.parse(localStorage.getItem('commande_en_cours') || 'null'); if(enCours && enCours.total) commandes = [enCours]; }catch(e){} }
+  var zoneV = document.getElementById('listeVentes');
+  if(zoneV){
+    if(!commandes || commandes.length === 0){ zoneV.innerHTML = "<p style='font-size:13px;color:#666'>Aucune commande recue pour le moment.</p>"; }
+    else { zoneV.innerHTML = ""; commandes.forEach(function(c){
+      var nomAff = c.nom || c.nom_produit || "Produit"; var nomSafe = nomAff.split("'").join(""); var acheteurAff = c.nom_acheteur || c.email_acheteur || "Acheteur"; var villeAff = c.ville_acheteur || ""; var moyenAff = c.moyen_paiement ? "<br>Moyen : " + c.moyen_paiement : ""; var statutAff = c.statut || "argent_bloque"; var aRecevoir = Math.round(vendeurRecoit(c)); var totalAff = Number(c.total||0).toLocaleString(); var btn = "";
+      if(statutAff === "argent_bloque" || statutAff === "En attente d'envoi"){ btn = '<button class="btn-small" onclick="ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYE - Mettre la preuve</button><br><span class="orange">💰 Argent bloque - Tu dois envoyer + mettre ta preuve</span><br><small>Tu recevras ' + aRecevoir.toLocaleString() + ' F apres COLIS RECU</small>'; }
+      else if(statutAff === "envoye" || statutAff === "Colis envoyé"){ btn = '<span class="orange">✅ Envoye - ' + (c.transporteur||"") + ' N° ' + (c.numero_colis||"") + '</span><br><span>En attente COLIS RECU par l\'acheteur - Tu recevras ' + aRecevoir.toLocaleString() + ' F</span>'; }
+      else if(statutAff === "colis_recu" || statutAff === "Colis reçu"){ btn = '<span class="green">✅ Colis recu - Argent debloque</span><br><span>Tu as recu ' + aRecevoir.toLocaleString() + ' F (Commission deja deduite)</span>'; }
+      else { btn = '<button class="btn-small" onclick="ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYE - Mettre la preuve</button>'; }
+      zoneV.innerHTML += '<div class="vente"><b>Commande #' + String(c.id || '0000').slice(0,4) + ' - ' + nomAff + ' - <span class="prix" data-prix="' + Number(c.total||0) + '">' + totalAff + ' F</span></b><br>Acheteur : ' + acheteurAff + ' - ' + villeAff + moyenAff + '<br>Statut : <span class="orange">' + statutAff + '</span><br>' + btn + '</div>';
+    }); }
+  }
+  if(produits && commandes){
+    var ventesRecues = commandes.filter(function(c){ return c.statut === "colis_recu" || c.statut === "Colis reçu"; }).length;
+    var enAttente = commandes.filter(function(c){ return c.statut !== "colis_recu" && c.statut !== "Colis reçu"; }).reduce(function(s,c){ return s + vendeurRecoit(c); }, 0);
+    var dispo = commandes.filter(function(c){ return c.statut === "colis_recu" || c.statut === "Colis reçu"; }).reduce(function(s,c){ return s + vendeurRecoit(c); }, 0);
+    var a1 = document.getElementById('statArgent'); if(a1) a1.innerText = Math.round(dispo).toLocaleString() + " F";
+    var a2 = document.getElementById('statProduits'); if(a2) a2.innerText = produits.length;
+    var a3 = document.getElementById('statVentes'); if(a3) a3.innerText = ventesRecues;
+    var a4 = document.getElementById('statCommandes'); if(a4) a4.innerText = commandes.length;
+    var a5 = document.getElementById('soldeDispo'); if(a5) a5.innerText = Math.round(dispo).toLocaleString() + " F";
+    var a6 = document.getElementById('soldeEscrow'); if(a6) a6.innerText = Math.round(enAttente).toLocaleString() + " F";
+  }
+  if(supabaseClient){ await supabaseClient.from('logs').insert([{ user_id: vendeurIdActuel, action: "consultation_tableau_vendeur", date: new Date().toISOString() }]).catch(function(){}); }
+}
+function ouvrirPreuveEnvoi(idCommande, nomProduit){ commandeEnCoursEnvoi = idCommande; var idEl = document.getElementById('idCommandeEnvoi'); if(idEl) idEl.value = idCommande; var nomEl = document.getElementById('nomProduitEnvoi'); if(nomEl) nomEl.innerText = nomProduit || ''; var f = document.getElementById('formEnvoi'); if(f){ f.style.display = 'block'; f.scrollIntoView({ behavior: 'smooth' }); } }
+function fermerEnvoi(){ var f = document.getElementById('formEnvoi'); if(f) f.style.display = 'none'; commandeEnCoursEnvoi = null; }
+async function confirmerEnvoi(){
+  var numero = document.getElementById('numeroColis').value.trim(); var transporteur = document.getElementById('transporteurEnvoi').value; var note = document.getElementById('noteEnvoi').value.trim(); var fichier = document.getElementById('preuveEnvoi').files[0];
+  if(!numero){ alert("Mets le numero de colis, sinon l'acheteur ne peut pas suivre."); return; }
+  if(!fichier){ if(!confirm("Tu n'as pas mis de photo / video. Tu veux quand meme envoyer avec juste le numero ?")) return; }
+  var preuveUrl = "";
+  if(fichier){ preuveUrl = await new Promise(function(resolve){ var r = new FileReader(); r.onload = function(e){ resolve(e.target.result); }; r.readAsDataURL(fichier); r.onerror = function(){ resolve(""); }; }); }
+  var idCommande = document.getElementById('idCommandeEnvoi').value;
+  if(supabaseClient){ var res = await supabaseClient.from('commandes').update({ statut: 'envoye', transporteur: transporteur, numero_colis: numero, preuve_envoi: preuveUrl, note_envoi: note, date_envoi: new Date().toISOString() }).eq('id', idCommande); if(res.error){ alert("Erreur : " + res.error.message); return; } await supabaseClient.from('logs').insert([{ user_id: vendeurIdActuel, action: "colis_envoye_commande_" + idCommande, date: new Date().toISOString() }]).catch(function(){}); }
+  alert("✅ Envoye ! L'acheteur voit maintenant ta photo / video + ton numero " + numero + " (" + transporteur + ") dans son Tableau Acheteur."); fermerEnvoi(); chargerVendeur();
+}
+function jaiEnvoyeColis(id, nom){ ouvrirPreuveEnvoi(id, nom); }
+function allerPublier(){ if(MODE_TEST && !localStorage.getItem('user_id') && !localStorage.getItem('email_user')){ alert("MODE TEST : Ca marche ! Tu n'as pas de compte, sur le vrai site on t'enverrait a connexion.html."); return; } window.location.href = "publier.html"; }
+async function supprimerProduit(id){ if(!confirm("Supprimer ce produit ?")) return; if(supabaseClient){ await supabaseClient.from('produits').delete().eq('id', id); await supabaseClient.from('logs').insert([{ user_id: vendeurIdActuel, action: "suppression_produit_" + id, date: new Date().toISOString() }]).catch(function(){}); } location.reload(); }
+function voirArgent(){ alert("Ton argent Escrow est debloque seulement apres que l'acheteur clique 'Colis recu'. C'est la protection Rocyinter."); }
+function retirerArgent(){ var f = document.getElementById('formRetrait'); if(!f){ alert('Il manque le formulaire formRetrait dans ton HTML'); return; } f.style.display = (f.style.display === 'block') ? 'none' : 'block'; chargerMesRetraits(); }
+async function demanderRetrait(){
+  var montant = Number(document.getElementById('montantRetrait').value || 0); var methode = document.getElementById('methodeRetrait').value; var pays = document.getElementById('paysRetrait').value || 'Benin'; var devise = document.getElementById('deviseRetrait').value || 'XOF'; var numero = document.getElementById('numeroRetrait').value;
+  if(!montant || montant < 5000){ alert('Montant minimum : 5000'); return; } if(!numero){ alert('Mets ton numero ou ton compte pour recevoir'); return; } if(!supabaseClient){ alert("Connexion en cours, reessaie."); return; }
+  var res = await supabaseClient.from('retraits').insert([{ vendeur_id: vendeurIdActuel || null, montant: montant, methode: methode, pays: pays, devise: devise, numero: numero, statut: 'en_attente' }]);
+  if(res.error){ alert('Erreur : ' + res.error.message); return; } alert('✅ Demande envoyee ! L\'admin va te payer via ' + methode); document.getElementById('montantRetrait').value = ''; document.getElementById('numeroRetrait').value = ''; chargerMesRetraits();
+}
+async function chargerMesRetraits(){
+  var box = document.getElementById('mesRetraits'); if(!box || !supabaseClient) return;
+  var q = supabaseClient.from('retraits').select('*').order('created_at', {ascending:false}); if(vendeurIdActuel) q = q.eq('vendeur_id', vendeurIdActuel);
+  var res = await q; if(res.error){ box.innerHTML = 'Erreur : ' + res.error.message; return; } if(!res.data || !res.data.length){ box.innerHTML = 'Aucune demande pour le moment.'; return; }
+  box.innerHTML = res.data.map(function(r){ var coul = r.statut === 'paye' ? 'green' : r.statut === 'refuse' ? 'red' : 'orange'; var txt = r.statut === 'paye' ? '✅ Paye' : r.statut === 'refuse' ? '❌ Refuse' : '⏳ En attente'; return '<div style="border:1px solid #eee;padding:8px;border-radius:8px;margin-top:6px"><b>' + Number(r.montant||0).toLocaleString() + ' ' + (r.devise||'XOF') + '</b> - ' + (r.methode||'FedaPay') + '<br><span style="color:'+coul+';font-weight:bold">' + txt + '</span> - ' + (r.pays||'') + '</div>'; }).join('');
+}
+window.allerPublier = allerPublier; window.supprimerProduit = supprimerProduit; window.jaiEnvoyeColis = jaiEnvoyeColis; window.ouvrirPreuveEnvoi = ouvrirPreuveEnvoi; window.confirmerEnvoi = confirmerEnvoi; window.fermerEnvoi = fermerEnvoi; window.voirArgent = voirArgent; window.retirerArgent = retirerArgent; window.demanderRetrait = demanderRetrait; window.chargerMesRetraits = chargerMesRetraits;
+var TRAD_VENDEUR = {
+  fr: { lblArgent:"Mon argent", lblProduits:"Produits", lblVentes:"Ventes", lblCommandes:"Commande", btnPublier:"+ PUBLIER UN PRODUIT", titreMesProduits:"Mes produits", titreMesVentes:"Mes ventes / Commandes recues", txtAideVentes:"Tu cliques J'AI ENVOYE quand tu envoies + tu mets ta preuve. Tu es paye seulement quand l'acheteur clique COLIS RECU.", txtAidePreuve:"L'acheteur verra ca dans son Tableau Acheteur. Sans preuve, il ne cliquera pas COLIS RECU.", lblTransporteur:"Transporteur", lblNumeroColis:"Numero de colis / Suivi", lblPhotoColis:"Photo du colis / Video d'emballage", lblNote:"Note pour l'acheteur (optionnel)", btnConfirmerEnvoi:"CONFIRMER - J'AI ENVOYE", btnAnnulerEnvoi:"Annuler", titreArgent:"Mon argent (Escrow)", lblSoldeDispo:"Solde disponible :", lblSoldeEscrow:"En attente Escrow :", txtEscrow:"En attente = argent bloque, tu le recois apres COLIS RECU. Commission deja deduite : 8,5% jusqu'a 500 000F - 7,5% jusqu'a 2 000 000F - 6,5% au-dela.", btnRetirer:"RETIRER MON ARGENT", titreRetrait:"Demander mon Retrait", lblMontant:"Montant a retirer", lblMethode:"Moyen - FedaPay / Autre", lblPays:"Pays", lblDeviseRetrait:"Devise", lblNumero:"Numero / Compte pour recevoir", btnDemanderRetrait:"DEMANDER MON RETRAIT", titreMesDemandes:"Mes demandes" },
+  en: { lblArgent:"My money", lblProduits:"Products", lblVentes:"Sales", lblCommandes:"Order", btnPublier:"+ PUBLISH A PRODUCT", titreMesProduits:"My products", titreMesVentes:"My sales / Orders received", txtAideVentes:"Click I SENT when you ship + add your proof. You are paid only when buyer clicks PACKAGE RECEIVED.", txtAidePreuve:"Buyer will see this in his Buyer Dashboard. Without proof, he will not click PACKAGE RECEIVED.", lblTransporteur:"Carrier", lblNumeroColis:"Package number / Tracking", lblPhotoColis:"Package photo / Packing video", lblNote:"Note for buyer (optional)", btnConfirmerEnvoi:"CONFIRM - I SENT", btnAnnulerEnvoi:"Cancel", titreArgent:"My money (Escrow)", lblSoldeDispo:"Available balance:", lblSoldeEscrow:"Pending Escrow:", txtEscrow:"Pending = money blocked, you receive it after PACKAGE RECEIVED. Commission already deducted: 8.5% up to 500,000F - 7.5% up to 2,000,000F - 6.5% beyond.", btnRetirer:"WITHDRAW MY MONEY", titreRetrait:"Request my Withdrawal", lblMontant:"Amount to withdraw", lblMethode:"Method - FedaPay / Other", lblPays:"Country", lblDeviseRetrait:"Currency", lblNumero:"Number / Account to receive", btnDemanderRetrait:"REQUEST MY WITHDRAWAL", titreMesDemandes:"My requests" }
+};
+TRAD_VENDEUR.yo = TRAD_VENDEUR.en; TRAD_VENDEUR.fon = TRAD_VENDEUR.fr; TRAD_VENDEUR.goun = TRAD_VENDEUR.fr;
+function changerLangue(lang){
+  localStorage.setItem("rocy_lang", lang);
+  var D = TRAD_VENDEUR[lang] || TRAD_VENDEUR.fr;
+  function setTxt(id, val){ var el = document.getElementById(id); if(el && val) el.textContent = val; }
+  setTxt("lblArgent", D.lblArgent); setTxt("lblProduits", D.lblProduits); setTxt("lblVentes", D.lblVentes); setTxt("lblCommandes", D.lblCommandes);
+  setTxt("btnPublier", D.btnPublier); setTxt("titreMesProduits", D.titreMesProduits); setTxt("titreMesVentes", D.titreMesVentes); setTxt("txtAideVentes", D.txtAideVentes);
+  setTxt("txtAidePreuve", D.txtAidePreuve); setTxt("lblTransporteur", D.lblTransporteur); setTxt("lblNumeroColis", D.lblNumeroColis); setTxt("lblPhotoColis", D.lblPhotoColis); setTxt("lblNote", D.lblNote);
+  setTxt("btnConfirmerEnvoi", D.btnConfirmerEnvoi); setTxt("btnAnnulerEnvoi", D.btnAnnulerEnvoi);
+  setTxt("titreArgent", D.titreArgent); setTxt("lblSoldeDispo", D.lblSoldeDispo); setTxt("lblSoldeEscrow", D.lblSoldeEscrow); setTxt("txtEscrow", D.txtEscrow); setTxt("btnRetirer", D.btnRetirer);
+  setTxt("titreRetrait", D.titreRetrait); setTxt("lblMontant", D.lblMontant); setTxt("lblMethode", D.lblMethode); setTxt("lblPays", D.lblPays); setTxt("lblDeviseRetrait", D.lblDeviseRetrait); setTxt("lblNumero", D.lblNumero);
+  setTxt("btnDemanderRetrait", D.btnDemanderRetrait); setTxt("titreMesDemandes", D.titreMesDemandes);
+}
+window.changerLangue = changerLangue;
+</script>
+</body>
+</html>
