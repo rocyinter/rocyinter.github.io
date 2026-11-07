@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0}
+header{background:#111;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:20px} header b span{color:#FFC107}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.rocy{color:white}
+.inter{color:#ffc107}
+.container{max-width:440px;margin:20px auto;background:white;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+h2{text-align:center;color:#0a1a2f;margin-bottom:5px}
+p.sub{text-align:center;color:#666;font-size:14px;margin-top:0}
+label{display:block;margin-top:14px;font-weight:bold;font-size:14px}
+input[type="text"],input[type="password"],input[type="email"]{width:100%;padding:12px;margin-top:5px;border:1px solid #ddd;border-radius:8px;font-size:15px;box-sizing:border-box}
+.btn{width:100%;background:#ff6b00;color:white;border:none;padding:15px;border-radius:10px;font-size:16px;font-weight:bold;margin-top:20px;cursor:pointer}
+.btn:hover{background:#e65c00}
+.btn:disabled{background:#ccc;cursor:not-allowed}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px}
+.check{font-weight:normal;display:flex;gap:6px;align-items:center;margin:0}
+.oubli{color:#ff6b00;text-decoration:none;font-weight:bold}
+.note{text-align:center;font-size:13px;color:#666;margin-top:15px;line-height:1.6}
+.note a{color:#ff6b00;text-decoration:none;font-weight:bold}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
+  🌍 Langue :
+  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="yo">Yoruba</option>
+    <option value="fon">Fon</option>
+    <option value="autre">Autre langue... (Google)</option>
+  </select>
+</div>
+<div id="google_translate_element" style="display:block"></div>
+<header>
+  <a href="index.html" style="text-decoration:none;color:white"><b>ROCY<span>INTER</span></b></a>
+</header>
+
+<div class="container">
+<h2>Connecte-toi</h2>
+<p class="sub">Bienvenue sur Rocyinter</p>
+<p id="msgErreur" style="display:none;background:#FFE0E0;color:#C00;padding:10px;border-radius:8px;font-size:13px;text-align:center"></p>
+
+<div id="blocAjoutEmail" style="display:none;background:#FFF3E8;border:1px solid #FFC107;padding:12px;border-radius:10px;margin-bottom:12px">
+<b>⚠️ Ton email n'est pas encore enregistré</b><br>
+<small>Pour publier et acheter, ajoute ton vrai email :</small><br><br>
+<input type="email" id="nouvelEmail" placeholder="Ex : tonnom@gmail.com">
+<button class="btn" id="btnAjouterEmail" type="button" style="background:#111;margin-top:10px">Enregistrer mon email</button>
+<button class="btn" id="btnContinuerSansEmail" type="button" style="background:white;color:#111;border:1px solid #ddd;margin-top:8px">Continuer sans email → Voir les produits</button>
+<small style="display:block;text-align:center;color:#666;margin-top:6px">Tu pourras ajouter ton email plus tard.</small>
+<p id="msgEmailOk" style="display:none;color:green;font-size:13px;margin-top:8px">Ton email est enregistré ! ✅</p>
+</div>
+
+<form onsubmit="connecter(event)">
+<label>Email ou Téléphone *</label>
+<input type="text" id="login" placeholder="Ex: toi@gmail.com ou +229..." required>
+<label>Mot de passe *</label>
+<div style="position:relative">
+<input type="password" id="mdp" placeholder="Ton mot de passe" required style="padding-right:45px">
+<button type="button" onclick="voirMdp()" style="position:absolute;right:8px;top:12px;border:none;background:none;cursor:pointer;font-size:16px">👁️</button>
+</div>
+<div class="row">
+<label class="check"><input type="checkbox" id="rester" checked> Rester connecté</label>
+<a href="#" class="oubli" onclick="motDePasseOublie(); return false;">Mot de passe oublié ?</a>
+</div>
+<button class="btn" id="btnSeConnecter" type="submit">SE CONNECTER →</button>
+</form>
+<p class="note">Tu n'as pas de compte ? <a href="inscription.html">Crée ton compte ici</a><br><br>
+<a href="index.html">Continuer sans compte → Voir les produits</a></p>
+</div>
+
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'fr'}, 'google_translate_element');
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    document.getElementById("google_translate_element").style.display = "block";
+    alert("Choisis ta langue dans le menu Google");
+    return;
+  }
+  if(lang === "fon"){
+    alert("Fon: On traduit les gros boutons pour toi. Version complète bientôt.");
+    return;
+  }
+  let selectGoogle = document.querySelector(".goog-te-combo");
+  if(selectGoogle){
+    selectGoogle.value = lang;
+    selectGoogle.dispatchEvent(new Event("change"));
+  }
+}
+let s = document.createElement("script");
+s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+document.head.appendChild(s);
+function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
+function getUser(){ return localStorage.getItem("rocy_user") || null; }
+function protegerPage(rolesAutorises){ return true; }
+function afficherSelonRole(){}
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+const EMAIL_ADMIN = "rocyinter@gmail.com";
+let supabaseClient = null;
+function getSupabase(){
+  if(supabaseClient) return supabaseClient;
+  if(window.supabase){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+  }
+  return supabaseClient;
+}
+getSupabase();
+function afficherErreur(msg){ var el=document.getElementById('msgErreur'); if(el){ el.style.display='block'; el.textContent=msg; } }
+function cacherErreur(){ var el=document.getElementById('msgErreur'); if(el){ el.style.display='none'; } }
+function voirMdp(){ var c=document.getElementById('mdp'); if(c) c.type=c.type==='password'?'text':'password'; }
+function estAdmin(email){ return (email||"").trim().toLowerCase()===EMAIL_ADMIN.trim().toLowerCase(); }
+function aVraiEmail(){ var e=localStorage.getItem('email_user')||''; if(!e) return false; if(e.endsWith('@rocyinter.bj')) return false; if(!e.includes('@')) return false; return true; }
+function afficherBlocEmail(){ var b=document.getElementById('blocAjoutEmail'); if(b && !aVraiEmail() && localStorage.getItem('user_id')){ b.style.display='block'; } }
+function redirigerSelonRole(email, role){
+  var retour=localStorage.getItem('retour_apres_connexion');
+  if(estAdmin(email)){ localStorage.setItem('role_user','admin'); localStorage.removeItem('retour_apres_connexion'); if(MODE_TEST){ alert('MODE TEST : Tu serais envoyé vers admin.html'); return; } window.location.href="admin.html"; return; }
+  if(retour){ localStorage.removeItem('retour_apres_connexion'); if(MODE_TEST){ alert('MODE TEST : Tu serais renvoyé vers ' + retour); return; } window.location.href=retour; return; }
+  if(MODE_TEST){ alert('MODE TEST : Connecté ! Sur le vrai site tu irais vers ' + (role==='vendeur' ? 'vendeur.html' : role==='acheteur' ? 'acheteur.html' : 'index.html')); return; }
+  if(role==='vendeur'){ window.location.href="vendeur.html"; }
+  else if(role==='acheteur'){ window.location.href="acheteur.html"; }
+  else{ window.location.href="index.html"; }
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn=document.getElementById('btnAjouterEmail');
+  if(btn){ btn.addEventListener('click', async function(){
+    var email=document.getElementById('nouvelEmail').value.trim().toLowerCase();
+    if(!email || !email.includes('@') || email.endsWith('@rocyinter.bj')){ alert('Mets un vrai email, ex : tonnom@gmail.com'); return; }
+    var userId=localStorage.getItem('user_id'); localStorage.setItem('email_user', email);
+    var sb = getSupabase();
+    if(userId && sb && !MODE_TEST){ try{ await sb.from('profils').update({ email: email, email_technique: false }).eq('id', userId); }catch(e){} }
+    var msgOk = document.getElementById('msgEmailOk'); if(msgOk) msgOk.style.display='block';
+    alert('Ton email est enregistré !');
+    var bloc = document.getElementById('blocAjoutEmail'); if(bloc) bloc.style.display='none';
+    redirigerSelonRole(email, localStorage.getItem('role_user')||'acheteur');
+  }); }
+  var btnC=document.getElementById('btnContinuerSansEmail');
+  if(btnC){ btnC.addEventListener('click', function(){ localStorage.removeItem('retour_apres_connexion'); if(MODE_TEST){ alert('MODE TEST : Tu entres sans email. Tu peux voir les produits.'); return; } window.location.href="index.html"; }); }
+  afficherBlocEmail();
+});
+async function connecter(e){
+  if(e) e.preventDefault(); cacherErreur();
+  const login=document.getElementById('login').value.trim();
+  const password=document.getElementById('mdp').value;
+  const btn=document.getElementById('btnSeConnecter');
+  if(!login || !password){ afficherErreur('Mets ton email / téléphone + ton mot de passe.'); return; }
+  if(btn){ btn.disabled=true; btn.textContent='Connexion...'; }
+  let email=login;
+  var sb = getSupabase();
+  if(MODE_TEST){
+    try{
+      let roleTest='acheteur';
+      if(sb){
+        const { data: profTest } = await sb.from('profils').select('*').eq('telephone', login).single();
+        if(profTest){
+          localStorage.setItem('user_id', profTest.id);
+          localStorage.setItem('nom_user', profTest.nom || profTest.nom_complet || '');
+          localStorage.setItem('role_user', profTest.role || 'acheteur');
+          localStorage.setItem('ville_user', profTest.ville || '');
+          localStorage.setItem('telephone_user', profTest.telephone || '');
+          localStorage.setItem('email_user', profTest.email || email);
+          roleTest=profTest.role || 'acheteur'; email=profTest.email || email;
+          if(profTest.email_technique){ alert("MODE TEST : Connecté sans vrai email."); afficherBlocEmail(); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+        } else {
+          const fauxId="test-"+login.replace(/[^0-9a-z]/gi,'').toLowerCase();
+          localStorage.setItem('user_id', fauxId); localStorage.setItem('email_user', email); localStorage.setItem('role_user','acheteur');
+        }
+        await sb.from('logs').insert([{ user_id: localStorage.getItem('user_id'), action: "connexion_test", date: new Date().toISOString() }]).catch(()=>{});
+      } else {
+        const fauxId="test-"+login.replace(/[^0-9a-z]/gi,'').toLowerCase();
+        localStorage.setItem('user_id', fauxId); localStorage.setItem('email_user', email); localStorage.setItem('role_user','acheteur');
+      }
+      alert("MODE TEST : Connecté : "+login);
+      if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; }
+      redirigerSelonRole(email, roleTest); return;
+    }catch(err){ afficherErreur('Erreur test : '+err.message); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+  }
+  try{
+    if(!sb){ afficherErreur('Supabase pas encore chargé, réessaie dans 2 secondes.'); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+    if(!login.includes('@')){
+      const { data: prof } = await sb.from('profils').select('email').eq('telephone', login).single();
+      if(!prof?.email){ afficherErreur('Aucun compte avec ce téléphone.'); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+      email=prof.email;
+    }
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ afficherErreur('Mauvais email ou mauvais mot de passe. Essaie encore.'); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+    const { data: profil } = await sb.from('profils').select('*').eq('id', data.user.id).single();
+    let role = profil?.role || 'acheteur';
+   if(email === "rocyinter@gmail.com") role = "admin";
+    localStorage.setItem("rocy_role", role);
+    localStorage.setItem('nom_user', profil?.nom || profil?.nom_complet || '');
+    localStorage.setItem('email_user', email);
+    localStorage.setItem('telephone_user', profil?.telephone || '');
+    localStorage.setItem('ville_user', profil?.ville || '');
+    localStorage.setItem('user_id', data.user.id);
+    await sb.from('logs').insert([{ user_id: data.user.id, action: "connexion", date: new Date().toISOString() }]).catch(()=>{});
+    if(profil?.email_technique){ alert('Bienvenue ! Tu es connecté. Ajoute ton vrai email pour publier / acheter.'); afficherBlocEmail(); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } return; }
+    alert('Bienvenue ! Tu es connecté !');
+    redirigerSelonRole(email, role);
+  }catch(err){ afficherErreur('Erreur : '+err.message); if(btn){ btn.disabled=false; btn.textContent='SE CONNECTER →'; } }
+}
+async function motDePasseOublie(){
+  const login=document.getElementById('login').value.trim();
+  if(MODE_TEST){ alert("MODE TEST : Sur le vrai site, on t'enverrait un lien à "+login); return; }
+  if(!login){ alert('Écris d’abord ton email ou ton téléphone.'); return; }
+  var sb = getSupabase(); if(!sb){ alert('Supabase pas encore chargé, réessaie.'); return; }
+  let email=login;
+  if(!login.includes('@')){
+    const { data: prof } = await sb.from('profils').select('email').eq('telephone', login).single();
+    if(!prof?.email){ alert('Aucun compte avec ce téléphone.'); return; }
+    email=prof.email;
+    if(email.includes('@rocyinter.bj')){ alert('Compte créé avec téléphone seul. Contacte-nous sur WhatsApp avec ton nom + ville + pièce.'); return; }
+  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/connexion.html' });
+  if(error){ alert(error.message); return; }
+  await sb.from('recuperations').insert([{ email: email, telephone: login.includes('@') ? null : login, type: 'mot_de_passe_oublie' }]).catch(()=>{});
+  await sb.from('logs').insert([{ action: "demande_mot_de_passe_oublie_"+email, date: new Date().toISOString() }]).catch(()=>{});
+  alert('Lien envoyé à '+email+'. Vérifie aussi dans Spam.');
+}
+window.connecter = connecter;
+window.voirMdp = voirMdp;
+window.motDePasseOublie = motDePasseOublie;
+</script>
+</body>
+</html>
