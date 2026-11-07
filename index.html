@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROCYINTER - Acheter et vendre partout dans le monde</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f6f6f6}
+header{background:#111;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:20px} header b span{color:#FFC107}
+.btn-jaune{background:#FFC107;color:black;padding:12px 18px;border-radius:10px;font-weight:bold;text-decoration:none;display:inline-block}
+.hero{background:white;padding:25px;text-align:center}
+.hero h1{font-size:24px;margin:10px 0}
+.hero p{color:#666}
+.grid{padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:white;border-radius:12px;overflow:hidden;cursor:pointer}
+.card img{width:100%;height:130px;object-fit:cover;background:#eee}
+.card div{padding:10px}
+.prix{color:#000;font-weight:bold}
+.boost{background:#FFF3CD;color:#856404;font-size:11px;padding:3px 7px;border-radius:20px}
+.card a{color:inherit;text-decoration:none;display:block}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap">
+  <div>
+    🌍 Langue :
+    <select id="langue" onchange="changerLangue(this.value)">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="fon">Fon</option>
+      <option value="goun">Goun</option>
+    </select>
+  </div>
+  <div>
+    💰 Devise :
+    <select id="devise" onchange="convertirPrix()">
+      <option value="XOF">FCFA (Bénin)</option>
+      <option value="EUR">Euro €</option>
+      <option value="USD">Dollar $</option>
+      <option value="NGN">Naira ₦</option>
+      <option value="GHS">Cedi GH₵</option>
+      <option value="GBP">Livre £</option>
+    </select>
+  </div>
+</div>
+
+<header>
+  <b>ROCY<span>INTER</span></b>
+  <a href="connexion.html" id="lienConnexion" style="color:white;text-decoration:none">Connexion</a>
+</header>
+
+<div class="hero">
+  <h1 id="titreHero">Acheter et vendre partout dans le monde, en toute confiance.</h1>
+  <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p>
+  <br>
+  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;background:#FFC107;color:black;padding:14px;border-radius:8px;font-weight:900;text-decoration:none">Publier mon produit pour 2000F - 30 jours</a>
+  <p id="txtBoost" style="font-size:12px;margin-top:10px">Boost : 20 premiers gratuits, après 500F / 3 jours</p>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <a id="btnTabVendeur" href="vendeur.html" style="flex:1;text-align:center;background:#FF6B00;color:#fff;padding:12px;border-radius:8px;font-weight:bold;text-decoration:none">🧑‍💼 TABLEAU VENDEUR</a>
+    <a id="btnTabAcheteur" href="acheteur.html" style="flex:1;text-align:center;background:#fff;color:#FF6B00;border:2px solid #FF6B00;padding:10px;border-radius:8px;font-weight:bold;text-decoration:none">🛒 TABLEAU ACHETEUR</a>
+  </div>
+  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;box-sizing:border-box;margin-top:10px" oninput="filtrerProduits()">
+</div>
+
+<p id="statut" style="text-align:center;color:#666;font-size:14px">Chargement des produits...</p>
+<div class="grid" id="listeProduits"></div>
+
+<div style="text-align:center;margin:20px 0;font-size:13px">
+  <a href="index.html">Accueil</a> • <a href="publier.html">Publier</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="acheteur.html">Tableau Acheteur</a> • <a href="connexion.html">Connexion</a>
+</div>
+
+<div style="text-align:center;padding:12px;background:#FFF8E1;border-radius:10px;margin:0 12px 12px;font-size:12px;color:#666">
+  <b id="titreComment">Comment ça marche ?</b><br>
+    <span id="etape1">1. Acheteur commande → Argent bloqué (Escrow)</span><br>
+    <span id="etape2">2. Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)</span><br>
+    <span id="etape3">3. Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)</span><br>
+  <span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span>
+</div>
+
+<p style="text-align:center;color:#999;font-size:12px">ROCYINTER - Paiement sécurisé - Escrow - Mondial</p>
+
+<script>
+function getRole(){
+  return localStorage.getItem("rocy_role") || "visiteur";
+}
+function getUser(){
+  return localStorage.getItem("rocy_user") || null;
+}
+function protegerPage(rolesAutorises){
+  var role = getRole();
+  if(role === "visiteur"){
+    alert("Connecte-toi d'abord.");
+    window.location.href = "connexion.html";
+    return false;
+  }
+  if(rolesAutorises.indexOf(role) === -1){
+    alert("Accès refus. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function afficherSelonRole(){
+  var role = getRole();
+  var bVendeur = document.getElementById("btn-vendeur");
+  var bAcheteur = document.getElementById("btn-acheteur");
+  var bPublier = document.getElementById("btn-publier");
+  var bAdmin = document.getElementById("btn-admin");
+  var bConnexion = document.getElementById("btn-connexion");
+  var bInscription = document.getElementById("btn-inscription");
+  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
+  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
+  if(role !== "visiteur"){
+    if(bConnexion) bConnexion.style.display = "none";
+    if(bInscription) bInscription.style.display = "none";
+  }
+}
+document.addEventListener("DOMContentLoaded", afficherSelonRole);
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+
+// VRAI SITE TEST : ?test=1 = test, sans argent. Sans ?test=1 = vrai mode.
+var MODE_TEST = window.location.hostname.indexOf('codepen') !== -1 || window.location.hostname.indexOf('cdpn') !== -1 || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+var SUPABASE_URL = "https://ahoxxzmdjxqvvpphxeow.supabase.co";
+var SUPABASE_KEY = "sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3";
+var tousProduits = [];
+
+function aVraiEmail(){
+  var email = localStorage.getItem('email_user') || '';
+  if(!email) return false;
+  if(email.indexOf('@rocyinter.bj') !== -1) return false;
+  if(email.indexOf('@') === -1) return false;
+  return true;
+}
+function allerPublier(){
+  if(aVraiEmail()){
+    if(MODE_TEST){ alert('MODE TEST : Ça marche ! Tu peux publier.'); return; }
+    window.location.href = "publier.html";
+    return;
+  }
+  if(MODE_TEST){
+    alert('MODE TEST : Tu peux tester Publier. Sur le vrai site, pour publier, ajoute ton vrai email avant. Tu peux voir les produits sans email.');
+    return;
+  }
+  var veutAjouter = confirm('Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits');
+  if(veutAjouter){
+    localStorage.setItem('retour_apres_connexion', 'publier.html');
+    window.location.href = "connexion.html";
+  }
+}
+function commander(produitId){
+  if(produitId) localStorage.setItem('produit_a_acheter', produitId);
+  if(aVraiEmail()){
+    if(MODE_TEST){ alert('MODE TEST : Ça marche ! Tu peux acheter.'); return; }
+    window.location.href = "article.html?id=" + (produitId || '');
+    return;
+  }
+  if(MODE_TEST){
+    alert('MODE TEST : Tu peux tester Acheter. Sur le vrai site, pour acheter, ajoute ton vrai email avant. Tu peux voir les produits sans email.');
+    return;
+  }
+  var veutAjouter2 = confirm('Pour acheter, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits');
+  if(veutAjouter2){
+    localStorage.setItem('retour_apres_connexion', 'article.html?id=' + (produitId || ''));
+    window.location.href = "connexion.html";
+  }
+}
+function afficherHeader(){
+  var lien = document.getElementById('lienConnexion');
+  var nom = localStorage.getItem('nom_user');
+  if(nom && lien){
+    lien.textContent = "Bonjour, " + nom;
+    lien.href = "vendeur.html";
+  }
+}
+afficherHeader();
+
+async function chargerProduits(){
+  var statut = document.getElementById('statut');
+  try{
+    var res = await fetch(SUPABASE_URL + "/rest/v1/produits?select=*&statut=eq.en_ligne&order=created_at.desc", {
+      headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+    });
+    if(!res.ok){ if(statut) statut.textContent = "Erreur chargement : " + res.status; return; }
+    tousProduits = await res.json();
+    if(!tousProduits.length){
+      var res2 = await fetch(SUPABASE_URL + "/rest/v1/produits?select=*&order=created_at.desc", {
+        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+      });
+      if(res2.ok) tousProduits = await res2.json();
+    }
+    afficher(tousProduits);
+  } catch(err){ if(statut) statut.textContent = "Erreur réseau : " + err.message; }
+}
+function afficher(produits){
+  var liste = document.getElementById('listeProduits');
+  var statut = document.getElementById('statut');
+  if(!liste) return;
+  if(!produits.length){ if(statut) statut.textContent = "Aucun produit pour le moment. Sois le premier à publier !"; liste.innerHTML=""; return; }
+  if(statut) statut.textContent = produits.length + " produit(s) trouvé(s)";
+  liste.innerHTML = produits.map(function(p){
+    return '<a href="article.html?id=' + p.id + '" onclick="commander(\'' + p.id + '\'); return false;" style="text-decoration:none;color:inherit">'
+      + '<div class="card">'
+      + '<img src="' + (p.photo || '') + '" alt="' + (p.nom || 'Produit') + '">'
+      + (p.boost ? '<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:12px;display:inline-block;margin:8px 0 0 8px">⭐ BOOSTÉ</div>' : '')
+      + '<div><b>' + (p.nom || 'Sans nom') + '</b><br><span class="prix" data-prix="' + Number(p.prix||0) + '">' + Number(p.prix||0).toLocaleString() + ' F</span><br><small>' + (p.ville || '') + ' - ' + (p.nom_vendeur || '') + '</small><br><small>' + ((p.description || '').slice(0,60)) + '</small></div>'
+      + '</div></a>';
+  }).join('');
+}
+function filtrerProduits(){
+  var input = document.getElementById('recherche');
+  if(!input) return;
+  var mot = input.value.toLowerCase();
+  afficher(tousProduits.filter(function(p){
+    return ((p.nom||'').toLowerCase().indexOf(mot) !== -1) || ((p.description||'').toLowerCase().indexOf(mot) !== -1) || ((p.ville||'').toLowerCase().indexOf(mot) !== -1);
+  }));
+}
+var inputRecherche = document.getElementById('recherche');
+if(inputRecherche){
+  inputRecherche.addEventListener('input', filtrerProduits);
+}
+chargerProduits();
+if(MODE_TEST && window.location.hostname.indexOf('codepen') !== -1){
+  document.querySelectorAll('a[href$=".html"]').forEach(function(lien){
+    if(lien.getAttribute('onclick')) return;
+    lien.addEventListener('click', function(e){
+      e.preventDefault();
+      alert('MODE TEST : Lien ' + lien.getAttribute('href') + ' bloqué dans CodePen. Sur le vrai site, il marchera normalement.');
+    });
+  });
+}
+window.allerPublier = allerPublier;
+window.commander = commander;
+window.filtrerProduits = filtrerProduits;
+
+var TRADUCTIONS = {
+  fr: {
+    titreHero: "Acheter et vendre partout dans le monde, en toute confiance.",
+    sousHero: "Paiement sécurisé - Escrow - Livraison vérifiée",
+    btnPublierHero: "Publier mon produit pour 2000F - 30 jours",
+    txtBoost: "Boost : 20 premiers gratuits, après 500F / 3 jours",
+    btnTabVendeur: "TABLEAU VENDEUR",
+    btnTabAcheteur: "TABLEAU ACHETEUR",
+    titreComment: "Comment ça marche ?",
+    etape1: "1. Acheteur commande → Argent bloqué (Escrow)",
+    etape2: "2. Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",
+    etape3: "3. Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",
+    txtLitige: "Problème ? Litige 48h, paiement bloqué.",
+    recherche: "Rechercher : iPhone, chaise, robe...",
+    connexion: "Connexion"
+  },
+  en: {
+    titreHero: "Buy and sell anywhere in the world, with total confidence.",
+    sousHero: "Secure payment - Escrow - Verified delivery",
+    btnPublierHero: "Publish my product for 2000F - 30 days",
+    txtBoost: "Boost: First 20 free, then 500F / 3 days",
+    btnTabVendeur: "SELLER DASHBOARD",
+    btnTabAcheteur: "BUYER DASHBOARD",
+    titreComment: "How does it work?",
+    etape1: "1. Buyer orders → Money blocked (Escrow)",
+    etape2: "2. Seller ships + adds proof (photo / DHL / Bus / STM number)",
+    etape3: "3. Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",
+    txtLitige: "Problem? 48h dispute, payment blocked.",
+    recherche: "Search: iPhone, chair, dress...",
+    connexion: "Login"
+  },
+  yo: {
+    titreHero: "Ra ati ta ni gbogbo agbaye, pelu igbekele.",
+    sousHero: "Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",
+    btnPublierHero: "Fi oja mi sori fun 2000F - ojo 30",
+    txtBoost: "Boost: 20 akoko ofe, lehin naa 500F / ojo 3",
+    btnTabVendeur: "DASHBOARD OLUTAJA",
+    btnTabAcheteur: "DASHBOARD OLURA",
+    titreComment: "Bawo ni o se n sise?",
+    etape1: "1. Olura pase → Owo di didi (Escrow)",
+    etape2: "2. Olutaja firanse + fi eri kun",
+    etape3: "3. Olura te PACKAGE RECEIVED → Olutaja gba owo",
+    txtLitige: "Isoro? Ariyanjiyan 48h, isanwo di didi.",
+    recherche: "Wa: iPhone, aga, aso...",
+    connexion: "Wole"
+  },
+  fon: {
+    titreHero: "Xo do ayihongbe le bi me, do medesuno me.",
+    sousHero: "Akwe xoxo - Escrow - Sedo dedeji",
+    btnPublierHero: "De nu e do wema ji ton 2000F - Azan 30",
+    txtBoost: "Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",
+    btnTabVendeur: "TABLEAU AXOTƆ",
+    btnTabAcheteur: "TABLEAU AXOLO",
+    titreComment: "E no wazo gbon?",
+    etape1: "1. Axolo de gbe → Akwe do te (Escrow)",
+    etape2: "2. Axoto se do + de kponon ton",
+    etape3: "3. Axolo ze COLIS RECU → Axoto mo akwe",
+    txtLitige: "Tagba de a? Litige 48h, akwe do te.",
+    recherche: "Ba: iPhone, zinkpo, awu...",
+    connexion: "Be me"
+  },
+  goun: {
+    titreHero: "Xo do ayihongbe le bi me, do medesuno me.",
+    sousHero: "Akwe xoxo - Escrow - Sedo dedeji",
+    btnPublierHero: "De nu e do wema ji ton 2000F - Azan 30",
+    txtBoost: "Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",
+    btnTabVendeur: "TABLEAU AXOTƆ",
+    btnTabAcheteur: "TABLEAU AXOLO",
+    titreComment: "E no wazo gbon?",
+    etape1: "1. Axolo de gbe → Akwe do te (Escrow)",
+    etape2: "2. Axoto se do + de kponon ton",
+    etape3: "3. Axolo ze COLIS RECU → Axoto mo akwe",
+    txtLitige: "Tagba de a? Litige 48h, akwe do te.",
+    recherche: "Ba: iPhone, zinkpo, awu...",
+    connexion: "Be me"
+  }
+};
+function changerLangue(lang){
+  localStorage.setItem("rocy_lang", lang);
+  var dict = TRADUCTIONS[lang] || TRADUCTIONS.fr;
+  function setTxt(id, val){ var el = document.getElementById(id); if(el && val) el.textContent = val; }
+  setTxt("titreHero", dict.titreHero);
+  setTxt("sousHero", dict.sousHero);
+  setTxt("btnPublierHero", dict.btnPublierHero);
+  setTxt("txtBoost", dict.txtBoost);
+  setTxt("btnTabVendeur", dict.btnTabVendeur);
+  setTxt("btnTabAcheteur", dict.btnTabAcheteur);
+  setTxt("titreComment", dict.titreComment);
+  setTxt("etape1", dict.etape1);
+  setTxt("etape2", dict.etape2);
+  setTxt("etape3", dict.etape3);
+  setTxt("txtLitige", dict.txtLitige);
+  var rech = document.getElementById("recherche");
+  if(rech) rech.placeholder = dict.recherche;
+  var lien = document.getElementById("lienConnexion");
+  if(lien && !localStorage.getItem("nom_user")) lien.textContent = dict.connexion;
+}
+window.changerLangue = changerLangue;
+document.addEventListener("DOMContentLoaded", function(){
+  var saved = localStorage.getItem("rocy_lang");
+  var sel = document.getElementById("langue");
+  if(saved && sel){ sel.value = saved; changerLangue(saved); }
+});
+var taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
+var symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
+function convertirPrix(){
+  var deviseEl = document.getElementById("devise");
+  if(!deviseEl) return;
+  var devise = deviseEl.value;
+  localStorage.setItem("rocy_devise", devise);
+  document.querySelectorAll(".prix").forEach(function(el){
+    var prixFCFA = parseFloat(el.getAttribute("data-prix"));
+    if(isNaN(prixFCFA)){
+      prixFCFA = parseInt(el.innerText);
+      if(isNaN(prixFCFA)) return;
+      el.setAttribute("data-prix", prixFCFA);
+    }
+    var converti = Math.round(prixFCFA * taux[devise]);
+    el.innerText = converti.toLocaleString() + symboles[devise];
+  });
+}
+window.convertirPrix = convertirPrix;
+</script>
+</body>
+</html>
