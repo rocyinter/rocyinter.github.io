@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publier - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f6f6f6;padding:15px}
+header{background:#111;color:white;padding:15px;display:flex;justify-content:space-between}
+header b span{color:#FFC107}
+.box{background:white;padding:20px;border-radius:15px;max-width:450px;margin:15px auto}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box}
+.btn{background:#FFC107;border:none;padding:15px;width:100%;border-radius:10px;font-weight:bold;font-size:16px;cursor:pointer}
+.boost-box{background:#FFF8E1;padding:12px;border-radius:10px;margin:10px 0;font-size:14px}
+.prix-total{background:#111;color:white;padding:12px;border-radius:10px;text-align:center;margin:10px 0}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
+  🌍 Langue :
+  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="yo">Yoruba</option>
+    <option value="fon">Fon</option>
+    <option value="goun">Goun</option>
+    <option value="autre">Autre langue... (Google)</option>
+  </select>
+</div>
+<div id="google_translate_element" style="display:block"></div>
+<header><b>ROCY<span style="color:#FFC107">INTER</span></b><a href="index.html" style="color:white;text-decoration:none;font-size:16px">← Retour</a></header>
+
+<div class="box">
+<h2>Publier mon produit</h2>
+<p style="color:#666;font-size:14px">Ton produit sera en ligne pendant 30 jours.</p>
+
+<p id="msgSecurite" style="display:none;background:#FFF3E8;border:1px solid #FFC107;padding:12px;border-radius:10px;font-size:13px;color:#333">Pour ta sécurité, ton email n'est pas encore enregistré. Tu ne peux pas publier tant que ton email n'est pas enregistré. Va sur Connexion pour ajouter ton vrai email.</p>
+
+<label>Photo du produit</label>
+<input type="file" id="photoProduit" accept="image/*">
+<img id="previewPhoto" style="width:100%;border-radius:10px;margin-top:8px;display:none">
+
+<label>Nom du produit *</label>
+<input type="text" id="nomProduit" placeholder="Ex: iPhone 13">
+
+<label>Prix de vente (F CFA) *</label>
+<input type="number" id="prixProduit" placeholder="Ex: 285000" oninput="calculerCommissionPublier()">
+
+<div id="calculBox" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:10px;margin-top:10px;font-size:14px">
+  <p style="margin:4px 0">Commission RocyInter : <b id="txtCommission">-</b></p>
+  <p style="margin:4px 0">Tu vas recevoir : <b id="txtRecevoir">-</b></p>
+  <small id="txtTaux" style="color:#666">-</small>
+</div>
+
+<label>Catégorie *</label>
+<select id="categorieProduit">
+  <option>Téléphones</option>
+  <option>Ordinateurs</option>
+  <option>Vêtements</option>
+  <option>Chaussures</option>
+  <option>Motos / Voitures</option>
+  <option>Maison</option>
+  <option>Autre</option>
+</select>
+
+<label>Ville / Pays *</label>
+<input type="text" id="villeProduit" placeholder="Ex: Cotonou, Bénin - Paris, France - Lagos, Nigeria">
+
+<label>Livraison</label>
+<select id="livraisonProduit">
+  <option>DHL - Mondiale</option>
+  <option>Bus / STM - Bénin</option>
+  <option>À discuter avec le vendeur</option>
+  <option>Remise en main propre</option>
+</select>
+
+<label>Description</label>
+<textarea id="descProduit" rows="3" placeholder="Etat, couleur, livraison mondiale..."></textarea>
+
+<div class="boost-box">
+<input type="checkbox" id="boostProduit" checked onchange="majTotalPublier()"> <b>⭐ BOOSTER mon produit</b><br>
+<small>Être en haut pendant 3 jours. 20 premiers GRATUITS, après 500F.</small>
+<p id="txtBoostInfo" style="font-size:12px;color:#059669;margin:5px 0 0">🎉 Tu es dans les 20 premiers → Booster GRATUIT</p>
+</div>
+
+<div class="prix-total">
+Annonce 30 jours : 2000F<br>
+<span id="ligneBoost">Booster 3 jours : 0F (Gratuit)</span><br>
+<b id="totalPublier">Total à payer : 2000F</b><br>
+<small>Après 30 jours sans reconduction, ton produit ne s'affiche plus à l'Accueil.</small>
+</div>
+
+<label>Choisir le paiement *</label>
+<select id="paiementProduit">
+<option>MTN MoMo</option>
+<option>Moov Money</option>
+<option>Wave</option>
+<option>Carte Visa / Mastercard</option>
+<option>PayPal</option>
+<option>Stripe</option>
+</select>
+<br><br>
+<button class="btn" id="btnPublier" type="button" onclick="publierProduit()">Payer 2000F - Paiement sécurisé</button>
+<p style="text-align:center;font-size:12px;color:#888">Paiement sécurisé - FedaPay / Stripe / PayPal - Escrow - Mondial</p>
+
+<div style="text-align:center;margin-top:15px;font-size:13px">
+  <a href="index.html">Accueil</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="acheteur.html">Tableau Acheteur</a>
+</div>
+</div>
+
+<script>
+function googleTranslateElementInit(){
+  try{ new google.translate.TranslateElement({pageLanguage:'fr'}, 'google_translate_element'); }catch(e){}
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var divG = document.getElementById("google_translate_element");
+    if(divG) divG.style.display = "block";
+    alert("Choisis ta langue dans le menu Google");
+    return;
+  }
+  if(lang === "goun"){
+    alert("Goun : Google ne connait pas encore Goun. On traduit les gros boutons pour toi. Version complete bientot.");
+    return;
+  }
+  var selectGoogle = document.querySelector(".goog-te-combo");
+  if(selectGoogle){
+    selectGoogle.value = lang;
+    selectGoogle.dispatchEvent(new Event("change"));
+  } else {
+    alert("Google est encore en train de charger, attends 3 secondes et re-choisis " + lang);
+  }
+}
+window.changerLangue = changerLangue;
+window.googleTranslateElementInit = googleTranslateElementInit;
+var sGoogle = document.createElement("script");
+sGoogle.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+document.head.appendChild(sGoogle);
+function getRole(){
+  return localStorage.getItem("rocy_role") || "visiteur";
+}
+function getUser(){
+  return localStorage.getItem("rocy_user") || null;
+}
+function protegerPage(rolesAutorises){
+  const role = getRole();
+  if(role === "visiteur"){
+    alert("Connecte-toi d'abord.");
+    window.location.href = "connexion.html";
+    return false;
+  }
+  if(!rolesAutorises.includes(role)){
+    alert("⛔ Accès refus. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function afficherSelonRole(){
+  const role = getRole();
+  const bVendeur = document.getElementById("btn-vendeur");
+  const bAcheteur = document.getElementById("btn-acheteur");
+  const bPublier = document.getElementById("btn-publier");
+  const bAdmin = document.getElementById("btn-admin");
+  const bConnexion = document.getElementById("btn-connexion");
+  const bInscription = document.getElementById("btn-inscription");
+  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
+  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
+  if(role !== "visiteur"){
+    if(bConnexion) bConnexion.style.display = "none";
+    if(bInscription) bInscription.style.display = "none";
+  }
+}
+document.addEventListener("DOMContentLoaded", afficherSelonRole);
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+let supabaseClient = null;
+function getSupabase(){
+  if(supabaseClient) return supabaseClient;
+  if(window.supabase){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+  }
+  return supabaseClient;
+}
+function aVraiEmail(){
+  var email = localStorage.getItem('email_user') || '';
+  if(!email) return false;
+  if(email.endsWith('@rocyinter.bj')) return false;
+  if(!email.includes('@')) return false;
+  return true;
+}
+function calculerCommissionPublier(){
+  var prixEl = document.getElementById('prixProduit');
+  if(!prixEl) return null;
+  const prix = parseFloat(prixEl.value) || 0;
+  var box = document.getElementById('calculBox');
+  if(prix <= 0){ if(box) box.style.display='none'; return null; }
+  let taux = prix <= 500000 ? 0.085 : prix <= 2000000 ? 0.075 : 0.065;
+  let commission = Math.round(prix * taux);
+  let recevoir = prix - commission;
+  if(box) box.style.display='block';
+  document.getElementById('txtCommission').innerText = commission.toLocaleString() + ' F (' + (taux*100) + '%)';
+  document.getElementById('txtRecevoir').innerText = recevoir.toLocaleString() + ' F';
+  document.getElementById('txtTaux').innerText = taux === 0.085 ? 'Palier : 8,5% jusqu’à 500 000 F' : taux === 0.075 ? 'Palier : 7,5% jusqu’à 2 000 000 F' : 'Palier : 6,5% au-delà de 2 000 000 F';
+  return { commission: commission, recevoir: recevoir, taux: taux };
+}
+let boostGratuit = true;
+let nombreProduits = 0;
+async function verifierBoostGratuit(){
+  var txt = document.getElementById('txtBoostInfo');
+  var sb = getSupabase();
+  if(MODE_TEST || !sb){
+    boostGratuit = true; nombreProduits = 0;
+    if(txt) txt.innerText = "🎉 MODE TEST : Tu es dans les 20 premiers → Booster GRATUIT";
+    majTotalPublier(); return;
+  }
+  try{
+    const { count } = await sb.from('produits').select('id', { count: 'exact', head: true });
+    nombreProduits = count || 0;
+    boostGratuit = nombreProduits < 20;
+    if(txt){
+      if(boostGratuit) txt.innerText = "🎉 Tu es dans les 20 premiers (" + nombreProduits + "/20) → Booster GRATUIT";
+      else txt.innerText = "Les 20 gratuits sont terminés (" + nombreProduits + " produits) → Booster : 500F";
+    }
+  }catch(e){ boostGratuit = true; }
+  majTotalPublier();
+}
+function majTotalPublier(){
+  var boostEl = document.getElementById('boostProduit');
+  const boost = boostEl ? boostEl.checked : false;
+  const prixBoost = (boost && !boostGratuit) ? 500 : 0;
+  const total = 2000 + prixBoost;
+  var ligne = document.getElementById('ligneBoost');
+  if(ligne) ligne.innerText = boost ? 'Booster 3 jours : ' + prixBoost + 'F' + (prixBoost===0 ? ' (Gratuit)' : '') : 'Booster 3 jours : Non';
+  var tot = document.getElementById('totalPublier');
+  if(tot) tot.innerText = 'Total à payer : ' + total.toLocaleString() + 'F';
+  var btn = document.getElementById('btnPublier');
+  if(btn) btn.innerText = 'Payer ' + total.toLocaleString() + 'F - Paiement sécurisé';
+  return total;
+}
+document.addEventListener('DOMContentLoaded', function(){
+  verifierBoostGratuit();
+  majTotalPublier();
+  calculerCommissionPublier();
+  var photoInput = document.getElementById('photoProduit');
+  if(photoInput){
+    photoInput.addEventListener('change', function(e){
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        const img = document.getElementById('previewPhoto');
+        if(img){ img.src = ev.target.result; img.style.display = 'block'; }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  var btn = document.getElementById('btnPublier');
+  if(btn) btn.addEventListener('click', publierProduit);
+});
+async function publierProduit(e){
+  if(e) e.preventDefault();
+  if(!aVraiEmail()){
+    var msg = document.getElementById('msgSecurite');
+    if(msg) msg.style.display = 'block';
+    if(MODE_TEST){
+      alert('MODE TEST : Tu peux tester Publier. Sur le vrai site, pour publier, ajoute ton vrai email avant.');
+      return;
+    }
+    var veutAjouter = confirm('Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Rester sur Publier pour voir le formulaire');
+    if(veutAjouter){
+      localStorage.setItem('retour_apres_connexion', 'publier.html');
+      window.location.href = "connexion.html";
+    }
+    return;
+  }
+  var msg2 = document.getElementById('msgSecurite');
+  if(msg2) msg2.style.display = 'none';
+  const nom = document.getElementById('nomProduit').value.trim();
+  const prix = parseFloat(document.getElementById('prixProduit').value) || 0;
+  const categorie = document.getElementById('categorieProduit').value;
+  const ville = document.getElementById('villeProduit').value.trim();
+  const livraison = document.getElementById('livraisonProduit').value;
+  const desc = document.getElementById('descProduit').value;
+  const boost = document.getElementById('boostProduit').checked;
+  const paiement = document.getElementById('paiementProduit').value;
+  const photoInput = document.getElementById('photoProduit');
+  if(!nom || !prix || !ville){
+    alert("Mets le nom, le prix et la ville / pays du produit");
+    return;
+  }
+  var calc = calculerCommissionPublier() || { commission: Math.round(prix*0.085), recevoir: prix - Math.round(prix*0.085), taux: 0.085 };
+  var total = majTotalPublier();
+  var prixBoost = (boost && !boostGratuit) ? 500 : 0;
+  const btn = document.getElementById('btnPublier');
+  btn.innerText = "Envoi en cours...";
+  btn.disabled = true;
+  let photoData = "";
+  if(photoInput && photoInput.files && photoInput.files[0]){
+    photoData = await new Promise(function(resolve){
+      const lecteur = new FileReader();
+      lecteur.onload = function(ev){ resolve(ev.target.result); };
+      lecteur.readAsDataURL(photoInput.files[0]);
+    });
+  }
+  var sb = getSupabase();
+  if(MODE_TEST || !sb){
+    alert("MODE TEST : Produit prêt !\n\n" + nom + " - " + prix.toLocaleString() + "F\nCommission : " + calc.commission.toLocaleString() + "F\nTu reçois : " + calc.recevoir.toLocaleString() + "F\nAnnonce : 2000F + Booster : " + prixBoost + "F = Total : " + total.toLocaleString() + "F\nPaiement : " + paiement);
+    btn.disabled = false; majTotalPublier(); return;
+  }
+  const userId = localStorage.getItem('user_id');
+  const nomVendeur = localStorage.getItem('nom_user') || '';
+  const telVendeur = localStorage.getItem('telephone_user') || '';
+  const emailVendeur = localStorage.getItem('email_user') || '';
+  var dateFin = new Date(); dateFin.setDate(dateFin.getDate() + 30);
+  var dateBoostFin = null;
+  if(boost){ dateBoostFin = new Date(); dateBoostFin.setDate(dateBoostFin.getDate() + 3); }
+  const { data, error } = await sb.from('produits').insert([{
+    nom: nom, titre: nom, prix: Number(prix),
+    commission: calc.commission, montant_vendeur: calc.recevoir,
+    categorie: categorie, ville: ville, livraison: livraison,
+    description: desc, photo: photoData, photo_url: photoData, image: photoData,
+    boost: boost, boost_gratuit: boostGratuit,
+    boost_fin: dateBoostFin ? dateBoostFin.toISOString() : null,
+    date_fin: dateFin.toISOString(), date_expiration: dateFin.toISOString(),
+    paiement: paiement, methode_paiement: paiement,
+    frais_annonce: 2000, frais_boost: prixBoost, total_paye: total,
+    statut: "en_attente_paiement",
+    vendeur_id: userId, nom_vendeur: nomVendeur, telephone_vendeur: telVendeur, email_vendeur: emailVendeur,
+    en_ligne: true
+  }]).select();
+  if(error){
+    alert("Erreur Supabase : " + error.message);
+    btn.disabled = false; majTotalPublier(); return;
+  }
+  const nouveauId = data[0] ? data[0].id : "";
+  localStorage.setItem("dernier_produit", JSON.stringify({ id: nouveauId, nom: nom, prix: prix }));
+  alert("Produit enregistré ! Prochaine étape : Paiement " + paiement + " - Total : " + total.toLocaleString() + "F");
+  if(MODE_TEST){ btn.disabled = false; majTotalPublier(); return; }
+  window.location.href = "vendeur.html?id=" + nouveauId;
+}
+window.calculerCommissionPublier = calculerCommissionPublier;
+window.majTotalPublier = majTotalPublier;
+window.publierProduit = publierProduit;
+</script>
+</body>
+</html>
