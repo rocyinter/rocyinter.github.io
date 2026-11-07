@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.container{max-width:480px;margin:20px auto;background:white;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+h2{text-align:center;color:#0a1a2f;margin-bottom:5px}
+p.sub{text-align:center;color:#666;font-size:14px;margin-top:0}
+.choice{display:flex;gap:10px;margin:20px 0}
+.choice button{flex:1;padding:14px;border:2px solid #ddd;background:white;border-radius:10px;font-weight:bold;cursor:pointer;font-size:15px}
+.choice button.active{border-color:#ff6b00;background:#fff3e8;color:#ff6b00}
+.choice button span{font-weight:normal;font-size:12px}
+label{display:block;margin-top:12px;font-weight:bold;font-size:14px}
+input,select{width:100%;padding:12px;margin-top:5px;border:1px solid #ddd;border-radius:8px;font-size:15px;box-sizing:border-box}
+.btn{width:100%;background:#ff6b00;color:white;border:none;padding:15px;border-radius:10px;font-size:16px;font-weight:bold;margin-top:20px;cursor:pointer}
+.note{text-align:center;font-size:13px;color:#666;margin-top:15px}
+.note a{color:#ff6b00;text-decoration:none;font-weight:bold}
+.info-vendeur,.info-acheteur{display:none;background:#f9f9f9;padding:12px;border-radius:8px;font-size:13px;color:#333;margin-top:15px}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+.rocy{color:white}
+.inter{color:#ffc107}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
+  🌍 Langue :
+  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="yo">Yoruba</option>
+    <option value="fon">Fon</option>
+    <option value="goun">Goun</option>
+    <option value="autre">Autre langue... (Google)</option>
+  </select>
+</div>
+<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
+<div class="header"><a href="index.html"><span class="rocy">ROCY</span><span class="inter">INTER</span></a></div>
+
+<div class="container">
+  <div id="blocInscription">
+<h2>Crée ton compte</h2>
+<p class="sub">Choisis ton rôle pour commencer</p>
+
+<div class="choice">
+<button type="button" id="btnVendeur" onclick="choisir('vendeur')">🛍️ Je suis VENDEUR<br><span>Je veux vendre</span></button>
+<button type="button" id="btnAcheteur" onclick="choisir('acheteur')">🛒 Je suis ACHETEUR<br><span>Je veux acheter</span></button>
+</div>
+
+<div id="infoVendeur" class="info-vendeur">
+<b>Compte VENDEUR :</b> Tu pourras publier tes produits (2000F / exposition), voir Mes ventes, Mon argent, recevoir les commandes et envoyer les preuves.
+</div>
+<div id="infoAcheteur" class="info-acheteur">
+<b>Compte ACHETEUR :</b> Tu pourras cliquer sur COMMANDER sur le site, discuter logistique, suivre ton colis et cliquer sur "Colis reçu".
+</div>
+
+<form onsubmit="inscrire(event)">
+<label>Ton rôle *</label>
+<input type="text" id="role" value="vendeur" readonly>
+<label>Nom complet *</label>
+<input type="text" id="nom" placeholder="Ex: Rochelle Agossou" required>
+<label>Email (optionnel si tu as WhatsApp)</label>
+<input type="email" id="email" placeholder="Ex: toi@gmail.com">
+<label>Téléphone WhatsApp *</label>
+<div style="display:flex;gap:8px">
+<select id="indicatif" onchange="changerPaysDepuisIndicatif()" style="width:38%">
+<option value="+229">+229 Bénin</option>
+<option value="+228">+228 Togo</option>
+<option value="+234">+234 Nigeria</option>
+<option value="+233">+233 Ghana</option>
+<option value="+225">+225 Cote-Ivoire</option>
+<option value="+221">+221 Sénégal</option>
+<option value="+226">+226 Burkina</option>
+<option value="+227">+227 Niger</option>
+<option value="+223">+223 Mali</option>
+<option value="+33">+33 France</option>
+<option value="+1">+1 USA</option>
+</select>
+<input type="tel" id="tel" placeholder="01 96 00 00 00" required style="flex:1">
+</div>
+<label>Pays *</label>
+<select id="pays" onchange="changerIndicatifDepuisPays()" required>
+<option value="">Choisis ton pays</option>
+<option value="Bénin">Bénin</option>
+<option value="Togo">Togo</option>
+<option value="Nigeria">Nigeria</option>
+<option value="Ghana">Ghana</option>
+<option value="Cote-Ivoire">Cote-Ivoire</option>
+<option value="France">France</option>
+<option value="USA">USA</option>
+<option value="Autre">Autre pays</option>
+</select>
+<label>Ville *</label>
+<input type="text" id="ville" placeholder="Ex: Abomey-Calavi, Cotonou" required>
+<label>Mot de passe *</label>
+<input type="password" id="mdp" placeholder="Minimum 8 caractères" required>
+<label>Confirme mot de passe *</label>
+<input type="password" id="mdp2" placeholder="Retape ton mot de passe" required>
+<button class="btn" type="submit">CRÉER MON COMPTE →</button>
+</form>
+</div>
+
+<div id="formConnexion" style="display:none;">
+  <h2>Connecte-toi</h2>
+  <form onsubmit="connecter(event)">
+    <label>Email ou Téléphone *</label>
+    <input type="text" id="emailLogin" placeholder="Ex: toi@gmail.com ou 0196000000" required>
+    <label>Mot de passe *</label>
+    <input type="password" id="mdpLogin" placeholder="Ton mot de passe" required>
+    <button class="btn" type="submit">SE CONNECTER</button>
+  </form>
+  <p class="note">Pas encore de compte ? <a href="#" onclick="afficherInscription(); return false;">Crée ton compte ici</a></p>
+</div>
+
+<div id="dashboardVendeur" style="display:none;">
+  <h2>Bienvenue sur ton espace</h2>
+  <p id="emailVendeur"></p>
+  <p>Tu es connecté ! Tu peux maintenant ajouter tes produits.</p>
+  <button class="btn" onclick="allerPublier()">PUBLIER UN PRODUIT →</button>
+  <hr>
+  <p><b>Pour ta sécurité, ajoute ton vrai email :</b></p>
+  <p style="font-size:13px;color:#666">Tu t'es inscrit avec ton téléphone. Pour ta sécurité, ajoute ton vrai email avant de publier ou de commander. On pourra te retrouver et te protéger en cas de problème.</p>
+  <label>Ton vrai email</label>
+  <input type="email" id="vraiEmail" placeholder="Ex: toi@gmail.com">
+  <button class="btn" style="background:#0a1a2f;margin-top:10px" onclick="ajouterEmail()">AJOUTER MON EMAIL</button>
+  <button class="btn" style="background:white;color:#111;border:1px solid #ddd;margin-top:10px" onclick="continuerSansEmail()">Continuer sans email → Voir les produits</button>
+  <small style="display:block;text-align:center;color:#666;margin-top:6px">Tu pourras ajouter ton email plus tard. Tu ne pourras juste pas publier ni acheter sans email.</small>
+  <p id="msgEmail" style="font-size:13px;color:green"></p>
+  <button class="btn" style="background:#111;margin-top:10px" onclick="deconnecter()">SE DÉCONNECTER</button>
+</div>
+
+<p id="noteBas" class="note">Tu as déjà un compte ? <a href="#" onclick="afficherConnexion(); return false;">Connecte-toi ici</a><br><br>En t'inscrivant, tu acceptes que ton compte soit vérifié par KYC pour la sécurité.</p>
+</div>
+
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+<script>
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+let supabaseClient = null;
+try{
+  if(window.supabase){
+    supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+  }
+}catch(e){ supabaseClient = null; }
+let roleChoisi = 'vendeur';
+function aVraiEmail(){
+  var email = localStorage.getItem('email_user') || '';
+  if(!email) return false;
+  if(email.endsWith('@rocyinter.bj')) return false;
+  if(!email.includes('@')) return false;
+  return true;
+}
+function continuerSansEmail(){
+  if(MODE_TEST){
+    alert('MODE TEST : Tu entres dans ton compte sans email. Tu pourras voir les produits. Tu pourras publier / acheter seulement après avoir ajouté ton email.');
+    return;
+  }
+  window.location.href = 'index.html';
+}
+function choisir(role){
+  roleChoisi = role;
+  var elRole = document.getElementById('role');
+  var btnV = document.getElementById('btnVendeur');
+  var btnA = document.getElementById('btnAcheteur');
+  var infoV = document.getElementById('infoVendeur');
+  var infoA = document.getElementById('infoAcheteur');
+  if(!btnV || !btnA) return;
+  if(elRole) elRole.value = role;
+  btnV.classList.remove('active');
+  btnA.classList.remove('active');
+  if(infoV) infoV.style.display = 'none';
+  if(infoA) infoA.style.display = 'none';
+  if(role==='vendeur'){
+    btnV.classList.add('active');
+    if(infoV) infoV.style.display = 'block';
+  } else {
+    btnA.classList.add('active');
+    if(infoA) infoA.style.display = 'block';
+  }
+}
+function changerPaysDepuisIndicatif(){
+  var ind = document.getElementById('indicatif').value;
+  var pays = document.getElementById('pays');
+  if(!pays) return;
+  if(ind === '+229') pays.value = 'Bénin';
+  if(ind === '+228') pays.value = 'Togo';
+  if(ind === '+234') pays.value = 'Nigeria';
+  if(ind === '+233') pays.value = 'Ghana';
+  if(ind === '+225') pays.value = 'Cote-Ivoire';
+  if(ind === '+221') pays.value = 'Sénégal';
+  if(ind === '+226') pays.value = 'Burkina';
+  if(ind === '+227') pays.value = 'Niger';
+  if(ind === '+223') pays.value = 'Mali';
+  if(ind === '+33') pays.value = 'France';
+  if(ind === '+1') pays.value = 'USA';
+}
+function changerIndicatifDepuisPays(){
+  var pays = document.getElementById('pays').value;
+  var ind = document.getElementById('indicatif');
+  if(!ind) return;
+  if(pays === 'Bénin') ind.value = '+229';
+  if(pays === 'Togo') ind.value = '+228';
+  if(pays === 'Nigeria') ind.value = '+234';
+  if(pays === 'Ghana') ind.value = '+233';
+  if(pays === 'Cote-Ivoire') ind.value = '+225';
+  if(pays === 'Sénégal') ind.value = '+221';
+  if(pays === 'Burkina') ind.value = '+226';
+  if(pays === 'Niger') ind.value = '+227';
+  if(pays === 'Mali') ind.value = '+223';
+  if(pays === 'France') ind.value = '+33';
+  if(pays === 'USA') ind.value = '+1';
+}
+function getTelephoneComplet(){
+  var brut = document.getElementById('tel').value.trim();
+  if(brut.startsWith('+')) return brut.replace(/[\s-]/g,'');
+  var indicatif = document.getElementById('indicatif') ? document.getElementById('indicatif').value : '+229';
+  var numero = brut.replace(/[^0-9]/g,'');
+  if(numero.startsWith('0')) numero = numero.substring(1);
+  return indicatif + numero;
+}
+function normaliserTelephone(login){
+  var l = login.replace(/[\s-]/g,'');
+  if(/^[0-9]{8,10}$/.test(l) && l.startsWith('0')) return '+229' + l.substring(1);
+  if(/^[0-9]{8,10}$/.test(l)) return '+229' + l;
+  return l;
+}
+async function inscrire(e){
+  e.preventDefault();
+  const mdp = document.getElementById('mdp').value;
+  const mdp2 = document.getElementById('mdp2').value;
+  if(mdp.length < 8){ alert('Mot de passe trop court. Minimum 8 caractères.'); return; }
+  if(mdp !== mdp2){ alert('Les deux mots de passe ne correspondent pas.'); return; }
+  const nom = document.getElementById('nom').value.trim();
+  let email = document.getElementById('email').value.trim();
+  const tel = getTelephoneComplet();
+  const pays = document.getElementById('pays').value;
+  const ville = document.getElementById('ville').value.trim();
+  let emailTechnique = false;
+  if(!email){
+    email = tel.replace(/[^0-9]/g,'') + '@rocyinter.bj';
+    emailTechnique = true;
+  }
+  if(MODE_TEST){
+    localStorage.setItem('user_id', 'test-' + tel.replace(/[^0-9]/g,''));
+    localStorage.setItem('nom_user', nom);
+    localStorage.setItem('email_user', email);
+    localStorage.setItem('telephone_user', tel);
+    localStorage.setItem('ville_user', ville);
+    localStorage.setItem('role_user', roleChoisi);
+    if(emailTechnique){
+      alert('MODE TEST : Ca marche ! Bienvenue ' + nom + ' ! Compte ' + roleChoisi.toUpperCase() + ' cree avec ' + tel + '. Tu es déjà dans ton compte sans email. Tu pourras ajouter ton email après, ou cliquer sur Continuer sans email pour voir les produits.');
+      document.getElementById('blocInscription').style.display = 'none';
+      document.getElementById('formConnexion').style.display = 'none';
+      document.getElementById('dashboardVendeur').style.display = 'block';
+      document.getElementById('emailVendeur').textContent = 'Connecté avec : ' + tel + ' (sans email pour le moment)';
+      var note = document.getElementById('noteBas');
+      if(note) note.style.display = 'none';
+      return;
+    }
+    alert('MODE TEST : Ca marche ! Bienvenue ' + nom + ' ! Compte ' + roleChoisi.toUpperCase() + ' cree avec ' + tel);
+    afficherConnexion();
+    return;
+  }
+  const { data, error } = await supabaseClient.auth.signUp({ email: email, password: mdp });
+  if(error){ alert('Erreur : ' + error.message); return; }
+  const userId = data.user ? data.user.id : null;
+  if(!userId){
+    alert('Vérifie ton email pour confirmer, puis connecte-toi.');
+    afficherConnexion();
+    return;
+  }
+  const { error: errorProfil } = await supabaseClient.from('profils').insert([{
+    id: userId,
+    nom_complet: nom,
+    email: email,
+    telephone: tel,
+    role: roleChoisi,
+    pays: pays,
+    ville: ville,
+    email_technique: emailTechnique
+  }]);
+  if(errorProfil){ alert('Compte créé mais profil non sauvé : ' + errorProfil.message); return; }
+  if(emailTechnique){
+    localStorage.setItem('user_id', userId);
+    localStorage.setItem('nom_user', nom);
+    localStorage.setItem('email_user', email);
+    localStorage.setItem('telephone_user', tel);
+    localStorage.setItem('ville_user', ville);
+    localStorage.setItem('role_user', roleChoisi);
+    alert('Bienvenue ' + nom + ' ! Compte ' + roleChoisi.toUpperCase() + ' créé ! Tu es déjà dans ton compte sans email. Tu pourras ajouter ton email après, ou cliquer sur Continuer sans email pour voir les produits.');
+    document.getElementById('blocInscription').style.display = 'none';
+    document.getElementById('formConnexion').style.display = 'none';
+    document.getElementById('dashboardVendeur').style.display = 'block';
+    document.getElementById('emailVendeur').textContent = 'Connecté avec : ' + tel + ' (sans email pour le moment)';
+    var note2 = document.getElementById('noteBas');
+    if(note2) note2.style.display = 'none';
+    return;
+  }
+  alert('Bienvenue ' + nom + ' ! Compte ' + roleChoisi.toUpperCase() + ' créé ! Tu peux te connecter directement.');
+  afficherConnexion();
+}
+function afficherConnexion(){
+  document.getElementById('blocInscription').style.display = 'none';
+  document.getElementById('formConnexion').style.display = 'block';
+  const note = document.getElementById('noteBas');
+  if(note) note.style.display = 'none';
+}
+function afficherInscription(){
+  document.getElementById('formConnexion').style.display = 'none';
+  document.getElementById('blocInscription').style.display = 'block';
+}
+function allerPublier(){
+  var email = localStorage.getItem('email_user') || '';
+  if(email.endsWith('@rocyinter.bj') || !email.includes('@')){
+    alert('Pour ta sécurité, ajoute d’abord ton vrai email ici, avant de publier. On pourra te retrouver et te protéger en cas de problème. Si tu veux juste voir les produits, clique sur Continuer sans email.');
+    document.getElementById('blocInscription').style.display = 'none';
+    document.getElementById('formConnexion').style.display = 'none';
+    document.getElementById('dashboardVendeur').style.display = 'block';
+    var inputEmail = document.getElementById('vraiEmail');
+    if(inputEmail) inputEmail.focus();
+    return;
+  }
+  window.location.href = 'publier.html';
+}
+async function connecter(e){
+  e.preventDefault();
+  const login = document.getElementById('emailLogin').value.trim();
+  const password = document.getElementById('mdpLogin').value;
+  let email = login;
+  if(MODE_TEST){ alert('MODE TEST : Ca marche ! Tu es connecté : ' + login); window.location.href = 'index.html'; return; }
+  if(!login.includes('@')){
+    const telNormalise = normaliserTelephone(login);
+    let prof = null;
+    const r1 = await supabaseClient.from('profils').select('email').eq('telephone', telNormalise).single();
+    prof = r1.data;
+    if(!prof || !prof.email){
+      const r2 = await supabaseClient.from('profils').select('email').eq('telephone', login).single();
+      prof = r2.data;
+    }
+    if(!prof || !prof.email){ alert('Aucun compte avec ce téléphone.'); return; }
+    email = prof.email;
+  }
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if(error){ alert(error.message); return; }
+  const { data: profil } = await supabaseClient.from('profils').select('role, nom_complet, telephone, ville, pays').eq('id', data.user.id).single();
+  const role = profil?.role || 'acheteur';
+  localStorage.setItem('role_user', role);
+  localStorage.setItem('nom_user', profil?.nom_complet || '');
+  localStorage.setItem('email_user', email);
+  localStorage.setItem('telephone_user', profil?.telephone || '');
+  localStorage.setItem('ville_user', profil?.ville || '');
+  localStorage.setItem('user_id', data.user.id);
+  alert('Bienvenue ! Tu es connecté !');
+  window.location.href = 'index.html';
+}
+async function ajouterEmail(){
+  const vraiEmail = document.getElementById('vraiEmail').value.trim();
+  if(!vraiEmail){ alert('Mets ton vrai email d’abord'); return; }
+  if(!vraiEmail.includes('@')){ alert('Cet email ne ressemble pas à un vrai email'); return; }
+  if(vraiEmail.endsWith('@rocyinter.bj')){ alert('Mets un vrai email, ex : tonnom@gmail.com, pas un email @rocyinter.bj'); return; }
+  const userId = localStorage.getItem('user_id');
+  if(!userId){ alert('Connecte-toi d’abord'); return; }
+  if(MODE_TEST){
+    localStorage.setItem('email_user', vraiEmail);
+    document.getElementById('msgEmail').textContent = 'Ton email ' + vraiEmail + ' est enregistré ! Pour ta sécurité, tu peux maintenant publier.';
+    alert('Merci ! Ton vrai email est enregistré : ' + vraiEmail);
+    return;
+  }
+  const resUp = await supabaseClient.from('profils').update({ email: vraiEmail, email_technique: false }).eq('id', userId);
+  if(resUp.error){ alert('Erreur : ' + resUp.error.message); return; }
+  localStorage.setItem('email_user', vraiEmail);
+  document.getElementById('msgEmail').textContent = 'Ton email ' + vraiEmail + ' est enregistré ! Pour ta sécurité, tu peux maintenant publier.';
+  alert('Merci ! Ton vrai email est enregistré : ' + vraiEmail);
+}
+async function verifierSession(){
+  if(MODE_TEST) return;
+  if(!supabaseClient) return;
+  const { data } = await supabaseClient.auth.getSession();
+  if(data.session){
+    document.getElementById('blocInscription').style.display = 'none';
+    document.getElementById('formConnexion').style.display = 'none';
+    document.getElementById('dashboardVendeur').style.display = 'block';
+    document.getElementById('noteBas').style.display = 'none';
+    document.getElementById('emailVendeur').textContent = 'Connecté avec : ' + data.session.user.email;
+  }
+}
+async function deconnecter(){
+  if(supabaseClient) await supabaseClient.auth.signOut();
+  localStorage.clear();
+  window.location.reload();
+}
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'fr', includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN', autoDisplay:false}, 'google_translate_element');
+  var saved = localStorage.getItem("rocy_lang");
+  var sel = document.getElementById("langue");
+  if(saved && sel) sel.value = saved;
+  if(saved && saved !== "fr" && saved !== "fon" && saved !== "goun" && saved !== "autre"){
+    setTimeout(function(){ appliquerLangueGoogle(saved); }, 500);
+  }
+}
+function appliquerLangueGoogle(lang){
+  var combo = document.querySelector(".goog-te-combo");
+  if(!combo){
+    setTimeout(function(){ appliquerLangueGoogle(lang); }, 500);
+    return;
+  }
+  combo.value = lang;
+  combo.dispatchEvent(new Event("change"));
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var gt = document.getElementById("google_translate_element");
+    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; gt.style.pointerEvents = "auto"; }
+    alert("Choisis ta langue dans le menu Google");
+    return;
+  }
+  if(lang === "fon" || lang === "goun"){
+    alert("Fon / Goun : On traduit les gros boutons pour toi. Version complète bientôt.");
+    return;
+  }
+  localStorage.setItem("rocy_lang", lang);
+  if(lang === "fr"){
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("rocy_lang");
+    location.reload();
+    return;
+  }
+  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
+  appliquerLangueGoogle(lang);
+}
+if(!window._googleTranslateLoaded){
+  window._googleTranslateLoaded = true;
+  let s = document.createElement("script");
+  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  document.head.appendChild(s);
+}
+document.addEventListener('DOMContentLoaded', function(){ choisir('vendeur'); });
+choisir('vendeur');
+verifierSession();
+</script>
+</body>
+</html>
