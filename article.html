@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produit - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.rocy{color:white}
+.inter{color:#ffc107}
+.container{max-width:480px;margin:20px auto;background:white;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.back{color:#666;text-decoration:none;font-size:13px}
+.main-img{width:100%;height:280px;object-fit:cover;border-radius:12px;margin-top:10px;background:#eee}
+h2{color:#0a1a2f;margin:12px 0 5px;font-size:22px}
+.price{font-size:22px;font-weight:bold;color:#ff6b00;margin:5px 0}
+.stock{color:#2e7d32;font-size:13px;font-weight:bold}
+.vendeur{display:flex;gap:10px;align-items:center;background:#f9f9f9;padding:12px;border-radius:10px;margin:15px 0;font-size:13px;line-height:1.5}
+.avatar{width:45px;height:45px;background:#ff6b00;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:18px;flex-shrink:0}
+.btn-chat{background:#0a1a2f;color:white;border:none;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:bold;margin-left:auto;cursor:pointer;white-space:nowrap}
+h3{color:#0a1a2f;margin-top:20px}
+.desc{color:#444;font-size:14px;line-height:1.6}
+.btn{width:100%;background:#ff6b00;color:white;border:none;padding:15px;border-radius:10px;font-size:16px;font-weight:bold;margin-top:16px;cursor:pointer}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+#infosPaiement{background:#FFF8E1;padding:12px;border-radius:10px;margin-top:10px;font-size:13px;line-height:1.6}
+#detailPrix{margin:8px 0;font-size:14px;line-height:1.6}
+.btn-commander{width:100%;padding:15px;border-radius:10px;border:none;background:#FF6B00;color:white;font-weight:bold;font-size:16px;margin-top:10px;cursor:pointer}
+#chatLeger{border:1px solid #ddd;border-radius:10px;padding:10px;margin-top:10px;background:white}
+#messagesChat{min-height:60px;background:#f9f9f9;padding:8px;border-radius:8px;font-size:14px;line-height:1.5}
+#msgChat{width:100%;padding:10px;margin-top:8px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+#choixPaiement{background:#FFF8E1;border:1px solid #FF6B00;border-radius:10px;padding:12px;margin-top:10px}
+#totalAPayer{color:#FF6B00}
+@media(max-width:480px){
+  .container{margin:10px;padding:15px}
+  .vendeur{flex-wrap:wrap}
+  .btn-chat{margin-left:0;width:100%;margin-top:8px}
+}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap">
+  <div>
+    🌍 Langue :
+    <select id="langue" onchange="changerLangue(this.value)">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="fon">Fon</option>
+      <option value="goun">Goun</option>
+      <option value="autre">Autre langue... (Google)</option>
+    </select>
+  </div>
+  <div>
+    💰 Devise :
+    <select id="devise" onchange="convertirPrix()">
+      <option value="XOF">FCFA</option>
+      <option value="EUR">Euro €</option>
+      <option value="USD">Dollar $</option>
+      <option value="NGN">Naira ₦</option>
+      <option value="GHS">Cedi GH₵</option>
+      <option value="GBP">Livre £</option>
+    </select>
+  </div>
+</div>
+<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
+<div class="header"><a href="index.html"><span class="rocy">ROCY</span><span class="inter">INTER</span></a></div>
+
+<div class="container">
+<a href="index.html" class="back">← Retour aux produits</a>
+
+<div style="position:relative">
+  <img id="photoProduit" class="main-img" src="" alt="Photo produit">
+  <span id="badgeBoost" style="display:none;position:absolute;top:10px;left:10px;background:#FFC107;color:#111;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:bold">⭐ À LA UNE - BOOSTÉ</span>
+</div>
+
+<h2 id="nomProduit">Chargement...</h2>
+<p class="price"><span id="prixProduit" class="prix" data-prix="0"></span></p>
+<p class="stock"><span id="stockProduit"></span> • <span id="vuesProduit"></span> • <span id="villeProduit"></span></p>
+
+<div class="vendeur">
+<div class="avatar" id="avatarVendeur"></div>
+<div>
+<b id="nomVendeur"></b><br>
+<span id="infoVendeur"></span><br>
+<span id="avisVendeur"></span>
+</div>
+<button id="btnChat" class="btn-chat" onclick="ouvrirChat()">💬 Discuter de la logistique</button>
+</div>
+
+<h3>Description</h3>
+<p class="desc" id="descProduit"></p>
+
+<div style="background:#FFF8E1;padding:12px;border-radius:10px;margin-top:10px;font-size:13px;line-height:1.7">
+  <b>🛡️ Avant de payer, tu vois tout :</b><br>
+  Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur<br>
+  Délai : Selon le pays / ville<br>
+  Protection : Argent bloqué - Vendeur payé seulement après ton clic <b>COLIS REÇU</b><br>
+  <span id="detailPrix"></span><br>
+  <small>Commission RocyInter : 8,5% jusqu'à 500 000F - 7,5% jusqu'à 2 000 000F - 6,5% au-delà - Déduite au vendeur, pas à toi.</small><br><br>
+  <b>Comment ça marche ?</b><br>
+    1. Tu commandes → Argent bloqué<br>
+    2. Le vendeur envoie → Tu suis ton colis<br>
+    3. Tu reçois → Tu cliques <b>COLIS REÇU</b><br>
+    4. Le vendeur est payé<br>
+  Problème ? <b>48h pour signaler un litige.</b>
+</div>
+
+<div id="zoneAcheteur">
+  <button onclick="commander()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#FF6B00;color:white;font-weight:bold;margin-top:10px">🛒 COMMANDER sur le site</button>
+
+  <div id="choixPaiement" style="display:none;border:1px solid #FF6B00;border-radius:10px;padding:12px;margin-top:10px;background:#FFF8E1">
+    <b>Payer <span id="totalAPayer"></span></b><br>
+    <p style="font-size:13px;margin:6px 0">Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité. Le vendeur sera payé seulement quand tu cliqueras COLIS REÇU.</p>
+
+    <b style="font-size:13px">Afrique - Mobile Money</b>
+    <button onclick="payerAvec('MTN MoMo')" style="width:100%;padding:11px;margin-top:6px;background:#FFCC00;color:#111;border:none;border-radius:8px;font-weight:bold;cursor:pointer">MTN MoMo - Bénin, Cameroun, Côte d'Ivoire...</button>
+    <button onclick="payerAvec('Moov Money')" style="width:100%;padding:11px;margin-top:6px;background:#0066FF;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Moov Money - Bénin, Togo, Mali...</button>
+    <button onclick="payerAvec('Orange Money')" style="width:100%;padding:11px;margin-top:6px;background:#FF7900;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Orange Money - Sénégal, Mali, Côte d'Ivoire...</button>
+    <button onclick="payerAvec('Wave')" style="width:100%;padding:11px;margin-top:6px;background:#1DC4F2;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Wave - Sénégal, Côte d'Ivoire...</button>
+    <button onclick="payerAvec('Airtel Money')" style="width:100%;padding:11px;margin-top:6px;background:#E40000;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Airtel Money - Niger, Gabon, Congo...</button>
+    <button onclick="payerAvec('M-Pesa')" style="width:100%;padding:11px;margin-top:6px;background:#4CAF50;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">M-Pesa - Kenya, Tanzanie...</button>
+
+    <b style="font-size:13px;display:block;margin-top:12px">Monde - Carte bancaire</b>
+    <button onclick="payerAvec('Visa / Mastercard')" style="width:100%;padding:11px;margin-top:6px;background:#111;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">💳 Visa / Mastercard - Partout dans le monde</button>
+
+    <b style="font-size:13px;display:block;margin-top:12px">Monde - Portefeuille</b>
+    <button onclick="payerAvec('PayPal')" style="width:100%;padding:11px;margin-top:6px;background:#003087;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">PayPal - USA, Europe, Monde</button>
+    <button onclick="payerAvec('Apple Pay / Google Pay')" style="width:100%;padding:11px;margin-top:6px;background:#000;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer">Apple Pay / Google Pay - Monde</button>
+
+    <button onclick="fermerPaiement()" style="width:100%;padding:10px;margin-top:10px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer">Annuler</button>
+  </div>
+</div>
+
+<div id="zoneVendeur" style="display:none;background:#EFF6FF;padding:12px;border-radius:10px;margin-top:10px;text-align:center;font-size:13px;line-height:1.6">
+  C'est ton produit. Tu ne peux pas te commander toi-même.<br>
+  <a href="vendeur.html" style="font-weight:bold">→ Aller à mon Tableau Vendeur</a>
+</div>
+
+<div id="chatLeger" style="display:none;border:1px solid #ddd;border-radius:10px;padding:10px;margin-top:10px">
+  <b>Discuter de la logistique</b>
+  <p style="font-size:12px;color:#666">Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids du colis ? Pas de négociation de prix.</p>
+  <div id="messagesChat" style="min-height:60px;background:#f9f9f9;padding:8px;border-radius:8px"></div>
+  <input id="msgChat" placeholder="Ex: Tu es où ? Livraison possible vers mon pays ?" style="width:100%;padding:10px;margin-top:8px;border:1px solid #ddd;border-radius:8px">
+  <input type="file" id="photoChat" accept="image/*" style="margin-top:8px">
+  <button onclick="envoyerMsg()" style="width:100%;padding:10px;margin-top:8px;background:#111;color:white;border:none;border-radius:8px">Envoyer</button>
+  <button onclick="basculerWhatsApp()" style="width:100%;padding:10px;margin-top:8px;background:#25D366;color:white;border:none;border-radius:8px">Continuer sur WhatsApp</button>
+  <p id="traceWhatsApp" style="font-size:11px;color:#888"></p>
+</div>
+
+<div style="text-align:center;margin-top:20px;font-size:13px">
+  <a href="index.html">Accueil</a> • <a href="publier.html">Publier un produit</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="acheteur.html">Tableau Acheteur</a> • <a href="connexion.html">Connexion</a>
+</div>
+</div>
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+<script>
+window.commander = function(){ alert("Bouton COMMANDER trouvé. Si tu vois ça, le JS a démarré."); };
+window.ouvrirChat = function(){ var c = document.getElementById('chatLeger'); if(c) c.style.display='block'; };
+window.payerAvec = function(m){ alert("Payer avec " + m); };
+window.fermerPaiement = function(){ var b = document.getElementById('choixPaiement'); if(b) b.style.display='none'; };
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+const params = new URLSearchParams(window.location.search);
+const produitId = params.get('id');
+let prixProduit = 0, commission = 0, total = 0, qty = 1, taille = '42';
+let nomProduitActuel = "", telVendeur = "", vendeurId = "";
+let cestMonProduit = false;
+let supabaseClient = null;
+function chargerSupabase(){
+  if(window.supabase){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+    chargerProduit();
+    envoyerFileAttente();
+    return;
+  }
+  var s = document.createElement('script');
+  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  s.onload = function(){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+    chargerProduit();
+    envoyerFileAttente();
+  };
+  document.head.appendChild(s);
+}
+chargerSupabase();
+function mettreEnAttente(type, donnees){
+  try{
+    var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]');
+    file.push({ type: type, donnees: donnees, date: new Date().toISOString() });
+    localStorage.setItem('file_attente_rocy', JSON.stringify(file));
+  }catch(e){}
+}
+async function envoyerFileAttente(){
+  if(!supabaseClient) return;
+  try{
+    var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]');
+    if(!file.length) return;
+    var reste = [];
+    for(var i=0;i<file.length;i++){
+      var res = await supabaseClient.from(file[i].type).insert([file[i].donnees]);
+      if(res.error) reste.push(file[i]);
+    }
+    localStorage.setItem('file_attente_rocy', JSON.stringify(reste));
+  }catch(e){}
+}
+async function chargerProduit(){
+  if(!produitId){ var n = document.getElementById('nomProduit'); if(n) n.innerText = "Aucun produit sélectionné"; return; }
+  if(!supabaseClient) return;
+  const { data, error } = await supabaseClient.from('produits').select('*').eq('id', produitId).single();
+  if(error || !data){ document.getElementById('nomProduit').innerText = "Produit introuvable"; return; }
+  const p = data;
+  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || ""; telVendeur = p.telephone_vendeur || "";
+  var img = document.getElementById('photoProduit'); if(img) img.src = p.photo || p.image || "";
+  document.getElementById('nomProduit').innerText = p.nom;
+  var elPrix = document.getElementById('prixProduit');
+  if(elPrix){
+    elPrix.setAttribute("data-prix", p.prix);
+    elPrix.innerText = Number(p.prix).toLocaleString() + " F";
+  }
+  var v = document.getElementById('villeProduit'); if(v) v.innerText = p.ville || "";
+  document.getElementById('descProduit').innerText = p.description || "";
+  document.getElementById('nomVendeur').innerText = p.nom_vendeur || "Vendeur";
+  document.getElementById('infoVendeur').innerText = p.ville || "";
+  document.getElementById('avatarVendeur').innerText = (p.nom_vendeur || "V").charAt(0);
+  var b = document.getElementById('badgeBoost');
+  if(b && (p.boost || p.booster || p.est_booste)) b.style.display = 'inline-block';
+  const monEmail = localStorage.getItem('email_user') || '';
+  const monId = localStorage.getItem('user_id') || '';
+  cestMonProduit = (p.vendeur_id && p.vendeur_id === monId) || (p.email_vendeur && p.email_vendeur === monEmail) || (p.email && p.email === monEmail);
+  if(cestMonProduit){
+    var za = document.getElementById('zoneAcheteur'); if(za) za.style.display = 'none';
+    var zv = document.getElementById('zoneVendeur'); if(zv) zv.style.display = 'block';
+    var bc = document.getElementById('btnChat'); if(bc) bc.style.display = 'none';
+    var cl = document.getElementById('chatLeger'); if(cl) cl.style.display = 'none';
+  }
+  mettreAJourPrix();
+  convertirPrix();
+  if(!cestMonProduit) chargerMessages();
+}
+function calculerCommission(prix){
+  if(prix <= 500000) return prix * 0.085;
+  if(prix <= 2000000) return prix * 0.075;
+  return prix * 0.065;
+}
+function mettreAJourPrix(){
+  const sousTotal = prixProduit * qty;
+  commission = calculerCommission(sousTotal);
+  total = sousTotal;
+  const vendeurRecoit = sousTotal - commission;
+  var d = document.getElementById('detailPrix');
+  if(d) d.innerHTML =
+    "Prix produit : <b>" + sousTotal.toLocaleString() + " F</b> (" + prixProduit.toLocaleString() + " F x " + qty + ")<br>" +
+    "Livraison : <b>Non incluse - À discuter avec le vendeur dans le Chat</b><br>" +
+    "<b>Total à payer : " + Math.round(total).toLocaleString() + " F</b> <small>(sans livraison)</small><br>" +
+    "<small>Le vendeur recevra " + Math.round(vendeurRecoit).toLocaleString() + " F après ton clic COLIS REÇU.</small>";
+}
+function selectTaille(btn){
+  var all = document.querySelectorAll('.tailles button');
+  if(all) all.forEach(b=>b.classList.remove('active'));
+  if(btn){ btn.classList.add('active'); taille = btn.textContent; }
+}
+function changeQty(n){ qty += n; if(qty<1) qty=1; if(qty>10) qty=10; const el=document.getElementById('qty'); if(el) el.textContent=qty; mettreAJourPrix(); }
+async function chargerMessages(){
+  if(!produitId || !supabaseClient || cestMonProduit) return;
+  const { data } = await supabaseClient.from('messages').select('*').eq('produit_id', produitId).order('created_at', {ascending:true});
+  const box = document.getElementById('messagesChat'); if(!box) return; box.innerHTML = "";
+  if(data) data.forEach(m => { box.innerHTML += "<div><b>Toi :</b> " + m.contenu + "</div>"; });
+}
+function ouvrirChat(){
+  if(cestMonProduit){ alert("C'est ton produit, tu ne peux pas te parler à toi-même."); return; }
+  var c = document.getElementById('chatLeger'); if(c) c.style.display='block';
+  var inp = document.getElementById('msgChat');
+  if(inp && !inp.value){
+    inp.value = "Bonjour, je suis à [ta ville], livraison possible vers chez moi ? Par DHL ou Bus ? Ça coûte combien et ça prend combien de jours ?";
+    inp.focus();
+  }
+  if(c) c.scrollIntoView({ behavior: 'smooth' });
+}
+async function envoyerMsg(){
+  if(cestMonProduit) return;
+  const inp = document.getElementById('msgChat'); if(!inp) return;
+  const m = inp.value; if(!m) return;
+  document.getElementById('messagesChat').innerHTML += "<div><b>Toi :</b> " + m + "</div>";
+  inp.value='';
+  var donnees = { produit_id: produitId, contenu: m, type: "logistique" };
+  if(supabaseClient){
+    var res = await supabaseClient.from('messages').insert([donnees]);
+    if(res.error) mettreEnAttente('messages', donnees); else envoyerFileAttente();
+  } else {
+    mettreEnAttente('messages', donnees);
+  }
+}
+function basculerWhatsApp(){
+  if(cestMonProduit) return;
+  const dateBascule = new Date().toLocaleString('fr-FR');
+  var t = document.getElementById('traceWhatsApp'); if(t) t.innerText = "Discussion basculée sur WhatsApp le " + dateBascule + " - Enregistré pour APDP";
+  const numero = telVendeur || "22900000000";
+  window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent("Bonjour, je suis intéressé par " + nomProduitActuel + " - " + Math.round(total) + "F. Je suis à [ma ville], livraison possible vers chez moi ? Par DHL ou Bus ? Ça coûte combien et délai ?"), "_blank");
+}
+async function commander(){
+  if(cestMonProduit){ alert("C'est ton produit. Tu ne peux pas te commander toi-même."); return; }
+  let estConnecte = false;
+  if(MODE_TEST){
+    estConnecte = !!localStorage.getItem('user_id') || !!localStorage.getItem('email_user');
+  } else {
+    if(supabaseClient){
+      const { data } = await supabaseClient.auth.getSession();
+      estConnecte = !!data.session || !!localStorage.getItem('email_user');
+    } else {
+      estConnecte = !!localStorage.getItem('email_user');
+    }
+  }
+  if(!estConnecte){
+    localStorage.setItem('retour_apres_connexion', 'article.html?id=' + produitId);
+    if(MODE_TEST){
+      alert("MODE TEST : Ça marche ! Tu n'as pas de compte, sur le vrai site on t'enverrait à connexion.html. Ici on reste pour tester.");
+      return;
+    }
+    alert('Pour commander, connecte-toi ou crée ton compte.');
+    window.location.href = "connexion.html";
+    return;
+  }
+  if(!produitId || !prixProduit){ alert("Aucun produit sélectionné"); return; }
+  var totalEl = document.getElementById('totalAPayer');
+  if(totalEl) totalEl.innerText = Math.round(total).toLocaleString() + " F";
+  var box = document.getElementById('choixPaiement');
+  if(box){ box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth' }); }
+  else { alert("Choisis ton moyen de paiement sur la page."); }
+}
+function fermerPaiement(){
+  var box = document.getElementById('choixPaiement');
+  if(box) box.style.display = 'none';
+}
+async function payerAvec(moyen){
+  if(cestMonProduit){ alert("C'est ton produit. Tu ne peux pas te commander toi-même."); return; }
+  var email = localStorage.getItem('email_user') || '';
+  var donneesCommande = {
+    produit_id: produitId,
+    nom: nomProduitActuel,
+    taille: taille,
+    qty: qty,
+    prix: prixProduit,
+    commission: Math.round(commission),
+    total: Math.round(total),
+    vendeur_id: vendeurId,
+    email_acheteur: email,
+    statut: 'argent_bloque',
+    moyen_paiement: moyen
+  };
+  localStorage.setItem("commande_en_cours", JSON.stringify(donneesCommande));
+  if(supabaseClient){
+    var res = await supabaseClient.from('commandes').insert([donneesCommande]);
+    if(res.error) mettreEnAttente('commandes', donneesCommande); else envoyerFileAttente();
+  } else {
+    mettreEnAttente('commandes', donneesCommande);
+  }
+  alert('Paiement ' + moyen + ' simulé.\nTotal : ' + Math.round(total).toLocaleString() + ' F\nArgent bloqué en sécurité.\nTu vas voir ta commande sur ton Tableau Acheteur.');
+  window.location.href = "acheteur.html?id=" + produitId + "&qty=" + qty + "&taille=" + taille;
+}
+window.ouvrirChat = ouvrirChat;
+window.commander = commander;
+window.payerAvec = payerAvec;
+window.fermerPaiement = fermerPaiement;
+window.envoyerMsg = envoyerMsg;
+window.basculerWhatsApp = basculerWhatsApp;
+window.selectTaille = selectTaille;
+window.changeQty = changeQty;
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage:'fr',
+    includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN',
+    autoDisplay:false
+  }, 'google_translate_element');
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var gt = document.getElementById("google_translate_element");
+    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
+    alert("Choisis ta langue dans le menu Google qui vient d'apparaître en haut");
+    return;
+  }
+  if(lang === "fon" || lang === "goun"){
+    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
+    return;
+  }
+  if(lang === "fr"){
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+    location.reload();
+    return;
+  }
+  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
+  document.cookie = "googtrans=/fr/" + lang + "; path=/; domain=" + window.location.hostname;
+  location.reload();
+}
+window.changerLangue = changerLangue;
+if(!window._googleTranslateLoaded){
+  window._googleTranslateLoaded = true;
+  let s = document.createElement("script");
+  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  document.head.appendChild(s);
+}
+let taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
+let symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
+function convertirPrix(){
+  let deviseEl = document.getElementById("devise");
+  if(!deviseEl) return;
+  let devise = deviseEl.value;
+  document.querySelectorAll(".prix").forEach(el => {
+    let prixFCFA = parseFloat(el.getAttribute("data-prix"));
+    if(isNaN(prixFCFA) || prixFCFA === 0) return;
+    let converti = Math.round(prixFCFA * taux[devise]);
+    el.innerText = converti.toLocaleString() + symboles[devise];
+  });
+}
+window.convertirPrix = convertirPrix;
+</script>
+</body>
+</html>
