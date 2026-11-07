@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau Acheteur - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:0}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.rocy{color:white}
+.inter{color:#ffc107}
+.container{max-width:480px;margin:20px auto;background:white;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.profil{display:flex;gap:12px;align-items:center}
+.avatar{width:50px;height:50px;background:#0a1a2f;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold}
+.profil h2{margin:0;font-size:18px;color:#0a1a2f}
+.profil p{margin:4px 0;color:#666;font-size:13px}
+.badge{background:#e8f5e9;color:#2e7d32;padding:4px 8px;border-radius:20px;font-size:12px;font-weight:bold}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+.card{background:#f9f9f9;padding:14px;border-radius:10px;text-align:center}
+.card b{display:block;font-size:18px;color:#0a1a2f}
+.card span{font-size:12px;color:#666}
+h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px}
+.btn{width:100%;background:#ff6b00;color:white;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:bold;margin-top:10px;cursor:pointer}
+.commande{display:flex;gap:12px;background:#f9f9f9;padding:12px;border-radius:10px;margin-top:12px;font-size:14px;line-height:1.6}
+.commande img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.orange{color:#ff6b00;font-weight:bold}
+.green{color:#2e7d32;font-weight:bold}
+.btn-small{background:#0a1a2f;color:white;border:none;padding:9px 10px;border-radius:8px;font-size:12px;font-weight:bold;margin-top:6px;cursor:pointer;display:block;width:100%}
+.green-bg{background:#2e7d32}
+.grey-bg{background:#888}
+.info{background:#f4f8ff;padding:14px;border-radius:10px;margin-top:10px;line-height:1.8;font-size:14px}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap">
+  <div>
+    🌍 Langue :
+    <select id="langue" onchange="changerLangue(this.value)">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="fon">Fon</option>
+      <option value="goun">Goun</option>
+      <option value="autre">Autre langue... (Google)</option>
+    </select>
+  </div>
+  <div>
+    💰 Devise :
+    <select id="devise" onchange="convertirPrix()">
+      <option value="XOF">FCFA</option>
+      <option value="EUR">Euro €</option>
+      <option value="USD">Dollar $</option>
+      <option value="NGN">Naira ₦</option>
+      <option value="GHS">Cedi GH₵</option>
+      <option value="GBP">Livre £</option>
+    </select>
+  </div>
+</div>
+<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
+
+<div class="header"><a href="index.html"><span class="rocy">ROCY</span><span class="inter">INTER</span></a></div>
+
+<div class="container">
+<div class="profil">
+<div class="avatar" id="avatarAcheteur">A</div>
+<div>
+<h2 id="nomAcheteur">Bonjour... 👋</h2>
+<p id="villeAcheteur">Chargement...</p>
+<span class="badge" id="badgeAcheteur">Compte vérifié</span>
+</div>
+</div>
+
+<div class="stats">
+<div class="card"><b id="statCommandes">0</b><span>Commandes</span></div>
+<div class="card"><b id="statEnCours">0</b><span>En cours</span></div>
+<div class="card"><b id="statRecues">0</b><span>Reçue</span></div>
+<div class="card"><b id="statLitige">0</b><span>Litige</span></div>
+</div>
+
+<button class="btn" onclick="allerAccueil()">🛒 CONTINUER MES ACHATS</button>
+
+<h3>Mes commandes</h3>
+<p style="font-size:12px;color:#666;margin:-5px 0 10px">Quand le vendeur envoie, tu vois ici sa <b>photo / vidéo + son numéro de colis + son transporteur</b>. Tu cliques <b>COLIS REÇU</b> seulement quand tu as vraiment reçu.</p>
+<div id="listeCommandes"><p style="font-size:13px;color:#666">Chargement de tes commandes...</p></div>
+
+<h3>Comment ça marche pour toi ?</h3>
+<div class="info">
+<b>1. Tu commandes</b> → Ton argent est bloqué en sécurité (Escrow)<br>
+<b>2. Le vendeur envoie</b> → Tu vois sa preuve + son numéro de colis (DHL / Bus / STM)<br>
+<b>3. Tu reçois</b> → Tu cliques sur COLIS REÇU<br>
+<b>4. Le vendeur est payé</b> → Seulement après ta confirmation<br><br>
+Problème ? Tu as 48h pour signaler un litige. Ne clique JAMAIS sur COLIS REÇU si tu n'as pas reçu.
+</div>
+
+<div style="text-align:center;margin-top:20px;font-size:13px">
+<a href="index.html">Accueil</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="connexion.html">Connexion</a>
+</div>
+</div>
+
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+<script>
+function getRole(){
+  return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur";
+}
+function getUser(){
+  return localStorage.getItem("rocy_user") || null;
+}
+function protegerPage(rolesAutorises){
+  const role = getRole();
+  if(role === "visiteur"){
+    alert("Connecte-toi d'abord.");
+    window.location.href = "connexion.html";
+    return false;
+  }
+  if(!rolesAutorises.includes(role)){
+    alert("⛔ Accès refus. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function afficherSelonRole(){
+  const role = getRole();
+  const bVendeur = document.getElementById("btn-vendeur");
+  const bAcheteur = document.getElementById("btn-acheteur");
+  const bPublier = document.getElementById("btn-publier");
+  const bAdmin = document.getElementById("btn-admin");
+  const bConnexion = document.getElementById("btn-connexion");
+  const bInscription = document.getElementById("btn-inscription");
+  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
+  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
+  if(role !== "visiteur"){
+    if(bConnexion) bConnexion.style.display = "none";
+    if(bInscription) bInscription.style.display = "none";
+  }
+}
+document.addEventListener("DOMContentLoaded", afficherSelonRole);
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+window.allerAccueil = function(){ window.location.href = "index.html"; };
+window.suivreColis = function(id){ alert("Suivi du colis - Regarde la preuve du vendeur juste en dessous."); };
+window.colisRecu = function(id){ colisRecu(id); };
+window.signalerLitige = function(id){ signalerLitige(id); };
+window.voirDetails = function(id){ alert("Détails commande #" + String(id).slice(0,4) + " - Historique complet gardé pour APDP."); };
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+let supabaseClient = null;
+let acheteurIdActuel = "";
+let emailAcheteurActuel = localStorage.getItem('email_user') || "";
+function chargerSupabaseAcheteur(){
+  if(window.supabase){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+    chargerAcheteur();
+    return;
+  }
+  var s = document.createElement('script');
+  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  s.onload = function(){
+    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
+    chargerAcheteur();
+  };
+  document.head.appendChild(s);
+}
+chargerSupabaseAcheteur();
+async function verifierAcheteur(){
+  let estConnecte = false, userId = "";
+  if(MODE_TEST){
+    userId = localStorage.getItem('user_id') || "";
+    estConnecte = !!userId || !!emailAcheteurActuel;
+    if(!userId && emailAcheteurActuel) userId = emailAcheteurActuel;
+  } else {
+    if(supabaseClient){
+      const { data } = await supabaseClient.auth.getSession();
+      estConnecte = !!data.session || !!emailAcheteurActuel;
+      userId = data.session ? data.session.user.id : (emailAcheteurActuel || "");
+    } else {
+      estConnecte = !!emailAcheteurActuel;
+      userId = emailAcheteurActuel;
+    }
+  }
+  if(!estConnecte){
+    localStorage.setItem('retour_apres_connexion', 'acheteur.html');
+    if(MODE_TEST){
+      alert("MODE TEST : Ça marche ! Tu n'as pas de compte, sur le vrai site on t'enverrait à connexion.html. Ici on reste.");
+      var z = document.getElementById('listeCommandes'); if(z) z.innerHTML = "<p>Connecte-toi pour voir tes commandes.</p>";
+      return false;
+    }
+    alert('Pour voir tes commandes, connecte-toi ou crée ton compte.');
+    window.location.href = "connexion.html";
+    return false;
+  }
+  acheteurIdActuel = userId;
+  return true;
+}
+function normaliserStatut(s){
+  s = (s || "argent_bloque").toLowerCase();
+  if(s === "colis envoyé" || s === "colis envoye") return "envoye";
+  if(s === "colis reçu" || s === "colis recu") return "colis_recu";
+  if(s === "en attente d'envoi") return "argent_bloque";
+  return s;
+}
+async function chargerAcheteur(){
+  const ok = await verifierAcheteur();
+  if(!ok) return;
+  if(supabaseClient){
+    try{
+      const { data: profil } = await supabaseClient.from('profils').select('*').eq('id', acheteurIdActuel).single();
+      if(profil){
+        var n = document.getElementById('nomAcheteur'); if(n) n.innerText = "Bonjour, " + (profil.nom || "Acheteur") + " 👋";
+        var v = document.getElementById('villeAcheteur'); if(v) v.innerText = "Acheteur • " + (profil.ville || "Bénin");
+        var a = document.getElementById('avatarAcheteur'); if(a) a.innerText = (profil.nom || "A").charAt(0);
+      }
+    }catch(e){}
+  }
+  let commandes = [];
+  if(supabaseClient){
+    try{
+      let res = await supabaseClient.from('commandes').select('*').eq('acheteur_id', acheteurIdActuel).order('created_at', {ascending:false});
+      if(res.data && res.data.length) commandes = res.data;
+      else if(emailAcheteurActuel){
+        let res2 = await supabaseClient.from('commandes').select('*').eq('email_acheteur', emailAcheteurActuel).order('created_at', {ascending:false});
+        if(res2.data && res2.data.length) commandes = res2.data;
+      }
+      if(!commandes.length && MODE_TEST){
+        let res3 = await supabaseClient.from('commandes').select('*').order('created_at', {ascending:false}).limit(20);
+        if(res3.data) commandes = res3.data;
+      }
+    }catch(e){}
+  }
+  if(!commandes.length){
+    try{
+      var enCours = JSON.parse(localStorage.getItem('commande_en_cours') || 'null');
+      if(enCours && enCours.total) commandes = [enCours];
+    }catch(e){}
+  }
+  const zone = document.getElementById('listeCommandes');
+  if(!zone) return;
+  if(!commandes || commandes.length === 0){
+    zone.innerHTML = "<p style='font-size:13px;color:#666'>Tu n’as encore aucune commande. Va dans Accueil, choisis un produit et clique COMMANDER.</p>";
+  } else {
+    zone.innerHTML = "";
+    commandes.forEach(c => {
+      var nomAff = c.nom || c.nom_produit || "Produit";
+      var vendeurAff = c.nom_vendeur || c.vendeur_id || "Vendeur";
+      var moyenAff = c.moyen_paiement ? "<br>Moyen : " + c.moyen_paiement : "";
+      var statutAff = normaliserStatut(c.statut);
+      var totalAff = Number(c.total||0).toLocaleString();
+      var dateAff = c.created_at ? new Date(c.created_at).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR');
+      var preuveHtml = "";
+      if(statutAff === "envoye" || statutAff === "colis_recu"){
+        preuveHtml = '<div style="background:#FFF8E1;border:1px solid #FF6B00;padding:10px;border-radius:8px;margin-top:8px">'
+          + '<b>📦 Ton colis est envoyé</b><br>'
+          + 'Transporteur : <b>' + (c.transporteur || "DHL / Bus / STM") + '</b><br>'
+          + 'Numéro de colis : <b>' + (c.numero_colis || "En attente") + '</b><br>'
+          + (c.note_envoi ? 'Note du vendeur : ' + c.note_envoi + '<br>' : '');
+        if(c.preuve_envoi){
+          if(c.preuve_envoi.startsWith("data:video")){
+            preuveHtml += '<video src="' + c.preuve_envoi + '" controls style="width:100%;border-radius:8px;margin-top:6px"></video>';
+          } else {
+            preuveHtml += '<img src="' + c.preuve_envoi + '" style="width:100%;border-radius:8px;margin-top:6px">';
+          }
+        }
+        preuveHtml += '</div>';
+      }
+      let btns = "";
+      if(statutAff === "argent_bloque"){
+        btns = '<span class="orange">💰 Argent bloqué en sécurité - En attente d\'envoi par le vendeur</span><br>'
+          + '<button class="btn-small" onclick="signalerLitige(\'' + c.id + '\')" style="background:#fff;border:1px solid #ff0000;color:#ff0000">⚠️ SIGNALER UN LITIGE</button>';
+      } else if(statutAff === "envoye"){
+        btns = '<button class="btn-small green-bg" onclick="colisRecu(\'' + c.id + '\')" style="width:100%;padding:12px;background:#00A651;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer">✅ COLIS REÇU - Débloquer le paiement</button><br>'
+          + '<small style="color:#666">Ne clique que si tu as VRAIMENT reçu ton colis.</small><br>'
+          + '<button class="btn-small" onclick="signalerLitige(\'' + c.id + '\')" style="background:#fff;border:1px solid #ff0000;color:#ff0000;margin-top:6px">⚠️ SIGNALER UN LITIGE - Je n\'ai pas reçu / Problème</button>';
+      } else if(statutAff === "colis_recu"){
+        btns = '<span class="green">✅ Reçue - Paiement débloqué pour le vendeur</span><br><button class="btn-small grey-bg" onclick="voirDetails(\'' + c.id + '\')">VOIR DÉTAILS</button>';
+      } else if(statutAff === "litige"){
+        btns = '<span class="orange">⚠️ Litige en cours - Paiement bloqué pendant 48h, Rocyinter vérifie</span>';
+      } else {
+        btns = '<span class="orange">En attente d\'envoi par le vendeur</span>';
+      }
+      const img = c.photo_produit || c.photo || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200";
+      zone.innerHTML += '<div class="commande"><img src="' + img + '"><div><b>' + nomAff + ' - <span class="prix" data-prix="' + (c.total||0) + '">' + totalAff + ' F</span></b><br>Vendeur : ' + vendeurAff + moyenAff + '<br>Commande #' + String(c.id || '0000').slice(0,4) + ' • ' + dateAff + '<br>Statut : <span class="orange">' + statutAff + '</span><br>' + preuveHtml + btns + '</div></div>';
+    });
+    convertirPrix();
+  }
+  if(commandes){
+    const enCours = commandes.filter(c => normaliserStatut(c.statut) !== "colis_recu").length;
+    const recues = commandes.filter(c => normaliserStatut(c.statut) === "colis_recu").length;
+    const litiges = commandes.filter(c => normaliserStatut(c.statut) === "litige").length;
+    var s1 = document.getElementById('statCommandes'); if(s1) s1.innerText = commandes.length;
+    var s2 = document.getElementById('statEnCours'); if(s2) s2.innerText = enCours;
+    var s3 = document.getElementById('statRecues'); if(s3) s3.innerText = recues;
+    var s4 = document.getElementById('statLitige'); if(s4) s4.innerText = litiges;
+  }
+  if(supabaseClient){
+    await supabaseClient.from('logs').insert([{ user_id: acheteurIdActuel, action: "consultation_tableau_acheteur", date: new Date().toISOString() }]).catch(()=>{});
+  }
+}
+function allerAccueil(){ window.location.href = "index.html"; }
+function suivreColis(id){
+  var el = document.getElementById('listeCommandes');
+  if(el) el.scrollIntoView({ behavior: 'smooth' });
+  alert("Regarde juste en dessous : tu as la photo / vidéo + le numéro de colis du vendeur.");
+}
+async function colisRecu(commandeId){
+  if(!confirm("Tu confirmes que tu as bien reçu ton colis ? Après ça, l'argent sera débloqué pour le vendeur.")) return;
+  if(supabaseClient){
+    var check = await supabaseClient.from('commandes').select('statut').eq('id', commandeId).single();
+    if(check.data && normaliserStatut(check.data.statut) !== "envoye"){
+      alert("Le vendeur n'a pas encore envoyé. Tu ne peux pas cliquer COLIS REÇU pour l'instant.");
+      return;
+    }
+    await supabaseClient.from('commandes').update({ statut: "colis_recu", date_recu: new Date().toISOString() }).eq('id', commandeId);
+    await supabaseClient.from('logs').insert([{ user_id: acheteurIdActuel, action: "colis_recu_commande_" + commandeId, date: new Date().toISOString() }]).catch(()=>{});
+  }
+  alert("Merci ! Colis confirmé. L'argent Escrow est débloqué pour le vendeur. Preuve enregistrée pour APDP.");
+  location.reload();
+}
+async function signalerLitige(commandeId){
+  var raison = prompt("Décris le problème : colis non reçu ? produit différent ? produit cassé ?");
+  if(!raison) return;
+  if(supabaseClient){
+    await supabaseClient.from('commandes').update({ statut: "litige", raison_litige: raison, date_litige: new Date().toISOString() }).eq('id', commandeId);
+    await supabaseClient.from('logs').insert([{ user_id: acheteurIdActuel, action: "litige_commande_" + commandeId + "_" + raison, date: new Date().toISOString() }]).catch(()=>{});
+  }
+  alert("⚠️ Litige signalé. Le paiement est bloqué pendant 48h. Rocyinter va vérifier la preuve du vendeur.");
+  location.reload();
+}
+function voirDetails(id){ alert("Détails commande #" + String(id).slice(0,4) + " - Historique complet gardé pour APDP."); }
+window.allerAccueil = allerAccueil;
+window.suivreColis = suivreColis;
+window.colisRecu = colisRecu;
+window.signalerLitige = signalerLitige;
+window.voirDetails = voirDetails;
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage:'fr',
+    includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN',
+    autoDisplay:false
+  }, 'google_translate_element');
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var gt = document.getElementById("google_translate_element");
+    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
+    alert("Choisis ta langue dans le menu Google qui vient d'apparaître en haut");
+    return;
+  }
+  if(lang === "fon" || lang === "goun"){
+    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
+    return;
+  }
+  if(lang === "fr"){
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+    location.reload();
+    return;
+  }
+  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
+  document.cookie = "googtrans=/fr/" + lang + "; path=/; domain=" + window.location.hostname;
+  location.reload();
+}
+window.changerLangue = changerLangue;
+if(!window._googleTranslateLoaded){
+  window._googleTranslateLoaded = true;
+  let sGoogle = document.createElement("script");
+  sGoogle.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  document.head.appendChild(sGoogle);
+}
+let taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
+let symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
+function convertirPrix(){
+  let deviseEl = document.getElementById("devise");
+  if(!deviseEl) return;
+  let devise = deviseEl.value;
+  document.querySelectorAll(".prix").forEach(el => {
+    let prixFCFA = parseFloat(el.getAttribute("data-prix"));
+    if(isNaN(prixFCFA) || prixFCFA === 0) return;
+    let converti = Math.round(prixFCFA * taux[devise]);
+    el.innerText = converti.toLocaleString() + symboles[devise];
+  });
+}
+window.convertirPrix = convertirPrix;
+</script>
+</body>
+</html>
