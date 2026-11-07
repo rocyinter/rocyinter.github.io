@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Profil - Rocyinter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:16px;max-width:500px;margin:0 auto}
+*{box-sizing:border-box}
+.top{background:#111827;color:#fff;padding:20px;border-radius:16px;text-align:center}
+.top h1{margin:10px 0 0}
+.card{background:#fff;padding:18px;border-radius:16px;margin:14px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+label{display:block;margin:12px 0 5px;font-weight:bold;font-size:14px}
+input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:5px}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:bold;margin-top:14px;cursor:pointer}
+#badgeRole,#badgeKYC{display:inline-block;background:#f59e0b;color:#fff;padding:5px 12px;border-radius:20px;font-size:13px;margin:5px}
+.btn-retour{background:#fff;color:#111827;border:1px solid #ddd}
+.retrait-item{border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0}
+.photo-wrap{display:inline-block}
+#photoProfilImg{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff}
+.btn-photo{display:block;background:#f59e0b;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:bold;margin:10px auto 0;cursor:pointer;width:fit-content}
+.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
+.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
+.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
+  🌍 Langue :
+  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="yo">Yoruba</option>
+    <option value="fon">Fon</option>
+    <option value="goun">Goun</option>
+    <option value="autre">Autre langue... (Google)</option>
+  </select>
+</div>
+<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
+<div class="header"><a href="index.html">ROCY<span style="color:#ffc107">INTER</span></a></div>
+
+<div class="top">
+  <div class="photo-wrap">
+    <img id="photoProfilImg" src="https://via.placeholder.com/110?text=👤" alt="photo">
+    <label for="photoProfilInput" class="btn-photo">📷 Changer ma photo</label>
+    <input type="file" id="photoProfilInput" accept="image/*" hidden>
+  </div>
+  <h1>👤 Mon Profil</h1>
+  <p id="emailProfil">...</p>
+  <span id="badgeRole">...</span>
+  <span id="badgeKYC">KYC : non_verifie</span>
+</div>
+
+<div class="card">
+  <h2>Mes infos</h2>
+  <label>Nom complet</label>
+  <input id="nomProfil" placeholder="Ton nom complet">
+  <label>Téléphone</label>
+  <input id="telProfil" placeholder="+229 ...">
+  <label>Ville / Pays</label>
+  <input id="villeProfil" placeholder="Cotonou, Bénin">
+  <button id="btnSauverProfil">Sauvegarder mes infos</button>
+</div>
+
+<div class="card">
+  <h2>🛡️ KYC - Vérification identité</h2>
+  <p>Pour retirer ton argent, tu dois vérifier ton identité.</p>
+  <label>Type de pièce</label>
+  <select id="typePiece">
+    <option value="cni">Carte d'identité (CNI)</option>
+    <option value="passeport">Passeport</option>
+    <option value="permis">Permis de conduire</option>
+  </select>
+  <label>Numéro de la pièce</label>
+  <input id="numPiece" placeholder="Ex: 12345678">
+  <label>Photo de la pièce</label>
+  <input type="file" id="photoPiece" accept="image/*">
+  <img id="previewPiece" style="display:none; width:100%; border-radius:12px; margin-top:10px;">
+  <button id="btnEnvoyerKYC">Envoyer ma vérification</button>
+  <p id="msgKYC"></p>
+</div>
+
+<div class="card">
+  <h2>💰 Mon Solde & Retrait</h2>
+  <h1 id="soldeProfil">0 F</h1>
+  <p>Solde disponible</p>
+  <label>Montant à retirer (F)</label>
+  <input type="number" id="montantRetrait" placeholder="Ex: 10000">
+  <label>Moyen de retrait</label>
+  <select id="moyenRetrait">
+    <option value="mtn">MTN MoMo</option>
+    <option value="moov">Moov Money</option>
+    <option value="celtiis">Celtiis Cash</option>
+    <option value="virement">Virement bancaire</option>
+  </select>
+  <label>Numéro / Compte pour recevoir</label>
+  <input id="compteRetrait" placeholder="Ex: +229 97...">
+  <button id="btnRetrait">Demander le retrait</button>
+  <p id="msgRetrait"></p>
+</div>
+
+<div class="card">
+  <h2>Mes demandes de retrait</h2>
+  <div id="listeRetraits">Chargement...</div>
+</div>
+
+<button onclick="window.location.href='index.html'" class="btn-retour">⬅ Retour Accueil</button>
+<div style="text-align:center;margin-top:15px;font-size:13px">
+  <a href="index.html">Accueil</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="acheteur.html">Tableau Acheteur</a> • <a href="connexion.html">Connexion</a>
+</div>
+<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+
+<script>
+function getRole(){
+  return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur";
+}
+function getUser(){
+  return localStorage.getItem("rocy_user") || null;
+}
+function protegerPage(rolesAutorises){
+  const role = getRole();
+  if(role === "visiteur"){
+    alert("Connecte-toi d'abord.");
+    window.location.href = "connexion.html";
+    return false;
+  }
+  if(!rolesAutorises.includes(role)){
+    alert("⛔ Accès refus. Tu es : " + role);
+    if(role === "vendeur") window.location.href = "vendeur.html";
+    else if(role === "acheteur") window.location.href = "acheteur.html";
+    else if(role === "admin") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+    return false;
+  }
+  return true;
+}
+function afficherSelonRole(){
+  const role = getRole();
+  const bVendeur = document.getElementById("btn-vendeur");
+  const bAcheteur = document.getElementById("btn-acheteur");
+  const bPublier = document.getElementById("btn-publier");
+  const bAdmin = document.getElementById("btn-admin");
+  const bConnexion = document.getElementById("btn-connexion");
+  const bInscription = document.getElementById("btn-inscription");
+  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
+  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
+  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
+  if(role !== "visiteur"){
+    if(bConnexion) bConnexion.style.display = "none";
+    if(bInscription) bInscription.style.display = "none";
+  }
+}
+document.addEventListener("DOMContentLoaded", afficherSelonRole);
+function deconnexion(){
+  localStorage.removeItem("rocy_role");
+  localStorage.removeItem("rocy_user");
+  window.location.href = "index.html";
+}
+const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+const supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+let monProfil = null;
+document.getElementById('photoProfilInput').addEventListener('change', async function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    document.getElementById('photoProfilImg').src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  if(MODE_TEST){
+    alert('MODE TEST : Photo changée (aperçu seulement)');
+    return;
+  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const photoBase64 = await new Promise(function(resolve){
+    const r2 = new FileReader();
+    r2.onload = function(ev){ resolve(ev.target.result); };
+    r2.readAsDataURL(file);
+  });
+  const { error } = await supabaseClient.from('profils').update({ photo_profil: photoBase64 }).eq('id', session.user.id);
+  if(error) alert('Erreur photo : ' + error.message);
+  else alert('Photo de profil sauvegardée ✅');
+});
+document.getElementById('photoPiece').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = function(ev){
+    const img = document.getElementById('previewPiece');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+  };
+  r.readAsDataURL(file);
+});
+async function chargerProfil(){
+  if(MODE_TEST){
+    document.getElementById('emailProfil').innerText = 'test@rocyinter.com (MODE TEST)';
+    document.getElementById('badgeRole').innerText = localStorage.getItem('role_user') || 'vendeur';
+    document.getElementById('nomProfil').value = localStorage.getItem('nom_user') || '';
+    document.getElementById('telProfil').value = localStorage.getItem('telephone_user') || '';
+    document.getElementById('villeProfil').value = localStorage.getItem('ville_user') || '';
+    document.getElementById('soldeProfil').innerText = '25000 F';
+    document.getElementById('listeRetraits').innerHTML = '<div class="retrait-item">Aucune demande pour l\'instant (MODE TEST)</div>';
+    return;
+  }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!session){
+    alert('Connecte-toi d\'abord');
+    window.location.href = 'connexion.html';
+    return;
+  }
+  const { data, error } = await supabaseClient.from('profils').select('*').eq('id', session.user.id).single();
+  if(error){ alert('Erreur profil: ' + error.message); return; }
+  monProfil = data;
+  if(data.photo_profil){
+    document.getElementById('photoProfilImg').src = data.photo_profil;
+  }
+  document.getElementById('emailProfil').innerText = data.email || session.user.email;
+  document.getElementById('badgeRole').innerText = data.role || 'acheteur';
+  document.getElementById('badgeKYC').innerText = 'KYC : ' + (data.kyc_statut || 'non_verifie');
+  document.getElementById('nomProfil').value = data.nom || data.nom_complet || '';
+  document.getElementById('telProfil').value = data.telephone || '';
+  document.getElementById('villeProfil').value = data.ville || '';
+  document.getElementById('soldeProfil').innerText = (data.solde || 0) + ' F';
+  chargerRetraits(session.user.id);
+}
+async function chargerRetraits(userId){
+  const { data } = await supabaseClient.from('retraits').select('*').eq('user_id', userId).order('created_at', {ascending:false});
+  if(!data || data.length === 0){
+    document.getElementById('listeRetraits').innerHTML = 'Aucune demande pour l\'instant.';
+    return;
+  }
+  document.getElementById('listeRetraits').innerHTML = data.map(r => 
+    '<div class="retrait-item"><b>'+r.montant+' F</b> - '+r.moyen+' - '+r.compte+' - <b>'+r.statut+'</b></div>'
+  ).join('');
+}
+document.getElementById('btnSauverProfil').addEventListener('click', async function(){
+  if(MODE_TEST){ alert('MODE TEST : Infos sauvegardées (faux)'); return; }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { error } = await supabaseClient.from('profils').update({
+    nom: document.getElementById('nomProfil').value.trim(),
+    telephone: document.getElementById('telProfil').value.trim(),
+    ville: document.getElementById('villeProfil').value.trim()
+  }).eq('id', session.user.id);
+  if(error) alert(error.message);
+  else alert('Infos sauvegardées ✅');
+});
+document.getElementById('btnEnvoyerKYC').addEventListener('click', async function(){
+  const type = document.getElementById('typePiece').value;
+  const num = document.getElementById('numPiece').value.trim();
+  if(!num){ alert('Mets le numéro de ta pièce'); return; }
+  if(MODE_TEST){ document.getElementById('msgKYC').innerText = 'MODE TEST : KYC envoyé, en attente de vérification ✅'; return; }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { error } = await supabaseClient.from('profils').update({
+    kyc_type: type,
+    kyc_numero: num,
+    kyc_statut: 'en_attente'
+  }).eq('id', session.user.id);
+  if(error) alert(error.message);
+  else {
+    document.getElementById('msgKYC').innerText = 'KYC envoyé, en attente de vérification par Admin ✅';
+    document.getElementById('badgeKYC').innerText = 'KYC : en_attente';
+  }
+});
+document.getElementById('btnRetrait').addEventListener('click', async function(){
+  const montant = Number(document.getElementById('montantRetrait').value);
+  const moyen = document.getElementById('moyenRetrait').value;
+  const compte = document.getElementById('compteRetrait').value.trim();
+  if(!montant || montant < 1000){ alert('Minimum retrait : 1000 F'); return; }
+  if(!compte){ alert('Mets ton numéro / compte pour recevoir'); return; }
+  if(MODE_TEST){ document.getElementById('msgRetrait').innerText = 'MODE TEST : Demande de retrait ' + montant + 'F envoyée ✅'; return; }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(monProfil && monProfil.kyc_statut !== 'verifie'){
+    alert('Tu dois être vérifié KYC pour retirer. Envoie d\'abord ton KYC.');
+    return;
+  }
+  const { error } = await supabaseClient.from('retraits').insert([{
+    user_id: session.user.id,
+    montant: montant,
+    moyen: moyen,
+    compte: compte,
+    statut: 'en_attente'
+  }]);
+  if(error) alert(error.message);
+  else {
+    document.getElementById('msgRetrait').innerText = 'Demande envoyée, Admin va valider ✅';
+    chargerRetraits(session.user.id);
+  }
+});
+chargerProfil();
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage:'fr',
+    includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN',
+    autoDisplay:false
+  }, 'google_translate_element');
+}
+function changerLangue(lang){
+  if(lang === "autre"){
+    var gt = document.getElementById("google_translate_element");
+    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
+    alert("Choisis ta langue dans le menu Google qui vient d'apparaître en haut");
+    return;
+  }
+  if(lang === "fon" || lang === "goun"){
+    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
+    return;
+  }
+  if(lang === "fr"){
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+    location.reload();
+    return;
+  }
+  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
+  document.cookie = "googtrans=/fr/" + lang + "; path=/; domain=" + window.location.hostname;
+  location.reload();
+}
+window.changerLangue = changerLangue;
+if(!window._googleTranslateLoaded){
+  window._googleTranslateLoaded = true;
+  let sGoogle = document.createElement("script");
+  sGoogle.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  document.head.appendChild(sGoogle);
+}
+protegerPage(["acheteur","vendeur","admin"]);
+</script>
+</body>
+</html>
