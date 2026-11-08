@@ -212,3 +212,88 @@ document.addEventListener("DOMContentLoaded", function(){
 
 // NE PAS DEFINIR changerLangue ICI - c'est article.html / index.html qui gere la langue
 // NE PAS DEFINIR googleTranslateElementInit ICI
+// ===== BLOCAGE RETRAIT SANS VRAI EMAIL - DANS COMMUN.JS, UNE SEULE FOIS =====
+function aVraiEmailRetrait(){
+  var e = localStorage.getItem('email_user') || '';
+  if(!e) return false;
+  if(e.endsWith('@rocyinter.bj')) return false;
+  if(!e.includes('@')) return false;
+  return true;
+}
+function allerProfilRetrait(){
+  var page = window.location.pathname.split('/').pop() || 'vendeur.html';
+  localStorage.setItem('retour_apres_profil', page);
+  window.location.href = 'profil.html';
+}
+function trouverBoutonsRetrait(){
+  // On trouve les boutons Retrait TOUT SEUL, sans que tu aies à ajouter une class
+  // On cherche : class btn-retrait OU texte RETIRER / Retrait OU onclick qui contient retirer
+  var tous = document.querySelectorAll('button, a, input[type="button"], input[type="submit"]');
+  var trouves = [];
+  tous.forEach(function(b){
+    var txt = (b.textContent || b.value || '').toLowerCase();
+    var onclick = (b.getAttribute('onclick') || '').toLowerCase();
+    var cls = (b.className || '').toString().toLowerCase();
+    if(cls.indexOf('btn-retrait') !== -1 || txt.indexOf('retir') !== -1 || onclick.indexOf('retir') !== -1){
+      // On ne prend pas le bouton "Aller compléter" lui-même
+      if(b.id !== 'btnAllerProfilRetrait') trouves.push(b);
+    }
+  });
+  return trouves;
+}
+function verifierEmailAuRetrait(){
+  var btns = trouverBoutonsRetrait();
+  if(btns.length === 0) return true; // pas de retrait sur cette page, on ne fait rien
+
+  var bloc = document.getElementById('blocEmailRetrait');
+  if(!bloc){
+    bloc = document.createElement('div');
+    bloc.id = 'blocEmailRetrait';
+    bloc.style.cssText = 'display:none;background:#FFF3E8;border:1px solid #FFC107;padding:12px;border-radius:10px;margin-bottom:12px';
+    bloc.innerHTML = '<b style="font-size:14px">⚠️ Tu ne peux pas retirer sans vrai email</b><br><small style="font-size:12px;color:#666">Va compléter ton vrai email dans <b>Profil</b>, puis reviens ici pour retirer ton argent.</small><br><button id="btnAllerProfilRetrait" onclick="allerProfilRetrait()" style="width:100%;background:#111;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:bold;margin-top:10px;cursor:pointer">ALLER COMPLÉTER MON EMAIL DANS PROFIL →</button>';
+    if(btns[0].parentNode) btns[0].parentNode.insertBefore(bloc, btns[0]);
+  }
+  if(!aVraiEmailRetrait()){
+    bloc.style.display = 'block';
+    btns.forEach(function(b){
+      if(!b.dataset.texteOrigine) b.dataset.texteOrigine = b.textContent || b.value;
+      b.disabled = true;
+      b.style.opacity = '0.5';
+      if(b.tagName === 'INPUT') b.value = 'COMPLÈTE TON EMAIL DANS PROFIL D’ABORD';
+      else b.textContent = 'COMPLÈTE TON EMAIL DANS PROFIL D’ABORD';
+    });
+    return false;
+  } else {
+    bloc.style.display = 'none';
+    btns.forEach(function(b){
+      b.disabled = false;
+      b.style.opacity = '1';
+      if(b.dataset.texteOrigine){
+        if(b.tagName === 'INPUT') b.value = b.dataset.texteOrigine;
+        else b.textContent = b.dataset.texteOrigine;
+      }
+    });
+    return true;
+  }
+}
+// Sécurité : même si le bouton n'est pas grisé, le clic est bloqué
+document.addEventListener('click', function(e){
+  var btn = e.target.closest ? e.target.closest('button, a, input') : null;
+  if(!btn) return;
+  var txt = (btn.textContent || btn.value || '').toLowerCase();
+  var onclick = (btn.getAttribute('onclick') || '').toLowerCase();
+  var cls = (btn.className || '').toString().toLowerCase();
+  var estRetrait = cls.indexOf('btn-retrait') !== -1 || txt.indexOf('retir') !== -1 || onclick.indexOf('retir') !== -1;
+  if(estRetrait && btn.id !== 'btnAllerProfilRetrait' && !aVraiEmailRetrait()){
+    e.preventDefault();
+    e.stopPropagation();
+    alert('Va compléter ton vrai email dans Profil pour retirer ton argent.');
+    allerProfilRetrait();
+  }
+}, true);
+
+// On lance au chargement, et on re-vérifie si la page change après (ex: contenu chargé en JS)
+document.addEventListener('DOMContentLoaded', verifierEmailAuRetrait);
+setTimeout(verifierEmailAuRetrait, 1000);
+setTimeout(verifierEmailAuRetrait, 3000);
+// ===== FIN BLOCAGE RETRAIT =====
