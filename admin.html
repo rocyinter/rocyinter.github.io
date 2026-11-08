@@ -6,11 +6,30 @@
 <title>Admin - Rocyinter</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{font-family:Arial;background:#f4f4f4;margin:0;padding:10px}
+*{box-sizing:border-box}
+body{font-family:Arial;background:#f4f4f4;margin:0;padding:0}
+header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;width:100%}
+header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px}header a .inter{color:#FFC107}
+.hr{display:flex;gap:6px;align-items:center}
+.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.menuBtn{width:32px;padding:0;justify-content:center;font-size:17px;font-weight:900}
+.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;color:#111;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
+.popMenu button{display:block;width:100%;text-align:left;padding:11px 10px;border:none;background:none;cursor:pointer;font-size:15px;color:#111;border-radius:8px}
+#menuOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000}
+#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;color:#111;z-index:1001;flex-direction:column;padding:18px 16px 14px;overflow:auto}
+#menuBox.open{display:flex}
+.menuHead b{font-size:22px;font-weight:900}#menuBox .inter{color:#FFC107}.menuBonjour{color:#666;font-size:14px;margin:6px 0 14px}
+#menuBox a,#menuBox .menuLink{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border:none;width:100%;text-align:left;cursor:pointer}#menuBox .rouge{color:#E40000;font-weight:700}
+#menuBox a.grise{color:#aaa;cursor:not-allowed;background:#f9f9f9}
+#menuBox a.grise::after{content:" 🔒";font-size:12px}
+#menuFermer{margin-top:auto;background:#000;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;width:100%}
+.wrap{max-width:520px;margin:14px auto;padding:0 12px}
+@media(min-width:768px){.wrap{max-width:680px}header a{font-size:19px}}
+@media(min-width:1024px){.wrap{max-width:820px}}
 .header{background:#111;color:#fff;padding:15px;text-align:center;border-radius:10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .carte{background:#fff;padding:15px;border-radius:10px;text-align:center}
-.carte b{font-size:24px;display:block}
+.carte b{font-size:18px;display:block}
 .carte span{font-size:12px;color:#666}
 .box{background:#fff;padding:15px;border-radius:10px;margin:10px 0}
 table{width:100%;border-collapse:collapse;font-size:12px}
@@ -34,26 +53,19 @@ input,select{padding:10px;width:100%;margin:5px 0;border:1px solid #ddd;border-r
 .btnBilan{background:#eee;border:none;padding:8px 12px;border-radius:20px;cursor:pointer;font-weight:bold}
 .btnBilan.actif{background:#111;color:#fff}
 .ligneBilan{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px;font-weight:500}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer p{margin:1px 0}
 </style>
 </head>
 <body>
-<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
-  🌍 Langue :
-  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
-    <option value="fr">Français</option>
-    <option value="en">English</option>
-    <option value="yo">Yoruba</option>
-    <option value="fon">Fon</option>
-    <option value="goun">Goun</option>
-    <option value="autre">Autre langue... (Google)</option>
-  </select>
-</div>
-<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
-<div class="header">
-  👑 ROCYINTER - ADMIN<br>
-  <span style="font-size:12px;opacity:.7" id="adminEmailTxt"></span> | 
-  <a href="index.html" style="color:#ffcc00">Voir le site</a>
-</div>
+<header><a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="location.href='messages.html'">🔔</button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
+<div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
+<div id="menuOverlay" onclick="fermerMenu()"></div>
+<div id="menuBox"><div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour, Admin</div><a href="index.html">Accueil</a><a href="messages.html">💬 Messages</a><a href="publier.html" data-acces="vendeur">Publier un produit</a><a href="vendeur.html" data-acces="vendeur">Tableau Vendeur</a><a href="acheteur.html" data-acces="acheteur">Tableau Acheteur</a><a href="admin.html" data-acces="admin">Tableau Admin</a><a href="profil.html" data-auth="1">Profil</a><a href="conditions.html">Conditions</a><a href="contact.html">Contact</a><a href="apropos.html">À Propos</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()">Déconnecter</button><button id="menuFermer" onclick="fermerMenu()">Fermer ✕</button></div>
+
+<div class="wrap">
+<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;margin:10px 0"><a href="index.html" style="color:#666;text-decoration:none;font-size:13px">← Retour</a><div style="font-size:13px">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF">FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select></div></div>
+
+<div class="header">👑 ROCYINTER - ADMIN<br><span style="font-size:12px;opacity:.7" id="adminEmailTxt"></span> | <a href="index.html" style="color:#ffcc00">Voir le site</a></div>
 
 <div class="grid">
   <div class="carte"><b id="nbTotal">0</b><span>Total inscrits</span></div>
@@ -65,6 +77,7 @@ input,select{padding:10px;width:100%;margin:5px 0;border:1px solid #ddd;border-r
   <div class="carte" style="background:#e3f2fd"><b id="totalRetire">0 FCFA</b><span>Montant retiré</span></div>
   <div class="carte" style="background:#fce4ec"><b id="totalBloque">0 FCFA</b><span>Montant bloqué (Escrow)</span></div>
 </div>
+
 <div class="box">
   <h3>📊 Mon Bilan - Mes revenus</h3>
   <div style="display:flex;gap:8px;margin-bottom:10px">
@@ -134,301 +147,70 @@ input,select{padding:10px;width:100%;margin:5px 0;border:1px solid #ddd;border-r
     <button class="btnNoir" onclick="fermerProfil()">Fermer</button>
   </div>
 </div>
-
-<div style="background:#fff;padding:14px;border-radius:12px;margin-top:14px">
-  <h3>💸 Retraits à payer</h3>
-  <button onclick="chargerRetraitsAdmin()" style="padding:10px 14px;border-radius:10px;border:none;background:#111;color:#fff;font-weight:bold;cursor:pointer">🔄 Actualiser</button>
-  <div id="listeRetraitsAdmin" style="margin-top:10px">Chargement...</div>
 </div>
 
+<footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 <script>
-function getRole(){ return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur"; }
-function getUser(){ return localStorage.getItem("rocy_user") || null; }
-function protegerPage(rolesAutorises){
-  const role = getRole();
-  if(role === "visiteur"){
-    alert("Connecte-toi d'abord.");
-    window.location.href = "connexion.html";
-    return false;
-  }
-  if(!rolesAutorises.includes(role)){
-    alert("⛔ Accès refus. Tu es : " + role);
-    if(role === "vendeur") window.location.href = "vendeur.html";
-    else if(role === "acheteur") window.location.href = "acheteur.html";
-    else if(role === "admin") window.location.href = "admin.html";
-    else window.location.href = "index.html";
-    return false;
-  }
-  return true;
-}
-function deconnexion(){
-  localStorage.removeItem("rocy_role");
-  localStorage.removeItem("rocy_user");
-  window.location.href = "index.html";
-}
-const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname.includes('portals') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
-const EMAIL_ADMIN = "rocyinter@gmail.com";
-const supabaseAdmin = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
-let toutesCommandes = [];
-let tousUsers = [];
-let profilOuvert = null;
-let periodeBilan = 'semaine';
-
+var LANGUE=localStorage.getItem("rocy_lang")||"fr";
+var NOMS_LANG={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"};
+function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");fermerMenu();b.style.display=(b.style.display==="block")?"none":"block"}
+function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");var l=document.getElementById("langBox");if(l)l.style.display="none";if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";majMenu()}}
+function fermerMenu(){var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m)m.classList.remove("open");if(o)o.style.display="none"}
+function majMenu(){var role=localStorage.getItem("role_user")||localStorage.getItem("rocy_role")||"";var email=localStorage.getItem("email_user")||"";var nom=localStorage.getItem("nom_user")||"Admin";var connecte=!!email;var bj=document.getElementById("menuBonjour");if(bj)bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"admin"):"visiteur")+")";document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){if(!connecte){a.classList.add("grise");a.onclick=function(ev){ev.preventDefault();location.href="connexion.html";return false}}else{a.classList.remove("grise");a.onclick=null}});document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){var besoin=a.getAttribute("data-acces");var ok=false;if(role==="admin")ok=true;else if(connecte&&role===besoin)ok=true;if(ok){a.classList.remove("grise");a.onclick=null}else{a.classList.add("grise");a.onclick=function(ev){ev.preventDefault();if(!connecte)location.href="connexion.html";else if(besoin==="vendeur")alert("Accès réservé aux vendeurs");else if(besoin==="acheteur")alert("Accès réservé aux acheteurs");else if(besoin==="admin")alert("Accès réservé à l'admin");return false}}});var b=document.getElementById("btnAuth");if(b)b.innerText=connecte?"Déconnecter":"Connecter"}
+function gererAuth(){var email=localStorage.getItem("email_user");if(email){localStorage.removeItem("email_user");localStorage.removeItem("user_id");localStorage.removeItem("role_user");localStorage.removeItem("rocy_role");location.href="index.html"}else location.href="connexion.html"}
+function changerLangue(v){LANGUE=v;localStorage.setItem("rocy_lang",v);document.getElementById("langBox").style.display="none";var ll=document.getElementById("langLabel");if(ll)ll.innerText=NOMS_LANG[v]||"Français";fermerMenu()}
+function getRole(){return localStorage.getItem("rocy_role")||localStorage.getItem("role_user")||"visiteur"}
+function protegerPage(){var role=getRole();if(role==="visiteur"){alert("Connecte-toi d'abord.");window.location.href="connexion.html";return false}if(role!=="admin"){alert("⛔ Accès refus. Tu es : "+role);if(role==="vendeur")window.location.href="vendeur.html";else if(role==="acheteur")window.location.href="acheteur.html";else window.location.href="index.html";return false}return true}
+const EMAIL_ADMIN="rocyinter@gmail.com";
+const supabaseAdmin=window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co','sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+let toutesCommandes=[];let tousUsers=[];let profilOuvert=null;let periodeBilan='semaine';
 async function chargerAdmin(){
-  var email = (localStorage.getItem('email_user') || "").trim().toLowerCase();
-  document.getElementById('adminEmailTxt').textContent = email || "Non connecté";
-  if(!MODE_TEST && email !== EMAIL_ADMIN.trim().toLowerCase()){
+  var email=(localStorage.getItem('email_user')||"").trim().toLowerCase();
+  document.getElementById('adminEmailTxt').textContent=email||"Non connecté";
+  if(email!==EMAIL_ADMIN.trim().toLowerCase()){
     alert("Accès réservé au propriétaire Rocyinter.");
-    window.location.href = "index.html";
+    if(getRole()==="vendeur")window.location.href="vendeur.html";
+    else if(getRole()==="acheteur")window.location.href="acheteur.html";
+    else window.location.href="index.html";
     return;
   }
-  var resUsers = await supabaseAdmin.from('profils').select('*').order('created_at',{ascending:false});
-  if(resUsers.error){ document.getElementById('tableUsers').innerHTML = '<tr><td colspan="7">Erreur profils : '+resUsers.error.message+'</td></tr>'; }
-  tousUsers = resUsers.data || [];
-  document.getElementById('nbTotal').textContent = tousUsers.length;
-  document.getElementById('nbVendeurs').textContent = tousUsers.filter(u=>u.role==='vendeur').length;
-  document.getElementById('nbAcheteurs').textContent = tousUsers.filter(u=>u.role==='acheteur').length;
+  var resUsers=await supabaseAdmin.from('profils').select('*').order('created_at',{ascending:false});
+  if(resUsers.error){document.getElementById('tableUsers').innerHTML='<tr><td colspan="7">Erreur profils : '+resUsers.error.message+'</td></tr>'}
+  tousUsers=resUsers.data||[];
+  document.getElementById('nbTotal').textContent=tousUsers.length;
+  document.getElementById('nbVendeurs').textContent=tousUsers.filter(u=>u.role==='vendeur').length;
+  document.getElementById('nbAcheteurs').textContent=tousUsers.filter(u=>u.role==='acheteur').length;
   afficherUsers(tousUsers);
-  var resLogs = await supabaseAdmin.from('logs').select('*');
-  document.getElementById('nbVisites').textContent = (resLogs.data||[]).length;
-  var resCmd = await supabaseAdmin.from('commandes').select('*').order('created_at',{ascending:false});
-  toutesCommandes = resCmd.data || [];
+  var resLogs=await supabaseAdmin.from('logs').select('*');
+  document.getElementById('nbVisites').textContent=(resLogs.data||[]).length;
+  var resCmd=await supabaseAdmin.from('commandes').select('*').order('created_at',{ascending:false});
+  toutesCommandes=resCmd.data||[];
   afficherCommandes(toutesCommandes);
-  var totalPaye=0, totalComm=0, totalBloque=0;
-  toutesCommandes.forEach(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); var cm=Number(c.commission||t*0.085); totalPaye+=t; totalComm+=cm; if(c.statut!=='Colis reçu' && c.statut!=='colis_recu'){ totalBloque+=(t-cm); } });
-  document.getElementById('totalPaye').textContent = totalPaye.toLocaleString()+" FCFA";
-  document.getElementById('revenuTotal').textContent = totalComm.toLocaleString()+" FCFA";
-  document.getElementById('totalBloque').textContent = totalBloque.toLocaleString()+" FCFA";
-  afficherBilan('semaine');
-  chargerRetraits();
-  chargerRetraitsAdmin();
+  var totalPaye=0,totalComm=0,totalBloque=0;
+  toutesCommandes.forEach(c=>{var t=Number(c.montant_total||c.total||c.prix||0);var cm=Number(c.commission||t*0.085);totalPaye+=t;totalComm+=cm;if(c.statut!=='Colis reçu'&&c.statut!=='colis_recu'){totalBloque+=(t-cm)}});
+  document.getElementById('totalPaye').textContent=totalPaye.toLocaleString()+" FCFA";
+  document.getElementById('revenuTotal').textContent=totalComm.toLocaleString()+" FCFA";
+  document.getElementById('totalBloque').textContent=totalBloque.toLocaleString()+" FCFA";
+  afficherBilan('semaine');chargerRetraits();
 }
-function badgeRole(role){
-  if(role==='vendeur') return '<span class="badge badge-vendeur">VENDEUR</span>';
-  if(role==='admin') return '<span class="badge badge-admin">ADMIN</span>';
-  return '<span class="badge badge-acheteur">ACHETEUR</span>';
-}
-function afficherUsers(liste){
-  if(!liste.length){ document.getElementById('tableUsers').innerHTML = '<tr><td colspan="7">Aucun inscrit</td></tr>'; return; }
-  document.getElementById('tableUsers').innerHTML = liste.map(u=>{
-    var dateTxt = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR') : '';
-    return '<tr onclick="voirProfil(\''+u.id+'\')">'
-      + '<td><b>'+(u.nom || u.nom_complet || 'Sans nom')+'</b></td>'
-      + '<td>'+(u.email||'')+'</td>'
-      + '<td>'+(u.telephone||'—')+'</td>'
-      + '<td>'+badgeRole(u.role)+'</td>'
-      + '<td>'+(u.ville||'—')+'</td>'
-      + '<td>'+dateTxt+'</td>'
-      + '<td><button class="btnVert" onclick="event.stopPropagation(); voirProfil(\''+u.id+'\')">Voir 👁️</button></td>'
-      + '</tr>';
-  }).join('');
-}
-function filtrerUsers(){
-  var txt = document.getElementById('rechercheUser').value.toLowerCase();
-  var role = document.getElementById('filtreRole').value;
-  var filtres = tousUsers.filter(u=>{
-    var tout = JSON.stringify(u).toLowerCase();
-    var okTxt = tout.includes(txt);
-    var okRole = (role==='tous' || u.role===role);
-    return okTxt && okRole;
-  });
-  afficherUsers(filtres);
-}
-function afficherCommandes(liste){
-  if(!liste.length){ document.getElementById('tableCommandes').innerHTML = '<tr><td colspan="8">Aucune commande</td></tr>'; return; }
-  document.getElementById('tableCommandes').innerHTML = liste.map(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); var cm=Number(c.commission||t*0.085); return '<tr><td>'+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</td><td>'+(c.nom||c.titre_article||c.produit_titre||'')+'</td><td>'+(c.email_acheteur||c.acheteur_nom||'')+'</td><td>'+(c.email_vendeur||c.vendeur_nom||c.nom_vendeur||'')+'</td><td>'+t.toLocaleString()+' FCFA</td><td><b>'+cm.toLocaleString()+' FCFA</b></td><td>'+(t-cm).toLocaleString()+' FCFA</td><td>'+(c.statut||'')+'</td></tr>'; }).join('');
-}
-function filtrerAdmin(){
-  var txt=document.getElementById('rechercheAdmin').value.toLowerCase();
-  var st=document.getElementById('filtreStatut').value;
-  afficherCommandes(toutesCommandes.filter(c=> JSON.stringify(c).toLowerCase().includes(txt) && (st==='tous'||c.statut===st)));
-}
-async function voirProfil(userId){
-  document.getElementById('modalProfil').style.display = 'block';
-  document.getElementById('detailProfil').innerHTML = 'Chargement...';
-  document.getElementById('activiteProfil').innerHTML = '';
-  document.getElementById('actionsProfil').innerHTML = '';
-  var res = await supabaseAdmin.from('profils').select('*').eq('id', userId).single();
-  var u = res.data;
-  if(res.error || !u){ document.getElementById('detailProfil').innerHTML = 'Profil introuvable : ' + (res.error?res.error.message:''); return; }
-  profilOuvert = u;
-  var dateIns = u.created_at ? new Date(u.created_at).toLocaleDateString('fr-FR', {day:'2-digit', month:'long', year:'numeric'}) + ' à ' + new Date(u.created_at).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : '—';
-  var aEmail = u.email && !String(u.email).endsWith('@rocyinter.bj') ? '✅ Oui' : '⚠️ Non - email technique / sans vrai email';
-  document.getElementById('detailProfil').innerHTML =
-    '<div style="text-align:center;background:#f8f8f8;padding:12px;border-radius:10px;margin-bottom:10px">'
-    + '<div style="font-size:32px">👤</div>'
-    + '<b style="font-size:18px">'+(u.nom || u.nom_complet || 'Sans nom')+'</b><br>'
-    + badgeRole(u.role)
-    + '</div>'
-    + '<div class="ligneProfil"><b>ID</b><span style="font-size:11px;word-break:break-all">'+u.id+'</span></div>'
-    + '<div class="ligneProfil"><b>Nom complet</b><span>'+(u.nom || u.nom_complet || '—')+'</span></div>'
-    + '<div class="ligneProfil"><b>Email</b><span>'+(u.email || '—')+'</span></div>'
-    + '<div class="ligneProfil"><b>Téléphone</b><span>'+(u.telephone || '—')+'</span></div>'
-    + '<div class="ligneProfil"><b>Ville</b><span>'+(u.ville || '—')+'</span></div>'
-    + '<div class="ligneProfil"><b>Rôle</b><span>'+(u.role || '—')+'</span></div>'
-    + '<div class="ligneProfil"><b>A un vrai email ?</b><span>'+aEmail+'</span></div>'
-    + '<div class="ligneProfil"><b>Inscrit le</b><span>'+dateIns+'</span></div>'
-    + (u.email_technique ? '<div class="ligneProfil"><b>Compte téléphone seul</b><span>Oui</span></div>' : '');
-  var htmlAct = '<h4 style="margin:8px 0">📦 Son activité</h4>';
-  if(u.role === 'vendeur'){
-    var resP = await supabaseAdmin.from('produits').select('*').eq('vendeur_id', userId).order('created_at',{ascending:false});
-    var prods = resP.data || [];
-    if(prods.length){
-      htmlAct += prods.map(p=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🛍️ <b>'+(p.nom||p.titre||'')+'</b> - '+(Number(p.prix||0)).toLocaleString()+' FCFA - Statut : '+(p.statut||'')+'</div>').join('');
-    } else {
-      htmlAct += '<p style="font-size:13px;color:#666">Ce vendeur n’a encore publié aucun produit.</p>';
-    }
-    var resCV = await supabaseAdmin.from('commandes').select('*').eq('vendeur_id', userId).order('created_at',{ascending:false});
-    var cmdsV = resCV.data || [];
-    if(cmdsV.length){
-      htmlAct += '<h4 style="margin:10px 0 6px">🧾 Commandes reçues comme vendeur</h4>';
-      htmlAct += cmdsV.map(c=>'<div style="background:#fff7e6;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(c.statut||'')+'</div>').join('');
-    }
-  } else {
-    var resC = await supabaseAdmin.from('commandes').select('*').eq('acheteur_id', userId).order('created_at',{ascending:false});
-    var cmds = resC.data || [];
-    if(cmds.length){
-      htmlAct += cmds.map(c=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(Number(c.montant_total||c.total||c.prix||0)).toLocaleString()+' FCFA - '+(c.statut||'')+'</div>').join('');
-    } else {
-      htmlAct += '<p style="font-size:13px;color:#666">Cet acheteur n’a encore fait aucune commande.</p>';
-    }
-  }
-  document.getElementById('activiteProfil').innerHTML = htmlAct;
-  if(u.email && !String(u.email).endsWith('@rocyinter.bj')){
-    document.getElementById('actionsProfil').innerHTML =
-      '<button class="btnOrange" onclick="envoyerLienMotDePasse()">🔑 Envoyer un lien pour changer son mot de passe</button>'
-      + '<p id="msgReset" style="font-size:12px;text-align:center;color:#666"></p>';
-  } else {
-    document.getElementById('actionsProfil').innerHTML = '<p style="font-size:12px;text-align:center;color:#e74c3c;background:#fce4ec;padding:8px;border-radius:8px">⚠️ Cette personne n\'a pas de vrai email (compte téléphone seul). Tu ne peux pas lui envoyer de lien.</p>';
-  }
-}
-function fermerProfil(){ document.getElementById('modalProfil').style.display = 'none'; }
-async function envoyerLienMotDePasse(){
-  if(!profilOuvert || !profilOuvert.email){ alert("Pas d'email pour cette personne"); return; }
-  if(!confirm("Envoyer un lien de changement de mot de passe à " + profilOuvert.email + " ?")) return;
-  document.getElementById('msgReset').textContent = "Envoi en cours...";
-  var res = await supabaseAdmin.auth.resetPasswordForEmail(profilOuvert.email, { redirectTo: window.location.origin + '/reset.html' });
-  if(res.error){
-    document.getElementById('msgReset').textContent = "Erreur : " + res.error.message;
-  } else {
-    document.getElementById('msgReset').textContent = "✅ Lien envoyé à " + profilOuvert.email + ". Dis à la personne de vérifier sa boîte mail et ses spams.";
-  }
-}
-function afficherBilan(periode){
-  periodeBilan = periode;
-  document.getElementById('btnSemaine').classList.toggle('actif', periode==='semaine');
-  document.getElementById('btnMois').classList.toggle('actif', periode==='mois');
-  document.getElementById('btnAnnee').classList.toggle('actif', periode==='annee');
-  var maintenant = new Date();
-  var debut = new Date();
-  if(periode==='semaine') debut.setDate(maintenant.getDate()-7);
-  if(periode==='mois') debut.setMonth(maintenant.getMonth()-1);
-  if(periode==='annee') debut.setFullYear(maintenant.getFullYear()-1);
-  var filtres = toutesCommandes.filter(c=>{ var d = c.created_at ? new Date(c.created_at) : new Date(0); return d >= debut; });
-  var totalVentes = 0, totalComm = 0;
-  filtres.forEach(c=>{ var t=Number(c.montant_total||c.total||c.prix||0); totalVentes+=t; totalComm+=Number(c.commission||t*0.085); });
-  var label = periode==='semaine' ? 'semaine' : periode==='mois' ? 'mois' : 'année';
-  document.getElementById('bilanCommission').textContent = Math.round(totalComm).toLocaleString()+" FCFA";
-  document.getElementById('bilanVentes').textContent = Math.round(totalVentes).toLocaleString()+" FCFA";
-  document.getElementById('bilanNb').textContent = filtres.length;
-  document.getElementById('bilanCommissionTxt').textContent = "Commission cette "+label;
-  document.getElementById('bilanVentesTxt').textContent = "Ventes cette "+label;
-  if(!filtres.length){ document.getElementById('listeBilan').innerHTML = '<p style="font-size:13px;color:#666">Aucune commande sur cette période.</p>'; }
-  else {
-    document.getElementById('listeBilan').innerHTML = filtres.slice(0,10).map(c=>'<div class="ligneBilan"><span>'+(c.nom||c.titre_article||'Produit')+' - '+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</span><b>'+Number(c.montant_total||c.total||c.prix||0).toLocaleString()+' FCFA</b></div>').join('');
-  }
-  dessinerGraph(filtres);
-}
-function dessinerGraph(liste){
-  var canvas = document.getElementById('graphBilan');
-  if(!canvas) return;
-  var ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!liste.length){ ctx.fillStyle='#999'; ctx.font='13px Arial'; ctx.fillText('Aucune donnée pour ce graphique', 20, 90); return; }
-  var max = Math.max.apply(null, liste.map(c=>Number(c.montant_total||c.total||c.prix||0))) || 1;
-  var barW = canvas.width / Math.max(liste.length,1);
-  liste.slice(0,20).forEach(function(c,i){
-    var h = (Number(c.montant_total||c.total||c.prix||0)/max)*120;
-    ctx.fillStyle = '#ff6b00';
-    ctx.fillRect(i*barW+4, 160-h, barW-8, h);
-  });
-  ctx.fillStyle='#666'; ctx.font='12px Arial'; ctx.fillText('Ventes - '+liste.length+' commandes', 10, 15);
-}
-async function chargerRetraits(){
-  var box = document.getElementById('listeRetraits');
-  if(!box) return;
-  var res = await supabaseAdmin.from('retraits').select('*').order('created_at',{ascending:false});
-  if(res.error){ box.innerHTML = 'Erreur : '+res.error.message; return; }
-  var liste = res.data || [];
-  if(!liste.length){ box.innerHTML = 'Aucune demande de retrait.'; return; }
-  var totalPayeRetraits = liste.filter(r=>r.statut==='paye').reduce((s,r)=>s+Number(r.montant||0),0);
-  document.getElementById('totalRetire').textContent = totalPayeRetraits.toLocaleString()+" FCFA";
-  box.innerHTML = liste.map(r=>{
-    var coul = r.statut==='paye' ? 'green' : r.statut==='refuse' ? 'red' : 'orange';
-    var btns = '';
-    if(r.statut==='en_attente'){
-      btns = '<br><button class="btnVert" onclick="changerStatutRetrait(\''+r.id+'\',\'paye\')">✅ Marquer Payé</button> <button onclick="changerStatutRetrait(\''+r.id+'\',\'refuse\')" style="background:#e74c3c;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">❌ Refuser</button>';
-    }
-    return '<div style="border:1px solid #eee;padding:10px;border-radius:10px;margin-top:8px"><b>'+Number(r.montant||0).toLocaleString()+' '+(r.devise||'XOF')+'</b> - '+(r.methode||'')+'<br>Vendeur : '+(r.vendeur_id||'')+' - '+(r.pays||'')+' - '+(r.numero||'')+'<br>Statut : <b style="color:'+coul+'">'+(r.statut||'')+'</b>'+btns+'</div>';
-  }).join('');
-}
-async function chargerRetraitsAdmin(){
-  var box = document.getElementById('listeRetraitsAdmin');
-  if(!box) return;
-  var res = await supabaseAdmin.from('retraits').select('*').order('created_at',{ascending:false});
-  if(res.error){ box.innerHTML = 'Erreur : '+res.error.message; return; }
-  var liste = res.data || [];
-  if(!liste.length){ box.innerHTML = 'Aucun retrait à payer.'; return; }
-  box.innerHTML = liste.map(r=>'<div style="border:1px solid #eee;padding:10px;border-radius:10px;margin-top:8px"><b>'+Number(r.montant||0).toLocaleString()+' '+(r.devise||'XOF')+'</b> - '+(r.methode||'')+' - '+(r.pays||'')+' - '+(r.numero||'')+'<br>Statut : <b>'+(r.statut||'')+'</b></div>').join('');
-}
-async function changerStatutRetrait(id, statut){
-  if(!confirm('Marquer ce retrait comme '+statut+' ?')) return;
-  var res = await supabaseAdmin.from('retraits').update({ statut: statut }).eq('id', id);
-  if(res.error){ alert('Erreur : '+res.error.message); return; }
-  alert('Retrait mis à jour : '+statut);
-  chargerRetraits();
-  chargerRetraitsAdmin();
-}
-function googleTranslateElementInit(){
-  try{ new google.translate.TranslateElement({pageLanguage:'fr', includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN', autoDisplay:false}, 'google_translate_element'); }catch(e){}
-}
-function changerLangue(lang){
-  if(lang === "autre"){
-    var gt = document.getElementById("google_translate_element");
-    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
-    alert("Choisis ta langue dans le menu Google");
-    return;
-  }
-  if(lang === "fon" || lang === "goun"){
-    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
-    return;
-  }
-  if(lang === "fr"){
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    location.reload();
-    return;
-  }
-  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
-  location.reload();
-}
-window.changerLangue = changerLangue;
-window.voirProfil = voirProfil;
-window.fermerProfil = fermerProfil;
-window.afficherBilan = afficherBilan;
-window.chargerRetraits = chargerRetraits;
-window.chargerRetraitsAdmin = chargerRetraitsAdmin;
-window.changerStatutRetrait = changerStatutRetrait;
-window.filtrerAdmin = filtrerAdmin;
-window.filtrerUsers = filtrerUsers;
-window.envoyerLienMotDePasse = envoyerLienMotDePasse;
-if(!window._googleTranslateLoaded){
-  window._googleTranslateLoaded = true;
-  let s = document.createElement("script");
-  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-  document.head.appendChild(s);
-}
-chargerAdmin();
+function badgeRole(role){if(role==='vendeur')return '<span class="badge badge-vendeur">VENDEUR</span>';if(role==='admin')return '<span class="badge badge-admin">ADMIN</span>';return '<span class="badge badge-acheteur">ACHETEUR</span>'}
+function afficherUsers(liste){if(!liste.length){document.getElementById('tableUsers').innerHTML='<tr><td colspan="7">Aucun inscrit</td></tr>';return}document.getElementById('tableUsers').innerHTML=liste.map(u=>{var dateTxt=u.created_at?new Date(u.created_at).toLocaleDateString('fr-FR'):'';return '<tr onclick="voirProfil(\''+u.id+'\')"><td><b>'+(u.nom||u.nom_complet||'Sans nom')+'</b></td><td>'+(u.email||'')+'</td><td>'+(u.telephone||'—')+'</td><td>'+badgeRole(u.role)+'</td><td>'+(u.ville||'—')+'</td><td>'+dateTxt+'</td><td><button class="btnVert" onclick="event.stopPropagation(); voirProfil(\''+u.id+'\')">Voir 👁️</button></td></tr>'}).join('')}
+function filtrerUsers(){var txt=document.getElementById('rechercheUser').value.toLowerCase();var role=document.getElementById('filtreRole').value;var filtres=tousUsers.filter(u=>{var tout=JSON.stringify(u).toLowerCase();var okTxt=tout.includes(txt);var okRole=(role==='tous'||u.role===role);return okTxt&&okRole});afficherUsers(filtres)}
+function afficherCommandes(liste){if(!liste.length){document.getElementById('tableCommandes').innerHTML='<tr><td colspan="8">Aucune commande</td></tr>';return}document.getElementById('tableCommandes').innerHTML=liste.map(c=>{var t=Number(c.montant_total||c.total||c.prix||0);var cm=Number(c.commission||t*0.085);return '<tr><td>'+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</td><td>'+(c.nom||c.titre_article||c.produit_titre||'')+'</td><td>'+(c.email_acheteur||c.acheteur_nom||'')+'</td><td>'+(c.email_vendeur||c.vendeur_nom||c.nom_vendeur||'')+'</td><td>'+t.toLocaleString()+' FCFA</td><td><b>'+cm.toLocaleString()+' FCFA</b></td><td>'+(t-cm).toLocaleString()+' FCFA</td><td>'+(c.statut||'')+'</td></tr>'}).join('')}
+function filtrerAdmin(){var txt=document.getElementById('rechercheAdmin').value.toLowerCase();var st=document.getElementById('filtreStatut').value;afficherCommandes(toutesCommandes.filter(c=>JSON.stringify(c).toLowerCase().includes(txt)&&(st==='tous'||c.statut===st)))}
+async function voirProfil(userId){document.getElementById('modalProfil').style.display='block';document.getElementById('detailProfil').innerHTML='Chargement...';document.getElementById('activiteProfil').innerHTML='';document.getElementById('actionsProfil').innerHTML='';var res=await supabaseAdmin.from('profils').select('*').eq('id',userId).single();var u=res.data;if(res.error||!u){document.getElementById('detailProfil').innerHTML='Profil introuvable : '+(res.error?res.error.message:'');return}profilOuvert=u;var dateIns=u.created_at?new Date(u.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})+' à '+new Date(u.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';var aEmail=u.email&&!String(u.email).endsWith('@rocyinter.bj')?'✅ Oui':'⚠️ Non - email technique / sans vrai email';document.getElementById('detailProfil').innerHTML='<div style="text-align:center;background:#f8f8f8;padding:12px;border-radius:10px;margin-bottom:10px"><div style="font-size:32px">👤</div><b style="font-size:18px">'+(u.nom||u.nom_complet||'Sans nom')+'</b><br>'+badgeRole(u.role)+'</div><div class="ligneProfil"><b>ID</b><span style="font-size:11px;word-break:break-all">'+u.id+'</span></div><div class="ligneProfil"><b>Nom complet</b><span>'+(u.nom||u.nom_complet||'—')+'</span></div><div class="ligneProfil"><b>Email</b><span>'+(u.email||'—')+'</span></div><div class="ligneProfil"><b>Téléphone</b><span>'+(u.telephone||'—')+'</span></div><div class="ligneProfil"><b>Ville</b><span>'+(u.ville||'—')+'</span></div><div class="ligneProfil"><b>Rôle</b><span>'+(u.role||'—')+'</span></div><div class="ligneProfil"><b>A un vrai email ?</b><span>'+aEmail+'</span></div><div class="ligneProfil"><b>Inscrit le</b><span>'+dateIns+'</span></div>'+(u.email_technique?'<div class="ligneProfil"><b>Compte téléphone seul</b><span>Oui</span></div>':'');var htmlAct='<h4 style="margin:8px 0">📦 Son activité</h4>';if(u.role==='vendeur'){var resP=await supabaseAdmin.from('produits').select('*').eq('vendeur_id',userId).order('created_at',{ascending:false});var prods=resP.data||[];if(prods.length){htmlAct+=prods.map(p=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🛍️ <b>'+(p.nom||p.titre||'')+'</b> - '+(Number(p.prix||0)).toLocaleString()+' FCFA - Statut : '+(p.statut||'')+'</div>').join('')}else{htmlAct+='<p style="font-size:13px;color:#666">Ce vendeur n’a encore publié aucun produit.</p>'}var resCV=await supabaseAdmin.from('commandes').select('*').eq('vendeur_id',userId).order('created_at',{ascending:false});var cmdsV=resCV.data||[];if(cmdsV.length){htmlAct+='<h4 style="margin:10px 0 6px">🧾 Commandes reçues comme vendeur</h4>';htmlAct+=cmdsV.map(c=>'<div style="background:#fff7e6;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(c.statut||'')+'</div>').join('')}}else{var resC=await supabaseAdmin.from('commandes').select('*').eq('acheteur_id',userId).order('created_at',{ascending:false});var cmds=resC.data||[];if(cmds.length){htmlAct+=cmds.map(c=>'<div style="background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:6px;font-size:13px">🧾 <b>'+(c.nom||c.titre_article||c.produit_titre||'')+'</b> - '+(Number(c.montant_total||c.total||c.prix||0)).toLocaleString()+' FCFA - '+(c.statut||'')+'</div>').join('')}else{htmlAct+='<p style="font-size:13px;color:#666">Cet acheteur n’a encore fait aucune commande.</p>'}}document.getElementById('activiteProfil').innerHTML=htmlAct;if(u.email&&!String(u.email).endsWith('@rocyinter.bj')){document.getElementById('actionsProfil').innerHTML='<button class="btnOrange" onclick="envoyerLienMotDePasse()">🔑 Envoyer un lien pour changer son mot de passe</button><p id="msgReset" style="font-size:12px;text-align:center;color:#666"></p>'}else{document.getElementById('actionsProfil').innerHTML='<p style="font-size:12px;text-align:center;color:#e74c3c;background:#fce4ec;padding:8px;border-radius:8px">⚠️ Cette personne n\'a pas de vrai email (compte téléphone seul). Tu ne peux pas lui envoyer de lien.</p>'}}
+function fermerProfil(){document.getElementById('modalProfil').style.display='none'}
+async function envoyerLienMotDePasse(){if(!profilOuvert||!profilOuvert.email){alert("Pas d'email pour cette personne");return}if(!confirm("Envoyer un lien de changement de mot de passe à "+profilOuvert.email+" ?"))return;document.getElementById('msgReset').textContent="Envoi en cours...";var res=await supabaseAdmin.auth.resetPasswordForEmail(profilOuvert.email,{redirectTo:window.location.origin+'/reset.html'});if(res.error){document.getElementById('msgReset').textContent="Erreur : "+res.error.message}else{document.getElementById('msgReset').textContent="✅ Lien envoyé à "+profilOuvert.email+". Dis à la personne de vérifier sa boîte mail et ses spams."}}
+function afficherBilan(periode){periodeBilan=periode;document.getElementById('btnSemaine').classList.toggle('actif',periode==='semaine');document.getElementById('btnMois').classList.toggle('actif',periode==='mois');document.getElementById('btnAnnee').classList.toggle('actif',periode==='annee');var maintenant=new Date();var debut=new Date();if(periode==='semaine')debut.setDate(maintenant.getDate()-7);if(periode==='mois')debut.setMonth(maintenant.getMonth()-1);if(periode==='annee')debut.setFullYear(maintenant.getFullYear()-1);var filtres=toutesCommandes.filter(c=>{var d=c.created_at?new Date(c.created_at):new Date(0);return d>=debut});var totalVentes=0,totalComm=0;filtres.forEach(c=>{var t=Number(c.montant_total||c.total||c.prix||0);totalVentes+=t;totalComm+=Number(c.commission||t*0.085)});var label=periode==='semaine'?'semaine':periode==='mois'?'mois':'année';document.getElementById('bilanCommission').textContent=Math.round(totalComm).toLocaleString()+" FCFA";document.getElementById('bilanVentes').textContent=Math.round(totalVentes).toLocaleString()+" FCFA";document.getElementById('bilanNb').textContent=filtres.length;document.getElementById('bilanCommissionTxt').textContent="Commission cette "+label;document.getElementById('bilanVentesTxt').textContent="Ventes cette "+label;if(!filtres.length){document.getElementById('listeBilan').innerHTML='<p style="font-size:13px;color:#666">Aucune commande sur cette période.</p>'}else{document.getElementById('listeBilan').innerHTML=filtres.slice(0,10).map(c=>'<div class="ligneBilan"><span>'+(c.nom||c.titre_article||'Produit')+' - '+(c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'')+'</span><b>'+Number(c.montant_total||c.total||c.prix||0).toLocaleString()+' FCFA</b></div>').join('')}dessinerGraph(filtres)}
+function dessinerGraph(liste){var canvas=document.getElementById('graphBilan');if(!canvas)return;var ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);if(!liste.length){ctx.fillStyle='#999';ctx.font='13px Arial';ctx.fillText('Aucune donnée pour ce graphique',20,90);return}var max=Math.max.apply(null,liste.map(c=>Number(c.montant_total||c.total||c.prix||0)))||1;var barW=canvas.width/Math.max(liste.length,1);liste.slice(0,20).forEach(function(c,i){var h=(Number(c.montant_total||c.total||c.prix||0)/max)*120;ctx.fillStyle='#ff6b00';ctx.fillRect(i*barW+4,160-h,barW-8,h)});ctx.fillStyle='#666';ctx.font='12px Arial';ctx.fillText('Ventes - '+liste.length+' commandes',10,15)}
+async function chargerRetraits(){var box=document.getElementById('listeRetraits');if(!box)return;var res=await supabaseAdmin.from('retraits').select('*').order('created_at',{ascending:false});if(res.error){box.innerHTML='Erreur : '+res.error.message;return}var liste=res.data||[];if(!liste.length){box.innerHTML='Aucune demande de retrait.';return}var totalPayeRetraits=liste.filter(r=>r.statut==='paye').reduce((s,r)=>s+Number(r.montant||0),0);document.getElementById('totalRetire').textContent=totalPayeRetraits.toLocaleString()+" FCFA";box.innerHTML=liste.map(r=>{var coul=r.statut==='paye'?'green':r.statut==='refuse'?'red':'orange';var btns='';if(r.statut==='en_attente'){btns='<br><button class="btnVert" onclick="changerStatutRetrait(\''+r.id+'\',\'paye\')">✅ Marquer Payé</button> <button onclick="changerStatutRetrait(\''+r.id+'\',\'refuse\')" style="background:#e74c3c;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">❌ Refuser</button>'}return '<div style="border:1px solid #eee;padding:10px;border-radius:10px;margin-top:8px"><b>'+Number(r.montant||0).toLocaleString()+' '+(r.devise||'XOF')+'</b> - '+(r.methode||'')+'<br>Vendeur : '+(r.vendeur_id||'')+' - '+(r.pays||'')+' - '+(r.numero||'')+'<br>Statut : <b style="color:'+coul+'">'+(r.statut||'')+'</b>'+btns+'</div>'}).join('')}
+async function changerStatutRetrait(id,statut){if(!confirm('Marquer ce retrait comme '+statut+' ?'))return;var res=await supabaseAdmin.from('retraits').update({statut:statut}).eq('id',id);if(res.error){alert('Erreur : '+res.error.message);return}alert('Retrait mis à jour : '+statut);chargerRetraits()}
+let taux={XOF:1,EUR:0.0015,USD:0.0017,NGN:2.55,GHS:0.021,GBP:0.0013};let symboles={XOF:" F",EUR:" €",USD:" $",NGN:" ₦",GHS:" GH₵",GBP:" £"};
+function convertirPrix(){let deviseEl=document.getElementById("devise");if(!deviseEl)return;let devise=deviseEl.value;document.querySelectorAll(".prix").forEach(el=>{let prixFCFA=parseFloat(el.getAttribute("data-prix"));if(isNaN(prixFCFA)||prixFCFA===0)return;let converti=Math.round(prixFCFA*taux[devise]);el.innerText=converti.toLocaleString()+symboles[devise]})}
+window.voirProfil=voirProfil;window.fermerProfil=fermerProfil;window.afficherBilan=afficherBilan;window.chargerRetraits=chargerRetraits;window.changerStatutRetrait=changerStatutRetrait;window.filtrerAdmin=filtrerAdmin;window.filtrerUsers=filtrerUsers;window.envoyerLienMotDePasse=envoyerLienMotDePasse;window.convertirPrix=convertirPrix;
+document.addEventListener("click",function(e){if(!e.target.closest("#langBox")&&!e.target.closest(".langBtn")){var l=document.getElementById("langBox");if(l)l.style.display="none"}});
+document.addEventListener("DOMContentLoaded",function(){majMenu()});
+protegerPage();chargerAdmin();
 </script>
-<script src="commun.js"></script>
 </body>
 </html>
