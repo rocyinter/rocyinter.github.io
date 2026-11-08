@@ -3,200 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mon Profil - Rocyinter</title>
+<title>Mon Profil - RocyInter</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:16px;max-width:500px;margin:0 auto}
-*{box-sizing:border-box}
+*{box-sizing:border-box}html,body{height:100%}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0;display:flex;flex-direction:column;min-height:100vh}
+header{background:#111;color:#fff;padding:10px 12px;width:100%;display:flex;align-items:center;justify-content:space-between}
+header .spacer{width:90px;flex-shrink:0}
+header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px;font-family:Poppins,Arial,sans-serif}header a span{color:#FFC107}
+#langue{width:90px;height:28px;background:#fff;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:600;padding:0 6px;cursor:pointer;flex-shrink:0}
+footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:auto;font-family:Inter,Arial,sans-serif;font-weight:500}footer b{color:#FFC107}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer .footIn{max-width:520px;margin:0 auto}footer p{margin:1px 0}
+.wrap{max-width:500px;width:calc(100% - 24px);margin:20px auto;flex:1 0 auto}
 .top{background:#111827;color:#fff;padding:20px;border-radius:16px;text-align:center}
-.top h1{margin:10px 0 0}
+.top h1{margin:10px 0 0;font-size:22px}
 .card{background:#fff;padding:18px;border-radius:16px;margin:14px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 label{display:block;margin:12px 0 5px;font-weight:bold;font-size:14px}
-input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:5px}
-button{width:100%;padding:14px;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:bold;margin-top:14px;cursor:pointer}
+input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:5px;font-size:15px}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:bold;margin-top:14px;cursor:pointer;font-size:15px}
 #badgeRole,#badgeKYC{display:inline-block;background:#f59e0b;color:#fff;padding:5px 12px;border-radius:20px;font-size:13px;margin:5px}
 .btn-retour{background:#fff;color:#111827;border:1px solid #ddd}
-.retrait-item{border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0}
+.retrait-item{border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0;font-size:13px}
 .photo-wrap{display:inline-block}
 #photoProfilImg{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff}
 .btn-photo{display:block;background:#f59e0b;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:bold;margin:10px auto 0;cursor:pointer;width:fit-content}
-.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
-.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
-.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+.links{text-align:center;margin-top:15px;font-size:13px}.links a{color:#ff6b00;font-weight:bold;text-decoration:none}
 </style>
 </head>
 <body>
-<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
-  🌍 Langue :
-  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
-    <option value="fr">Français</option>
-    <option value="en">English</option>
-    <option value="yo">Yoruba</option>
-    <option value="fon">Fon</option>
-    <option value="goun">Goun</option>
-    <option value="autre">Autre langue... (Google)</option>
-  </select>
-</div>
-<div id="google_translate_element" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none"></div>
-<div class="header"><a href="index.html">ROCY<span style="color:#ffc107">INTER</span></a></div>
-
+<header><span class="spacer"></span><a href="index.html">ROCY<span>INTER</span></a><select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option></select></header>
+<div class="wrap">
 <div class="top">
   <div class="photo-wrap">
     <img id="photoProfilImg" src="https://via.placeholder.com/110?text=👤" alt="photo">
-    <label for="photoProfilInput" class="btn-photo">📷 Changer ma photo</label>
+    <label for="photoProfilInput" class="btn-photo" data-i18n="changerPhoto">📷 Changer ma photo</label>
     <input type="file" id="photoProfilInput" accept="image/*" hidden>
   </div>
-  <h1>👤 Mon Profil</h1>
+  <h1 data-i18n="titre">👤 Mon Profil</h1>
   <p id="emailProfil">...</p>
   <span id="badgeRole">...</span>
   <span id="badgeKYC">KYC : non_verifie</span>
 </div>
 
-<div class="card">
-  <h2>Mes infos</h2>
-  <label>Nom complet</label>
-  <input id="nomProfil" placeholder="Ton nom complet">
-  <label>Téléphone</label>
-  <input id="telProfil" placeholder="+229 ...">
-  <label>Ville / Pays</label>
-  <input id="villeProfil" placeholder="Cotonou, Bénin">
-  <button id="btnSauverProfil">Sauvegarder mes infos</button>
+<div id="blocEmailProfil" style="display:none;background:#FFF3E8;border:1px solid #FFC107;padding:14px;border-radius:12px;margin:14px 0">
+<b style="font-size:14px" data-i18n="blocEmailTitre">⚠️ Complète ton vrai email ici</b><br>
+<small style="font-size:12px;color:#666" data-i18n="blocEmailTexte">Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.</small>
 </div>
 
 <div class="card">
-  <h2>🛡️ KYC - Vérification identité</h2>
-  <p>Pour retirer ton argent, tu dois vérifier ton identité.</p>
-  <label>Type de pièce</label>
+  <h2 data-i18n="mesInfos">Mes infos</h2>
+  <label data-i18n="lblNom">Nom complet</label>
+  <input id="nomProfil" placeholder="Ton nom complet">
+  <label data-i18n="lblEmail">Email</label>
+  <input type="email" id="emailProfilInput" placeholder="Ex: toi@gmail.com">
+  <p style="font-size:12px;color:#666;margin:0" data-i18n="infoEmailProfil">Tu peux compléter ton vrai email dans Profil.</p>
+  <label data-i18n="lblTel">Téléphone</label>
+  <input id="telProfil" placeholder="+229 ...">
+  <label data-i18n="lblVille">Ville / Pays</label>
+  <input id="villeProfil" placeholder="Cotonou, Bénin">
+  <button id="btnSauverProfil" data-i18n="btnSauver">Sauvegarder mes infos</button>
+</div>
+
+<div class="card">
+  <h2 data-i18n="kycTitre">🛡️ KYC - Vérification identité</h2>
+  <p data-i18n="kycTexte">Pour retirer ton argent, tu dois vérifier ton identité.</p>
+  <label data-i18n="lblPiece">Type de pièce</label>
   <select id="typePiece">
-    <option value="cni">Carte d'identité (CNI)</option>
-    <option value="passeport">Passeport</option>
-    <option value="permis">Permis de conduire</option>
+    <option value="cni" data-i18n="cni">Carte d'identité (CNI)</option>
+    <option value="passeport" data-i18n="passeport">Passeport</option>
+    <option value="permis" data-i18n="permis">Permis de conduire</option>
   </select>
-  <label>Numéro de la pièce</label>
+  <label data-i18n="lblNumPiece">Numéro de la pièce</label>
   <input id="numPiece" placeholder="Ex: 12345678">
-  <label>Photo de la pièce</label>
+  <label data-i18n="lblPhotoPiece">Photo de la pièce</label>
   <input type="file" id="photoPiece" accept="image/*">
   <img id="previewPiece" style="display:none; width:100%; border-radius:12px; margin-top:10px;">
-  <button id="btnEnvoyerKYC">Envoyer ma vérification</button>
+  <button id="btnEnvoyerKYC" data-i18n="btnKYC">Envoyer ma vérification</button>
   <p id="msgKYC"></p>
 </div>
 
 <div class="card">
-  <h2>💰 Mon Solde & Retrait</h2>
-  <h1 id="soldeProfil">0 F</h1>
-  <p>Solde disponible</p>
-  <label>Montant à retirer (F)</label>
+  <h2 data-i18n="soldeTitre">💰 Mon Solde & Retrait</h2>
+  <h1 id="soldeProfil" style="text-align:center">0 F</h1>
+  <p style="text-align:center" data-i18n="soldeDispo">Solde disponible</p>
+  <label data-i18n="lblMontant">Montant à retirer (F)</label>
   <input type="number" id="montantRetrait" placeholder="Ex: 10000">
-  <label>Moyen de retrait</label>
+  <label data-i18n="lblMoyen">Moyen de retrait</label>
   <select id="moyenRetrait">
     <option value="mtn">MTN MoMo</option>
     <option value="moov">Moov Money</option>
     <option value="celtiis">Celtiis Cash</option>
     <option value="virement">Virement bancaire</option>
   </select>
-  <label>Numéro / Compte pour recevoir</label>
+  <label data-i18n="lblCompte">Numéro / Compte pour recevoir</label>
   <input id="compteRetrait" placeholder="Ex: +229 97...">
-  <button id="btnRetrait">Demander le retrait</button>
+  <button id="btnRetrait" class="btn-retrait" data-i18n="btnRetrait">Demander le retrait</button>
   <p id="msgRetrait"></p>
 </div>
 
 <div class="card">
-  <h2>Mes demandes de retrait</h2>
+  <h2 data-i18n="mesRetraits">Mes demandes de retrait</h2>
   <div id="listeRetraits">Chargement...</div>
 </div>
 
-<button onclick="window.location.href='index.html'" class="btn-retour">⬅ Retour Accueil</button>
-<div style="text-align:center;margin-top:15px;font-size:13px">
-  <a href="index.html">Accueil</a> • <a href="vendeur.html">Tableau Vendeur</a> • <a href="acheteur.html">Tableau Acheteur</a> • <a href="connexion.html">Connexion</a>
+<button onclick="window.location.href='index.html'" class="btn-retour" data-i18n="retourAccueil">⬅ Retour Accueil</button>
+<div class="links"><a href="index.html" data-i18n="lienAccueil">Accueil</a> • <a href="vendeur.html" data-i18n="lienVendeur">Tableau Vendeur</a> • <a href="acheteur.html" data-i18n="lienAcheteur">Tableau Acheteur</a> • <a href="connexion.html" data-i18n="lienConnexion">Connexion</a></div>
 </div>
-<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
-
+<footer><div class="footIn"><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; <b>Rocyinter@2026</b></p></div></footer>
 <script>
-function getRole(){
-  return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur";
-}
-function getUser(){
-  return localStorage.getItem("rocy_user") || null;
-}
-function protegerPage(rolesAutorises){
-  const role = getRole();
-  if(role === "visiteur"){
-    alert("Connecte-toi d'abord.");
-    window.location.href = "connexion.html";
-    return false;
-  }
-  if(!rolesAutorises.includes(role)){
-    alert("⛔ Accès refus. Tu es : " + role);
-    if(role === "vendeur") window.location.href = "vendeur.html";
-    else if(role === "acheteur") window.location.href = "acheteur.html";
-    else if(role === "admin") window.location.href = "admin.html";
-    else window.location.href = "index.html";
-    return false;
-  }
-  return true;
-}
-function afficherSelonRole(){
-  const role = getRole();
-  const bVendeur = document.getElementById("btn-vendeur");
-  const bAcheteur = document.getElementById("btn-acheteur");
-  const bPublier = document.getElementById("btn-publier");
-  const bAdmin = document.getElementById("btn-admin");
-  const bConnexion = document.getElementById("btn-connexion");
-  const bInscription = document.getElementById("btn-inscription");
-  if(bVendeur) bVendeur.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
-  if(bAcheteur) bAcheteur.style.display = (role==="acheteur"||role==="admin") ? "block" : "none";
-  if(bPublier) bPublier.style.display = (role==="vendeur"||role==="admin") ? "block" : "none";
-  if(bAdmin) bAdmin.style.display = (role==="admin") ? "block" : "none";
-  if(role !== "visiteur"){
-    if(bConnexion) bConnexion.style.display = "none";
-    if(bInscription) bInscription.style.display = "none";
-  }
-}
-document.addEventListener("DOMContentLoaded", afficherSelonRole);
-function deconnexion(){
-  localStorage.removeItem("rocy_role");
-  localStorage.removeItem("rocy_user");
-  window.location.href = "index.html";
-}
+var DICT={
+fr:{titre:"👤 Mon Profil",changerPhoto:"📷 Changer ma photo",blocEmailTitre:"⚠️ Complète ton vrai email ici",blocEmailTexte:"Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.",mesInfos:"Mes infos",lblNom:"Nom complet",lblEmail:"Email",infoEmailProfil:"Tu peux compléter ton vrai email dans Profil.",lblTel:"Téléphone",lblVille:"Ville / Pays",btnSauver:"Sauvegarder mes infos",kycTitre:"🛡️ KYC - Vérification identité",kycTexte:"Pour retirer ton argent, tu dois vérifier ton identité.",lblPiece:"Type de pièce",cni:"Carte d'identité (CNI)",passeport:"Passeport",permis:"Permis de conduire",lblNumPiece:"Numéro de la pièce",lblPhotoPiece:"Photo de la pièce",btnKYC:"Envoyer ma vérification",soldeTitre:"💰 Mon Solde & Retrait",soldeDispo:"Solde disponible",lblMontant:"Montant à retirer (F)",lblMoyen:"Moyen de retrait",lblCompte:"Numéro / Compte pour recevoir",btnRetrait:"Demander le retrait",mesRetraits:"Mes demandes de retrait",retourAccueil:"⬅ Retour Accueil",lienAccueil:"Accueil",lienVendeur:"Tableau Vendeur",lienAcheteur:"Tableau Acheteur",lienConnexion:"Connexion",msgEmailInvalide:"Mets un vrai email, ex: tonnom@gmail.com",msgEmailOk:"Email enregistré ! Tu peux maintenant retirer ton argent.",msgRetraitSansEmail:"Va compléter ton vrai email dans Profil pour retirer ton argent.",msgRetraitKYC:"Tu dois être vérifié KYC pour retirer. Envoie d'abord ton KYC.",msgRetraitMin:"Minimum retrait : 1000 F",msgCompteVide:"Mets ton numéro / compte pour recevoir",msgRetraitOk:"Demande envoyée, Admin va valider ✅",msgKYCEnvoye:"KYC envoyé, en attente de vérification par Admin ✅",msgInfosOk:"Infos sauvegardées ✅"},
+en:{titre:"👤 My Profile",changerPhoto:"📷 Change my photo",blocEmailTitre:"⚠️ Complete your real email here",blocEmailTexte:"You can complete your real email in Profile. Without a real email, you cannot withdraw your money.",mesInfos:"My infos",lblNom:"Full name",lblEmail:"Email",infoEmailProfil:"You can complete your real email in Profile.",lblTel:"Phone",lblVille:"City / Country",btnSauver:"Save my infos",kycTitre:"🛡️ KYC - Identity verification",kycTexte:"To withdraw your money, you must verify your identity.",lblPiece:"ID type",cni:"ID Card (CNI)",passeport:"Passport",permis:"Driving licence",lblNumPiece:"ID number",lblPhotoPiece:"Photo of ID",btnKYC:"Send my verification",soldeTitre:"💰 My Balance & Withdrawal",soldeDispo:"Available balance",lblMontant:"Amount to withdraw (F)",lblMoyen:"Withdrawal method",lblCompte:"Number / Account to receive",btnRetrait:"Request withdrawal",mesRetraits:"My withdrawal requests",retourAccueil:"⬅ Back Home",lienAccueil:"Home",lienVendeur:"Seller Dashboard",lienAcheteur:"Buyer Dashboard",lienConnexion:"Login",msgEmailInvalide:"Put a real email, ex: yourname@gmail.com",msgEmailOk:"Email saved! You can now withdraw your money.",msgRetraitSansEmail:"Complete your real email in Profile to withdraw your money.",msgRetraitKYC:"You must be KYC verified to withdraw. Send your KYC first.",msgRetraitMin:"Minimum withdrawal: 1000 F",msgCompteVide:"Put your number / account to receive",msgRetraitOk:"Request sent, Admin will validate ✅",msgKYCEnvoye:"KYC sent, waiting for Admin verification ✅",msgInfosOk:"Infos saved ✅"},
+es:{titre:"👤 Mi Perfil",changerPhoto:"📷 Cambiar mi foto",blocEmailTitre:"⚠️ Completa tu correo real aquí",blocEmailTexte:"Puedes completar tu correo real en Perfil. Sin correo real, no podrás retirar tu dinero.",mesInfos:"Mis datos",lblNom:"Nombre completo",lblEmail:"Correo",infoEmailProfil:"Puedes completar tu correo real en Perfil.",lblTel:"Teléfono",lblVille:"Ciudad / País",btnSauver:"Guardar mis datos",kycTitre:"🛡️ KYC - Verificación de identidad",kycTexte:"Para retirar tu dinero, debes verificar tu identidad.",lblPiece:"Tipo de documento",cni:"Documento de identidad (CNI)",passeport:"Pasaporte",permis:"Permiso de conducir",lblNumPiece:"Número del documento",lblPhotoPiece:"Foto del documento",btnKYC:"Enviar mi verificación",soldeTitre:"💰 Mi Saldo & Retiro",soldeDispo:"Saldo disponible",lblMontant:"Monto a retirar (F)",lblMoyen:"Método de retiro",lblCompte:"Número / Cuenta para recibir",btnRetrait:"Solicitar retiro",mesRetraits:"Mis solicitudes de retiro",retourAccueil:"⬅ Volver Inicio",lienAccueil:"Inicio",lienVendeur:"Panel Vendedor",lienAcheteur:"Panel Comprador",lienConnexion:"Iniciar sesión",msgEmailInvalide:"Pon un correo real, ej: tunombre@gmail.com",msgEmailOk:"¡Correo guardado! Ahora puedes retirar tu dinero.",msgRetraitSansEmail:"Completa tu correo real en Perfil para retirar tu dinero.",msgRetraitKYC:"Debes estar verificado KYC para retirar. Envía tu KYC primero.",msgRetraitMin:"Retiro mínimo: 1000 F",msgCompteVide:"Pon tu número / cuenta para recibir",msgRetraitOk:"Solicitud enviada, Admin validará ✅",msgKYCEnvoye:"KYC enviado, en espera de verificación ✅",msgInfosOk:"Datos guardados ✅"},
+pt:{titre:"👤 Meu Perfil",changerPhoto:"📷 Mudar minha foto",blocEmailTitre:"⚠️ Complete seu email real aqui",blocEmailTexte:"Você pode completar seu email real no Perfil. Sem email real, você não poderá sacar seu dinheiro.",mesInfos:"Minhas infos",lblNom:"Nome completo",lblEmail:"Email",infoEmailProfil:"Você pode completar seu email real no Perfil.",lblTel:"Telefone",lblVille:"Cidade / País",btnSauver:"Salvar minhas infos",kycTitre:"🛡️ KYC - Verificação de identidade",kycTexte:"Para sacar seu dinheiro, você deve verificar sua identidade.",lblPiece:"Tipo de documento",cni:"Carteira de identidade (CNI)",passeport:"Passaporte",permis:"Carteira de motorista",lblNumPiece:"Número do documento",lblPhotoPiece:"Foto do documento",btnKYC:"Enviar minha verificação",soldeTitre:"💰 Meu Saldo & Saque",soldeDispo:"Saldo disponível",lblMontant:"Valor a sacar (F)",lblMoyen:"Método de saque",lblCompte:"Número / Conta para receber",btnRetrait:"Solicitar saque",mesRetraits:"Minhas solicitações de saque",retourAccueil:"⬅ Voltar Início",lienAccueil:"Início",lienVendeur:"Painel Vendedor",lienAcheteur:"Painel Comprador",lienConnexion:"Entrar",msgEmailInvalide:"Coloque um email real, ex: seunome@gmail.com",msgEmailOk:"Email salvo! Agora você pode sacar seu dinheiro.",msgRetraitSansEmail:"Complete seu email real no Perfil para sacar seu dinheiro.",msgRetraitKYC:"Você deve estar verificado KYC para sacar. Envie seu KYC primeiro.",msgRetraitMin:"Saque mínimo: 1000 F",msgCompteVide:"Coloque seu número / conta para receber",msgRetraitOk:"Solicitação enviada, Admin vai validar ✅",msgKYCEnvoye:"KYC enviado, aguardando verificação ✅",msgInfosOk:"Infos salvas ✅"},
+de:{titre:"👤 Mein Profil",changerPhoto:"📷 Mein Foto ändern",blocEmailTitre:"⚠️ Ergänze hier deine echte E-Mail",blocEmailTexte:"Du kannst deine echte E-Mail im Profil ergänzen. Ohne echte E-Mail kannst du dein Geld nicht abheben.",mesInfos:"Meine Infos",lblNom:"Vollständiger Name",lblEmail:"E-Mail",infoEmailProfil:"Du kannst deine echte E-Mail im Profil ergänzen.",lblTel:"Telefon",lblVille:"Stadt / Land",btnSauver:"Meine Infos speichern",kycTitre:"🛡️ KYC - Identitätsprüfung",kycTexte:"Um dein Geld abzuheben, musst du deine Identität verifizieren.",lblPiece:"Ausweistyp",cni:"Personalausweis (CNI)",passeport:"Reisepass",permis:"Führerschein",lblNumPiece:"Ausweisnummer",lblPhotoPiece:"Foto des Ausweises",btnKYC:"Meine Prüfung senden",soldeTitre:"💰 Mein Guthaben & Abhebung",soldeDispo:"Verfügbares Guthaben",lblMontant:"Abzuhebender Betrag (F)",lblMoyen:"Abhebemethode",lblCompte:"Nummer / Konto zum Empfangen",btnRetrait:"Abhebung beantragen",mesRetraits:"Meine Abhebungsanträge",retourAccueil:"⬅ Zurück zur Startseite",lienAccueil:"Startseite",lienVendeur:"Verkäufer-Dashboard",lienAcheteur:"Käufer-Dashboard",lienConnexion:"Anmelden",msgEmailInvalide:"Gib eine echte E-Mail ein, z.B.: deinname@gmail.com",msgEmailOk:"E-Mail gespeichert! Du kannst jetzt dein Geld abheben.",msgRetraitSansEmail:"Ergänze deine echte E-Mail im Profil, um dein Geld abzuheben.",msgRetraitKYC:"Du musst KYC-verifiziert sein, um abzuheben. Sende zuerst dein KYC.",msgRetraitMin:"Mindestabhebung: 1000 F",msgCompteVide:"Gib deine Nummer / Konto zum Empfangen ein",msgRetraitOk:"Antrag gesendet, Admin wird validieren ✅",msgKYCEnvoye:"KYC gesendet, wartet auf Prüfung ✅",msgInfosOk:"Infos gespeichert ✅"},
+ar:{titre:"👤 ملفي الشخصي",changerPhoto:"📷 تغيير صورتي",blocEmailTitre:"⚠️ أكمل بريدك الحقيقي هنا",blocEmailTexte:"يمكنك إكمال بريدك الحقيقي في الملف الشخصي. بدون بريد حقيقي، لا يمكنك سحب أموالك.",mesInfos:"معلوماتي",lblNom:"الاسم الكامل",lblEmail:"البريد",infoEmailProfil:"يمكنك إكمال بريدك الحقيقي في الملف الشخصي.",lblTel:"الهاتف",lblVille:"المدينة / البلد",btnSauver:"حفظ معلوماتي",kycTitre:"🛡️ KYC - التحقق من الهوية",kycTexte:"لسحب أموالك، يجب التحقق من هويتك.",lblPiece:"نوع الوثيقة",cni:"بطاقة الهوية (CNI)",passeport:"جواز السفر",permis:"رخصة القيادة",lblNumPiece:"رقم الوثيقة",lblPhotoPiece:"صورة الوثيقة",btnKYC:"إرسال التحقق",soldeTitre:"💰 رصيدي & السحب",soldeDispo:"الرصيد المتاح",lblMontant:"المبلغ المراد سحبه (F)",lblMoyen:"طريقة السحب",lblCompte:"الرقم / الحساب للاستلام",btnRetrait:"طلب السحب",mesRetraits:"طلبات السحب الخاصة بي",retourAccueil:"⬅ العودة للرئيسية",lienAccueil:"الرئيسية",lienVendeur:"لوحة البائع",lienAcheteur:"لوحة المشتري",lienConnexion:"تسجيل الدخول",msgEmailInvalide:"ضع بريداً حقيقياً، مثال: اسمك@gmail.com",msgEmailOk:"تم حفظ البريد! يمكنك الآن سحب أموالك.",msgRetraitSansEmail:"أكمل بريدك الحقيقي في الملف الشخصي لسحب أموالك.",msgRetraitKYC:"يجب أن تكون موثقاً KYC للسحب. أرسل KYC أولاً.",msgRetraitMin:"الحد الأدنى للسحب: 1000 F",msgCompteVide:"ضع رقمك / حسابك للاستلام",msgRetraitOk:"تم إرسال الطلب، سيتحقق منه المسؤول ✅",msgKYCEnvoye:"تم إرسال KYC، في انتظار التحقق ✅",msgInfosOk:"تم حفظ المعلومات ✅"},
+yo:{titre:"👤 Profaili Mi",changerPhoto:"📷 Yipada fọto mi",blocEmailTitre:"⚠️ Pari email gidi rẹ nibi",blocEmailTexte:"O le pari email gidi rẹ ni Profaili. Laisi email gidi, o ko le yọ owo rẹ kuro.",mesInfos:"Alaye mi",lblNom:"Orukọ kikun",lblEmail:"Email",infoEmailProfil:"O le pari email gidi rẹ ni Profaili.",lblTel:"Foonu",lblVille:"Ilu / Orilẹ-ede",btnSauver:"Fipamọ alaye mi",kycTitre:"🛡️ KYC - Ijẹrisi idanimọ",kycTexte:"Lati yọ owo rẹ kuro, o gbọdọ jẹrisi idanimọ rẹ.",lblPiece:"Iru iwe",cni:"Kaadi idanimọ (CNI)",passeport:"Iwe irin ajo",permis:"Iwe-aṣẹ awakọ",lblNumPiece:"Nọmba iwe",lblPhotoPiece:"Fọto iwe",btnKYC:"Fi ijẹrisi mi ranṣẹ",soldeTitre:"💰 Iwọntunwọnsi Mi & Yọkuro",soldeDispo:"Iwọntunwọnsi to wa",lblMontant:"Iye lati yọ kuro (F)",lblMoyen:"Ọna yọkuro",lblCompte:"Nọmba / Akọọlẹ lati gba",btnRetrait:"Beere yọkuro",mesRetraits:"Awọn ibeere yọkuro mi",retourAccueil:"⬅ Pada si Ile",lienAccueil:"Ile",lienVendeur:"Dasibodu Oluta",lienAcheteur:"Dasibodu Olura",lienConnexion:"Wọlé",msgEmailInvalide:"Fi email gidi, apẹẹrẹ: orukọre@gmail.com",msgEmailOk:"Email ti fipamọ! O le yọ owo rẹ kuro nisisiyi.",msgRetraitSansEmail:"Pari email gidi rẹ ni Profaili lati yọ owo rẹ kuro.",msgRetraitKYC:"O gbọdọ jẹ ijẹrisi KYC lati yọ kuro. Fi KYC rẹ ranṣẹ ni akọkọ.",msgRetraitMin:"Yọkuro ti o kere ju: 1000 F",msgCompteVide:"Fi nọmba / akọọlẹ rẹ lati gba",msgRetraitOk:"A ti fi ibeere ranṣẹ, Admin yoo jẹrisi ✅",msgKYCEnvoye:"A ti fi KYC ranṣẹ, nduro fun ijẹrisi ✅",msgInfosOk:"Alaye ti fipamọ ✅"},
+fon:{titre:"👤 Profil Towé",changerPhoto:"📷 Trɔ foto towé",blocEmailTitre:"⚠️ Ɖo email nugbo towe ɖo fi",blocEmailTexte:"A sixu ɖo email nugbo towe ɖo Profil mɛ. Email nugbo mavo ɔ, a sixu ɖe akwɛ towe tɔn a.",mesInfos:"Nǔ towe lɛ",lblNom:"Nyikɔ blibɔ",lblEmail:"Email",infoEmailProfil:"A sixu ɖo email nugbo towe ɖo Profil mɛ.",lblTel:"Téléphone",lblVille:"Toxo / To",btnSauver:"Hwlɛn nǔ towe lɛ",kycTitre:"🛡️ KYC - Kplɔn mɛ",kycTexte:"Na a na ɖe akwɛ towe tɔn ɔ, a ɖo na ɖo hwiɖe kplɔn.",lblPiece:"Wema alɔkpa",cni:"Carte d'identité (CNI)",passeport:"Passeport",permis:"Permis de conduire",lblNumPiece:"Wema tɔn lɛtɛ",lblPhotoPiece:"Foto wema tɔn",btnKYC:"Sɛ kplɔn towé",soldeTitre:"💰 Akwɛ Towé & Ɖe Tɔn",soldeDispo:"Akwɛ e ɖo te",lblMontant:"Akwɛ e na ɖe tɔn (F)",lblMoyen:"Ali e na ɖe akwɛ tɔn",lblCompte:"Numéro / Compte na yi",btnRetrait:"Byɔ ɖe akwɛ tɔn",mesRetraits:"Byɔ ɖe akwɛ towe lɛ",retourAccueil:"⬅ Lɛkɔ yi xwé",lienAccueil:"Xwé",lienVendeur:"Tableau NǓSATƆ",lienAcheteur:"Tableau NǓXƆTƆ",lienConnexion:"Byɔ",msgEmailInvalide:"Sɔ email nugbo, kpɔndé: nyikɔtowe@gmail.com",msgEmailOk:"È hwlɛn email! A sixu ɖe akwɛ towe tɔn din.",msgRetraitSansEmail:"Ɖo email nugbo towe ɖo Profil mɛ na a na ɖe akwɛ towe tɔn.",msgRetraitKYC:"A ɖo na nyi KYC kplɔn na a na ɖe tɔn. Sɛ KYC towe jɛnukɔn.",msgRetraitMin:"Akwɛ kpɛvi na ɖe tɔn : 1000 F",msgCompteVide:"Sɔ numéro / compte towe na yi",msgRetraitOk:"È sɛ byɔ, Admin na kplɔn ✅",msgKYCEnvoye:"È sɛ KYC, è ɖo te na kplɔn ✅",msgInfosOk:"È hwlɛn nǔ towe lɛ ✅"},
+goun:{titre:"👤 Profil Towé",changerPhoto:"📷 Trɔ foto towé",blocEmailTitre:"⚠️ Ɖo email nugbo towe ɖo fi",blocEmailTexte:"A sixu ɖo email nugbo towe ɖo Profil mɛ. Email nugbo mavo ɔ, a sixu ɖe akwɛ towe tɔn a.",mesInfos:"Nǔ towe lɛ",lblNom:"Nyikɔ blibɔ",lblEmail:"Email",infoEmailProfil:"A sixu ɖo email nugbo towe ɖo Profil mɛ.",lblTel:"Téléphone",lblVille:"Toxo / To",btnSauver:"Hwlɛn nǔ towe lɛ",kycTitre:"🛡️ KYC - Kplɔn mɛ",kycTexte:"Na a na ɖe akwɛ towe tɔn ɔ, a ɖo na ɖo hwiɖe kplɔn.",lblPiece:"Wema alɔkpa",cni:"Carte d'identité (CNI)",passeport:"Passeport",permis:"Permis de conduire",lblNumPiece:"Wema tɔn lɛtɛ",lblPhotoPiece:"Foto wema tɔn",btnKYC:"Sɛ kplɔn towé",soldeTitre:"💰 Akwɛ Towé & Ɖe Tɔn",soldeDispo:"Akwɛ e ɖo te",lblMontant:"Akwɛ e na ɖe tɔn (F)",lblMoyen:"Ali e na ɖe akwɛ tɔn",lblCompte:"Numéro / Compte na yi",btnRetrait:"Byɔ ɖe akwɛ tɔn",mesRetraits:"Byɔ ɖe akwɛ towe lɛ",retourAccueil:"⬅ Lɛkɔ yi xwé",lienAccueil:"Xwé",lienVendeur:"Tableau NǓSATƆ",lienAcheteur:"Tableau NǓXƆTƆ",lienConnexion:"Byɔ",msgEmailInvalide:"Sɔ email nugbo, kpɔndé: nyikɔtowe@gmail.com",msgEmailOk:"È hwlɛn email! A sixu ɖe akwɛ towe tɔn din.",msgRetraitSansEmail:"Ɖo email nugbo towe ɖo Profil mɛ na a na ɖe akwɛ towe tɔn.",msgRetraitKYC:"A ɖo na nyi KYC kplɔn na a na ɖe tɔn. Sɛ KYC towe jɛnukɔn.",msgRetraitMin:"Akwɛ kpɛvi na ɖe tɔn : 1000 F",msgCompteVide:"Sɔ numéro / compte towe na yi",msgRetraitOk:"È sɛ byɔ, Admin na kplɔn ✅",msgKYCEnvoye:"È sɛ KYC, è ɖo te na kplɔn ✅",msgInfosOk:"È hwlɛn nǔ towe lɛ ✅"}
+};
+function t(k){ var lang=localStorage.getItem("rocy_lang")||"fr"; var d=DICT[lang]||DICT.fr; if(d && k in d) return d[k]; if(k in DICT.fr) return DICT.fr[k]; return k; }
+function changerLangue(lang){ localStorage.setItem("rocy_lang", lang); document.documentElement.lang=lang; var sel=document.getElementById("langue"); if(sel) sel.value=lang; document.querySelectorAll("[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); el.textContent=t(k); }); if(lang==="ar") document.body.style.direction="rtl"; else document.body.style.direction="ltr"; }
+function getRole(){ return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur"; }
+function protegerPage(rolesAutorises){ const role=getRole(); if(role==="visiteur"){ alert("Connecte-toi d'abord."); window.location.href="connexion.html"; return false; } if(!rolesAutorises.includes(role)){ alert("⛔ Accès refus. Tu es : "+role); if(role==="vendeur") window.location.href="vendeur.html"; else if(role==="acheteur") window.location.href="acheteur.html"; else if(role==="admin") window.location.href="admin.html"; else window.location.href="index.html"; return false; } return true; }
+function aVraiEmailProfil(){ var e=localStorage.getItem('email_user')||document.getElementById('emailProfilInput').value.trim()||''; return e && !e.endsWith('@rocyinter.bj') && e.includes('@'); }
+function afficherBlocEmail(){ var bloc=document.getElementById('blocEmailProfil'); if(!bloc) return; if(!aVraiEmailProfil()) bloc.style.display='block'; else bloc.style.display='none'; }
 const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
 const supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
 let monProfil = null;
 document.getElementById('photoProfilInput').addEventListener('change', async function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    document.getElementById('photoProfilImg').src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-  if(MODE_TEST){
-    alert('MODE TEST : Photo changée (aperçu seulement)');
-    return;
-  }
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader(); reader.onload = function(ev){ document.getElementById('photoProfilImg').src = ev.target.result; }; reader.readAsDataURL(file);
+  if(MODE_TEST){ alert('MODE TEST : Photo changée (aperçu seulement)'); return; }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  const photoBase64 = await new Promise(function(resolve){
-    const r2 = new FileReader();
-    r2.onload = function(ev){ resolve(ev.target.result); };
-    r2.readAsDataURL(file);
-  });
+  const photoBase64 = await new Promise(function(resolve){ const r2 = new FileReader(); r2.onload = function(ev){ resolve(ev.target.result); }; r2.readAsDataURL(file); });
   const { error } = await supabaseClient.from('profils').update({ photo_profil: photoBase64 }).eq('id', session.user.id);
-  if(error) alert('Erreur photo : ' + error.message);
-  else alert('Photo de profil sauvegardée ✅');
+  if(error) alert('Erreur photo : ' + error.message); else alert('Photo de profil sauvegardée ✅');
 });
 document.getElementById('photoPiece').addEventListener('change', function(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const r = new FileReader();
-  r.onload = function(ev){
-    const img = document.getElementById('previewPiece');
-    img.src = ev.target.result;
-    img.style.display = 'block';
-  };
-  r.readAsDataURL(file);
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader(); r.onload = function(ev){ const img = document.getElementById('previewPiece'); img.src = ev.target.result; img.style.display = 'block'; }; r.readAsDataURL(file);
 });
 async function chargerProfil(){
+  afficherBlocEmail();
   if(MODE_TEST){
-    document.getElementById('emailProfil').innerText = 'test@rocyinter.com (MODE TEST)';
+    var em = localStorage.getItem('email_user')||'test@rocyinter.com (MODE TEST)';
+    document.getElementById('emailProfil').innerText = em;
+    document.getElementById('emailProfilInput').value = aVraiEmailProfil() ? localStorage.getItem('email_user') : '';
     document.getElementById('badgeRole').innerText = localStorage.getItem('role_user') || 'vendeur';
     document.getElementById('nomProfil').value = localStorage.getItem('nom_user') || '';
     document.getElementById('telProfil').value = localStorage.getItem('telephone_user') || '';
@@ -206,126 +157,74 @@ async function chargerProfil(){
     return;
   }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if(!session){
-    alert('Connecte-toi d\'abord');
-    window.location.href = 'connexion.html';
-    return;
-  }
+  if(!session){ alert('Connecte-toi d\'abord'); window.location.href = 'connexion.html'; return; }
   const { data, error } = await supabaseClient.from('profils').select('*').eq('id', session.user.id).single();
   if(error){ alert('Erreur profil: ' + error.message); return; }
   monProfil = data;
-  if(data.photo_profil){
-    document.getElementById('photoProfilImg').src = data.photo_profil;
-  }
+  if(data.photo_profil) document.getElementById('photoProfilImg').src = data.photo_profil;
   document.getElementById('emailProfil').innerText = data.email || session.user.email;
+  localStorage.setItem('email_user', data.email || session.user.email || '');
+  document.getElementById('emailProfilInput').value = aVraiEmailProfil() ? (data.email||'') : '';
   document.getElementById('badgeRole').innerText = data.role || 'acheteur';
   document.getElementById('badgeKYC').innerText = 'KYC : ' + (data.kyc_statut || 'non_verifie');
   document.getElementById('nomProfil').value = data.nom || data.nom_complet || '';
   document.getElementById('telProfil').value = data.telephone || '';
   document.getElementById('villeProfil').value = data.ville || '';
   document.getElementById('soldeProfil').innerText = (data.solde || 0) + ' F';
+  afficherBlocEmail();
   chargerRetraits(session.user.id);
 }
 async function chargerRetraits(userId){
   const { data } = await supabaseClient.from('retraits').select('*').eq('user_id', userId).order('created_at', {ascending:false});
-  if(!data || data.length === 0){
-    document.getElementById('listeRetraits').innerHTML = 'Aucune demande pour l\'instant.';
-    return;
-  }
-  document.getElementById('listeRetraits').innerHTML = data.map(r => 
-    '<div class="retrait-item"><b>'+r.montant+' F</b> - '+r.moyen+' - '+r.compte+' - <b>'+r.statut+'</b></div>'
-  ).join('');
+  if(!data || data.length === 0){ document.getElementById('listeRetraits').innerHTML = 'Aucune demande pour l\'instant.'; return; }
+  document.getElementById('listeRetraits').innerHTML = data.map(r => '<div class="retrait-item"><b>'+r.montant+' F</b> - '+r.moyen+' - '+r.compte+' - <b>'+r.statut+'</b></div>').join('');
 }
 document.getElementById('btnSauverProfil').addEventListener('click', async function(){
-  if(MODE_TEST){ alert('MODE TEST : Infos sauvegardées (faux)'); return; }
+  var email = document.getElementById('emailProfilInput').value.trim().toLowerCase();
+  if(email && (!email.includes('@') || email.endsWith('@rocyinter.bj'))){ alert(t('msgEmailInvalide')); return; }
+  if(MODE_TEST){
+    if(email){ localStorage.setItem('email_user', email); document.getElementById('emailProfil').innerText=email; }
+    alert(t('msgInfosOk')); afficherBlocEmail();
+    var retour=localStorage.getItem('retour_apres_profil'); if(retour && email){ localStorage.removeItem('retour_apres_profil'); window.location.href=retour; }
+    return;
+  }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  const { error } = await supabaseClient.from('profils').update({
-    nom: document.getElementById('nomProfil').value.trim(),
-    telephone: document.getElementById('telProfil').value.trim(),
-    ville: document.getElementById('villeProfil').value.trim()
-  }).eq('id', session.user.id);
+  var updateData = { nom: document.getElementById('nomProfil').value.trim(), telephone: document.getElementById('telProfil').value.trim(), ville: document.getElementById('villeProfil').value.trim() };
+  if(email){ updateData.email = email; updateData.email_technique = false; }
+  const { error } = await supabaseClient.from('profils').update(updateData).eq('id', session.user.id);
   if(error) alert(error.message);
-  else alert('Infos sauvegardées ✅');
+  else {
+    if(email){ localStorage.setItem('email_user', email); document.getElementById('emailProfil').innerText=email; }
+    alert(t('msgEmailOk')); afficherBlocEmail();
+    var retour2=localStorage.getItem('retour_apres_profil'); if(retour2 && email){ localStorage.removeItem('retour_apres_profil'); window.location.href=retour2; }
+  }
 });
 document.getElementById('btnEnvoyerKYC').addEventListener('click', async function(){
-  const type = document.getElementById('typePiece').value;
-  const num = document.getElementById('numPiece').value.trim();
+  const type = document.getElementById('typePiece').value; const num = document.getElementById('numPiece').value.trim();
   if(!num){ alert('Mets le numéro de ta pièce'); return; }
   if(MODE_TEST){ document.getElementById('msgKYC').innerText = 'MODE TEST : KYC envoyé, en attente de vérification ✅'; return; }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  const { error } = await supabaseClient.from('profils').update({
-    kyc_type: type,
-    kyc_numero: num,
-    kyc_statut: 'en_attente'
-  }).eq('id', session.user.id);
-  if(error) alert(error.message);
-  else {
-    document.getElementById('msgKYC').innerText = 'KYC envoyé, en attente de vérification par Admin ✅';
-    document.getElementById('badgeKYC').innerText = 'KYC : en_attente';
-  }
+  const { error } = await supabaseClient.from('profils').update({ kyc_type: type, kyc_numero: num, kyc_statut: 'en_attente' }).eq('id', session.user.id);
+  if(error) alert(error.message); else { document.getElementById('msgKYC').innerText = t('msgKYCEnvoye'); document.getElementById('badgeKYC').innerText = 'KYC : en_attente'; }
 });
 document.getElementById('btnRetrait').addEventListener('click', async function(){
+  // BLOCAGE EMAIL D'ABORD, AVANT KYC, AVANT RETRAIT - via commun.js aussi
+  if(!aVraiEmailProfil()){ alert(t('msgRetraitSansEmail')); afficherBlocEmail(); document.getElementById('blocEmailProfil').scrollIntoView({behavior:'smooth'}); return; }
   const montant = Number(document.getElementById('montantRetrait').value);
   const moyen = document.getElementById('moyenRetrait').value;
   const compte = document.getElementById('compteRetrait').value.trim();
-  if(!montant || montant < 1000){ alert('Minimum retrait : 1000 F'); return; }
-  if(!compte){ alert('Mets ton numéro / compte pour recevoir'); return; }
+  if(!montant || montant < 1000){ alert(t('msgRetraitMin')); return; }
+  if(!compte){ alert(t('msgCompteVide')); return; }
   if(MODE_TEST){ document.getElementById('msgRetrait').innerText = 'MODE TEST : Demande de retrait ' + montant + 'F envoyée ✅'; return; }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if(monProfil && monProfil.kyc_statut !== 'verifie'){
-    alert('Tu dois être vérifié KYC pour retirer. Envoie d\'abord ton KYC.');
-    return;
-  }
-  const { error } = await supabaseClient.from('retraits').insert([{
-    user_id: session.user.id,
-    montant: montant,
-    moyen: moyen,
-    compte: compte,
-    statut: 'en_attente'
-  }]);
-  if(error) alert(error.message);
-  else {
-    document.getElementById('msgRetrait').innerText = 'Demande envoyée, Admin va valider ✅';
-    chargerRetraits(session.user.id);
-  }
+  if(monProfil && monProfil.kyc_statut !== 'verifie'){ alert(t('msgRetraitKYC')); return; }
+  const { error } = await supabaseClient.from('retraits').insert([{ user_id: session.user.id, montant: montant, moyen: moyen, compte: compte, statut: 'en_attente' }]);
+  if(error) alert(error.message); else { document.getElementById('msgRetrait').innerText = t('msgRetraitOk'); chargerRetraits(session.user.id); }
 });
 chargerProfil();
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({
-    pageLanguage:'fr',
-    includedLanguages:'en,fr,yo,es,de,pt,ar,zh-CN',
-    autoDisplay:false
-  }, 'google_translate_element');
-}
-function changerLangue(lang){
-  if(lang === "autre"){
-    var gt = document.getElementById("google_translate_element");
-    if(gt){ gt.style.position = "static"; gt.style.opacity = "1"; gt.style.top = "auto"; gt.style.left = "auto"; }
-    alert("Choisis ta langue dans le menu Google qui vient d'apparaître en haut");
-    return;
-  }
-  if(lang === "fon" || lang === "goun"){
-    alert("Fon / Goun : Traduction manuelle en cours. Version complète bientôt.");
-    return;
-  }
-  if(lang === "fr"){
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-    location.reload();
-    return;
-  }
-  document.cookie = "googtrans=/fr/" + lang + "; path=/;";
-  document.cookie = "googtrans=/fr/" + lang + "; path=/; domain=" + window.location.hostname;
-  location.reload();
-}
-window.changerLangue = changerLangue;
-if(!window._googleTranslateLoaded){
-  window._googleTranslateLoaded = true;
-  let sGoogle = document.createElement("script");
-  sGoogle.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-  document.head.appendChild(sGoogle);
-}
+document.addEventListener('DOMContentLoaded', function(){ changerLangue(localStorage.getItem("rocy_lang")||"fr"); });
 protegerPage(["acheteur","vendeur","admin"]);
+window.changerLangue = changerLangue;
 </script>
 <script src="commun.js"></script>
 </body>
