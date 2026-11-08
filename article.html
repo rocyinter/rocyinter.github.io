@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Produit - ROCYINTER</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="commun.js"></script>
 <style>
 *{box-sizing:border-box}
 body{font-family:'Inter',Arial,sans-serif;background:#f6f6f6;margin:0;color:#1a1a1a}
@@ -88,6 +89,7 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 </div>
 </div>
 <div id="zoneVendeur" style="display:none;background:#EFF6FF;padding:12px;border-radius:10px;margin-top:10px;text-align:center;font-size:12px;line-height:1.6"><span id="txtTonProduit">C'est ton produit. Tu ne peux pas te commander toi-même.</span><br><a href="vendeur.html" style="font-weight:800" id="txtAllerVendeur">→ Aller à mon Tableau Vendeur</a></div>
+<div id="msgErreur" style="display:none;color:#D32F2F;font-size:12px;margin-top:10px"></div>
 </div>
 <div id="overlayDesc" onclick="fermerDesc()"><div id="popupDesc" onclick="event.stopPropagation()">
 <h3 id="titrePopupDesc">Description</h3>
@@ -118,6 +120,13 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 <footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; <span id="txtTel">Tél :</span> <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 <script>
 var LANGUE_ACTUELLE = localStorage.getItem("rocy_lang") || "fr";
+var taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
+var symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
+var TRADUCTIONS = {
+fr:{bonjour:"Bonjour",bienvenue:"Bienvenue",menuAccueil:"🏠 Accueil",menuVendeur:"📦 Mon Tableau Vendeur",menuAcheteur:"🛒 Mes Commandes",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publier un produit",menuProfil:"👤 Mon Profil",menuConditions:"📜 Conditions",menuContact:"📞 Contact",menuApropos:"ℹ️ À propos",menuConnecter:"🔑 Se connecter",menuInscription:"✍️ S'inscrire",menuDeconnecter:"🚪 Se déconnecter"},
+en:{bonjour:"Hello",bienvenue:"Welcome",menuAccueil:"🏠 Home",menuVendeur:"📦 My Seller Dashboard",menuAcheteur:"🛒 My Orders",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publish a product",menuProfil:"👤 My Profile",menuConditions:"📜 Terms",menuContact:"📞 Contact",menuApropos:"ℹ️ About",menuConnecter:"🔑 Log in",menuInscription:"✍️ Sign up",menuDeconnecter:"🚪 Log out"}
+};
+TRADUCTIONS.yo=TRADUCTIONS.fr; TRADUCTIONS.fon=TRADUCTIONS.fr; TRADUCTIONS.goun=TRADUCTIONS.fr; TRADUCTIONS.es=TRADUCTIONS.fr; TRADUCTIONS.pt=TRADUCTIONS.fr; TRADUCTIONS.de=TRADUCTIONS.fr; TRADUCTIONS.ar=TRADUCTIONS.fr;
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
 function ouvrirMenu(){ construireMenu(); document.getElementById('overlayMenu').style.display='block'; document.getElementById('menuPanel').style.display='block'; }
 function fermerMenu(){ document.getElementById('overlayMenu').style.display='none'; document.getElementById('menuPanel').style.display='none'; }
@@ -138,23 +147,35 @@ function construireMenu(){
 function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
 function ouvrirDesc(){ document.getElementById('overlayDesc').style.display='flex'; }
 function fermerDesc(){ document.getElementById('overlayDesc').style.display='none'; }
-const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
+function ouvrirChat(){ document.getElementById('overlayChat').style.display='flex'; }
+function fermerChat(){ document.getElementById('overlayChat').style.display='none'; }
+function changerLangue(v){
+  LANGUE_ACTUELLE=v; localStorage.setItem("rocy_lang",v);
+  var sel=document.getElementById("langue"); if(sel) sel.value=v;
+  appliquerTraductionProduits();
+  // NE PAS changer l'URL, sinon on perd ?id=
+}
+function appliquerTraductionProduits(){ try{ construireMenu(); }catch(e){} }
+
+// ===== FIX ARTICLE V3 - COMPLET =====
 const params = new URLSearchParams(window.location.search);
 const produitId = params.get('id');
 let prixProduit = 0, commission = 0, total = 0, qty = 1, taille = '42';
 let nomProduitActuel = "", telVendeur = "", vendeurId = "";
 let cestMonProduit = false;
-let supabaseClient = null;
+let supabaseClient = window.rocyClient || null;
+
 function chargerSupabase(){
-  if(window.supabase){
-    try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; }
-    chargerProduit(); envoyerFileAttente(); return;
-  }
-  var s = document.createElement('script'); s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-  s.onload = function(){ try{ supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3'); }catch(e){ supabaseClient = null; } chargerProduit(); envoyerFileAttente(); };
-  document.head.appendChild(s);
+  try{
+    if(window.rocyClient) supabaseClient = window.rocyClient;
+    else if(window.supabase && window.supabase.createClient){
+      supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+    }
+  }catch(e){ console.log("supabase err", e); }
+  console.log("ID demande:", produitId, "client OK:", !!supabaseClient);
+  chargerProduit();
+  envoyerFileAttente();
 }
-chargerSupabase();
 function mettreEnAttente(type, donnees){ try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); file.push({ type: type, donnees: donnees, date: new Date().toISOString() }); localStorage.setItem('file_attente_rocy', JSON.stringify(file)); }catch(e){} }
 async function envoyerFileAttente(){ if(!supabaseClient) return; try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); if(!file.length) return; var reste=[]; for(var i=0;i<file.length;i++){ var res = await supabaseClient.from(file[i].type).insert([file[i].donnees]); if(res.error) reste.push(file[i]); } localStorage.setItem('file_attente_rocy', JSON.stringify(reste)); }catch(e){} }
 async function chargerVendeurReel(p){
@@ -164,7 +185,7 @@ async function chargerVendeurReel(p){
   var nomEstFaux = !nomV || nomV.toLowerCase()==="vendeur" || nomV.toLowerCase()==="seller";
   if(nomEstFaux && vendeurId && supabaseClient){
     try{
-      var res = await supabaseClient.from('profils').select('nom, nom_complet, nom_entreprise, ville, photo, photo_profil, avatar').eq('id', vendeurId).single();
+      var res = await supabaseClient.from('profils').select('nom, nom_complet, nom_entreprise, ville, photo, photo_profil, avatar').eq('id', vendeurId).maybeSingle();
       if(res && res.data){
         var pr = res.data;
         var vraiNom = pr.nom_entreprise || pr.nom_complet || pr.nom || "";
@@ -175,26 +196,43 @@ async function chargerVendeurReel(p){
     }catch(e){}
   }
   if(!nomV) nomV = "Vendeur";
-  var nomVEl=document.getElementById('nomVendeur'); nomVEl.textContent=nomV; nomVEl.setAttribute('data-original', nomV); nomVEl.setAttribute('data-ne-pas-traduire','1');
-  var infoEl=document.getElementById('infoVendeur'); infoEl.textContent=villeV; infoEl.setAttribute('data-original', villeV);
+  var nomVEl=document.getElementById('nomVendeur'); if(nomVEl){ nomVEl.textContent=nomV; nomVEl.setAttribute('data-original', nomV); nomVEl.setAttribute('data-ne-pas-traduire','1'); }
+  var infoEl=document.getElementById('infoVendeur'); if(infoEl){ infoEl.textContent=villeV; infoEl.setAttribute('data-original', villeV); }
   var av=document.getElementById('avatarVendeur');
-  if(photoV){ av.innerHTML='<img src="'+photoV+'" alt="Vendeur" onerror="this.parentElement.textContent=\''+nomV.charAt(0)+'\'">'; }
-  else { av.textContent = nomV.charAt(0); }
+  if(av){ if(photoV){ av.innerHTML='<img src="'+photoV+'" alt="Vendeur" onerror="this.parentElement.textContent=\''+nomV.charAt(0)+'\'">'; } else { av.textContent = nomV.charAt(0); } }
   return { nom: nomV, ville: villeV, photo: photoV };
 }
 async function chargerProduit(){
-  if(!produitId){ var n = document.getElementById('nomProduit'); if(n) n.textContent = "Aucun produit sélectionné"; return; }
-  if(!supabaseClient) return;
-  const { data, error } = await supabaseClient.from('produits').select('*').eq('id', produitId).single();
-  if(error || !data){ document.getElementById('nomProduit').textContent = "Produit introuvable"; return; }
-  const p = data;
-  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || p.user_id || ""; telVendeur = p.telephone_vendeur || p.tel_vendeur || "";
+  var nomEl = document.getElementById('nomProduit');
+  if(!produitId){ if(nomEl) nomEl.textContent = "Aucun produit sélectionné"; return; }
+  if(!supabaseClient){ if(nomEl) nomEl.textContent = "Erreur connexion - Réessaie"; return; }
+  var essais = [produitId];
+  if(produitId && !isNaN(Number(produitId))) essais.push(Number(produitId));
+  var p = null, derniereErreur = null;
+  for(var i=0;i<essais.length;i++){
+    try{
+      var res = await supabaseClient.from('produits').select('*').eq('id', essais[i]).maybeSingle();
+      console.log("Essai id=", essais[i], "erreur=", res.error, "data=", !!res.data);
+      if(res.data){ p = res.data; break; }
+      derniereErreur = res.error;
+    }catch(e){ derniereErreur = e; }
+  }
+  if(!p){
+    if(nomEl) nomEl.textContent = "Produit introuvable (id=" + produitId + ")";
+    var errEl = document.getElementById('msgErreur');
+    if(errEl){ errEl.style.display='block'; errEl.textContent = "Erreur Supabase : " + (derniereErreur ? (derniereErreur.message||JSON.stringify(derniereErreur)) : "produit vide") + " - Vérifie RLS SELECT sur produits."; }
+    console.log("ERREUR PRODUIT:", derniereErreur);
+    return;
+  }
+  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || ""; telVendeur = p.telephone_vendeur || p.tel_vendeur || "";
   var img = document.getElementById('photoProduit'); if(img) img.src = p.photo || p.image || "";
-  var nomEl=document.getElementById('nomProduit'); nomEl.textContent=p.nom; nomEl.setAttribute('data-original', p.nom);
+  if(nomEl){ nomEl.textContent=p.nom; nomEl.setAttribute('data-original', p.nom); }
   var elPrix = document.getElementById('prixProduit'); if(elPrix){ elPrix.setAttribute("data-prix", p.prix); elPrix.textContent = Number(p.prix).toLocaleString() + " F"; }
   var v = document.getElementById('villeProduit'); if(v){ v.textContent=p.ville||""; v.setAttribute('data-original', p.ville||""); }
-  var descEl=document.getElementById('descProduit'); descEl.textContent=p.description||""; descEl.setAttribute('data-original', p.description||"");
+  var descEl=document.getElementById('descProduit'); if(descEl){ descEl.textContent=p.description||""; descEl.setAttribute('data-original', p.description||""); }
   var descPop=document.getElementById('descPopup'); if(descPop) descPop.textContent=p.description||"";
+  var stockEl=document.getElementById('stockProduit'); if(stockEl) stockEl.textContent = p.stock ? ("Stock: "+p.stock) : "En stock";
+  var vuesEl=document.getElementById('vuesProduit'); if(vuesEl) vuesEl.textContent = p.vues ? (p.vues+" vues") : "";
   await chargerVendeurReel(p);
   var b = document.getElementById('badgeBoost'); if(b && (p.boost || p.booster || p.est_booste)) b.style.display = 'inline-block';
   const monEmail = localStorage.getItem('email_user') || ''; const monId = localStorage.getItem('user_id') || '';
@@ -206,4 +244,72 @@ async function chargerProduit(){
 function calculerCommission(prix){ if(prix <= 500000) return prix * 0.085; if(prix <= 2000000) return prix * 0.075; return prix * 0.065; }
 function formaterPrix(prixFCFA){
   var deviseEl=document.getElementById("devise"); var devise=deviseEl?deviseEl.value:"XOF";
-  var converti=Math.round(prixFCFA*taux[de
+  var converti=Math.round(prixFCFA*(taux[devise]||1));
+  return converti.toLocaleString() + (symboles[devise]||" F");
+}
+function mettreAJourPrix(){
+  commission = calculerCommission(prixProduit); total = prixProduit;
+  var vendeurRecoit = prixProduit - commission;
+  var d = document.getElementById("detailPrix");
+  if(d) d.innerHTML = "Prix produit : <b>" + formaterPrix(prixProduit) + "</b><br>Livraison : <b>Non incluse - À discuter avec le vendeur dans le Chat</b><br><b>Total à payer : " + formaterPrix(total) + "</b> <small>(sans livraison)</small><br><small>Le vendeur recevra " + formaterPrix(vendeurRecoit) + " après ton clic COLIS REÇU.</small>";
+  var commEl = document.getElementById("txtCommission");
+  if(commEl) commEl.textContent = "Commission RocyInter : 8,5% jusqu'à " + formaterPrix(500000) + " - 7,5% jusqu'à " + formaterPrix(2000000) + " - 6,5% au-delà - Déduite au vendeur, pas à toi.";
+  var totEl = document.getElementById("totalAPayer");
+  if(totEl) totEl.textContent = formaterPrix(total);
+}
+function majTexteCommission(){ mettreAJourPrix(); }
+async function convertirPrix(){
+  try{
+    var rr = await fetch("https://open.er-api.com/v6/latest/XOF"); var jj = await rr.json();
+    if(jj && jj.rates){ taux.EUR=jj.rates.EUR; taux.USD=jj.rates.USD; taux.NGN=jj.rates.NGN; taux.GHS=jj.rates.GHS; taux.GBP=jj.rates.GBP; }
+  }catch(e){}
+  localStorage.setItem("rocy_devise", document.getElementById("devise") ? document.getElementById("devise").value : "XOF");
+  var prixEl = document.getElementById("prixProduit");
+  if(prixEl && prixProduit) prixEl.textContent = formaterPrix(prixProduit);
+  mettreAJourPrix();
+}
+function commander(){
+  if(!localStorage.getItem("rocy_user")){ window.location.href="connexion.html"; return; }
+  document.getElementById('choixPaiement').style.display='block';
+  mettreAJourPrix();
+}
+function fermerPaiement(){ document.getElementById('choixPaiement').style.display='none'; }
+function payerAvec(moyen){
+  alert("Paiement " + moyen + " : " + formaterPrix(total) + " - Le vendeur sera payé après COLIS REÇU.");
+  if(supabaseClient){
+    supabaseClient.from('commandes').insert([{produit_id: produitId, vendeur_id: vendeurId, prix: prixProduit, moyen_paiement: moyen, statut: 'en_attente', email_acheteur: localStorage.getItem("rocy_user")||""}]).then(function(r){ console.log("commande", r); });
+  }
+}
+async function chargerMessages(){
+  if(!supabaseClient || !produitId) return;
+  try{
+    var res = await supabaseClient.from('messages').select('*').eq('produit_id', produitId).order('created_at',{ascending:true}).limit(20);
+    var box = document.getElementById('messagesChat'); if(!box) return;
+    if(res.data && res.data.length){ box.innerHTML = res.data.map(function(m){ return "<div><b>"+(m.expediteur||"")+" :</b> "+(m.message||m.contenu||"")+"</div>"; }).join(""); }
+    else { box.innerHTML = "<small>Aucun message. Pose ta question logistique.</small>"; }
+  }catch(e){}
+}
+async function envoyerMsg(){
+  var inp = document.getElementById('msgChat'); var txt = (inp.value||"").trim(); if(!txt) return;
+  var box = document.getElementById('messagesChat');
+  if(box) box.innerHTML += "<div><b>Toi :</b> "+txt+"</div>";
+  inp.value="";
+  if(supabaseClient){
+    var r = await supabaseClient.from('messages').insert([{produit_id: produitId, vendeur_id: vendeurId, message: txt, contenu: txt, expediteur: localStorage.getItem("rocy_user")||"acheteur"}]);
+    if(r.error){ mettreEnAttente('messages', {produit_id: produitId, vendeur_id: vendeurId, message: txt, expediteur: localStorage.getItem("rocy_user")||"acheteur"}); }
+  } else { mettreEnAttente('messages', {produit_id: produitId, vendeur_id: vendeurId, message: txt}); }
+}
+function basculerWhatsApp(){
+  var tel = telVendeur ? telVendeur.replace(/\D/g,'') : "2290148270448";
+  var msg = encodeURIComponent("Bonjour, je suis sur ROCYINTER pour le produit : " + nomProduitActuel + " - " + window.location.href);
+  window.open("https://wa.me/"+tel+"?text="+msg, "_blank");
+  var t = document.getElementById('traceWhatsApp'); if(t) t.textContent = "Ouvert sur WhatsApp - La trace reste sur le site.";
+}
+document.addEventListener("DOMContentLoaded", function(){
+  var sel = document.getElementById("langue"); if(sel) sel.value = LANGUE_ACTUELLE;
+  var dev = document.getElementById("devise"); if(dev) dev.value = localStorage.getItem("rocy_devise")||"XOF";
+  chargerSupabase();
+});
+</script>
+</body>
+</html>
