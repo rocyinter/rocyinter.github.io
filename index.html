@@ -26,11 +26,13 @@ header .logo span{color:#FFC107}
 .hero{background:white;padding:20px 14px;text-align:center}
 .hero h1{font-size:20px;margin:10px 0;line-height:1.35}
 .hero p{color:#666;font-size:14px;margin:6px 0}
-.btn-comment{margin-top:12px;background:none;border:0;color:#111;font-weight:900;font-size:14px;text-decoration:underline;cursor:pointer}
+/* Comment ça marche : BLEU, SANS SOULIGNEMENT, SANS ? */
+.btn-comment{margin-top:12px;background:none;border:0;color:#0B5ED7;font-weight:800;font-size:14px;text-decoration:none;cursor:pointer}
 .barre-prix{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 0;max-width:1100px;margin:auto}
 .barre-prix .compteur{color:#666;font-size:13px}
 .convertisseur{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;font-weight:700}
 .convertisseur select{border:0;background:transparent;font-size:12px;font-weight:800;outline:none;cursor:pointer}
+.txt-taux{text-align:center;font-size:10px;color:#999;margin:2px 0 0}
 .grid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:white;border-radius:12px;overflow:hidden;cursor:pointer}
 .card img{width:100%;height:130px;object-fit:cover;background:#eee}
@@ -42,11 +44,10 @@ header .logo span{color:#FFC107}
 #popupComment p{margin:10px 0;font-size:14px;line-height:1.5;color:#333}
 #popupComment .etape{background:#FFF8E1;border-radius:10px;padding:10px;margin:8px 0;font-size:13px}
 #popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:12px;border-radius:10px;font-weight:900;cursor:pointer;margin-top:10px}
-footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:13px;line-height:1.5}
-footer b{font-size:15px}
-footer b span{color:#FFC107}
+/* PIED DE PAGE : MEME HAUTEUR QUE EN-TETE, POLICE PETITE, SANS ROCY INTER */
+footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:11px;line-height:1.4}
 footer a{color:#FFC107;text-decoration:none;font-weight:bold}
-footer p{margin:2px 0}
+footer p{margin:1px 0}
 @media(max-width:480px){
   header .logo{font-size:17px}
   .hero h1{font-size:18px}
@@ -54,6 +55,7 @@ footer p{margin:2px 0}
   .card img{height:110px}
   .card div{padding:8px;font-size:13px}
   .btn-jaune{font-size:13px;padding:11px}
+  footer{font-size:10.5px;padding:10px 8px}
 }
 @media(min-width:768px){
   .grid{grid-template-columns:1fr 1fr 1fr 1fr;max-width:1100px;margin:auto}
@@ -79,14 +81,14 @@ footer p{margin:2px 0}
   <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:13px;border-radius:8px;font-weight:900">Publier mon produit pour 2000F - 30 jours</a>
   <p id="txtBoost" style="font-size:12px;margin-top:10px">Boost : 20 premiers gratuits, après 500F / 3 jours</p>
   <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:10px" oninput="filtrerProduits()">
-  <button class="btn-comment" onclick="ouvrirComment()">❓ <span id="titreComment">Comment ça marche ?</span></button>
+  <button class="btn-comment" onclick="ouvrirComment()"><span id="titreComment">Comment ça marche ?</span></button>
 </div>
 
 <div class="barre-prix">
   <span class="compteur" id="statut">Chargement des produits...</span>
   <label class="convertisseur">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF" selected>FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select></label>
 </div>
-<div style="text-align:center;font-size:11px;color:#999" id="txtTaux">Taux à l'instant T - FCFA par défaut</div>
+<div class="txt-taux" id="txtTaux">Taux à l'instant T - FCFA par défaut</div>
 <div class="grid" id="listeProduits"></div>
 
 <div id="overlayComment" onclick="fermerComment()">
@@ -100,7 +102,8 @@ footer p{margin:2px 0}
   </div>
 </div>
 
-<footer><b>ROCY <span>INTER</span></b><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a></p><p>Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a></p><p>Rocyinter@2026</p></footer>
+<!-- PIED DE PAGE CORRIGE : VRAIES INFOS, PETITE POLICE, SANS ROCY INTER, MEME HAUTEUR QUE EN-TETE -->
+<footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 
 <script>
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
