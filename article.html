@@ -9,7 +9,7 @@
 *{box-sizing:border-box}
 body{font-family:'Inter',Arial,sans-serif;background:#f6f6f6;margin:0;color:#1a1a1a}
 header{background:#111;color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-header .logo{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800}
+header .logo{font-size:17px;font-weight:800}
 header .logo span{color:#FFC107}
 .header-droite{display:flex;gap:6px;align-items:center}
 .header-droite select{background:#fff;border:0;border-radius:8px;height:32px;padding:0 6px;font-size:11px;font-weight:600;cursor:pointer;max-width:110px}
@@ -35,12 +35,15 @@ h2{margin:10px 0 4px;font-size:18px;line-height:1.3}
 .btn{width:100%;background:#FF6B00;color:#fff;border:0;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer}
 footer{background:#111;color:#fff;padding:10px 12px;text-align:center;margin-top:10px;font-size:9px;line-height:1.4}
 footer a{color:#FFC107;text-decoration:none;font-weight:700}
-/* POPUP CHAT AU-DESSUS */
+.btn-description{background:none;border:0;color:#0B5ED7;font-weight:800;font-size:15px;cursor:pointer;padding:0;text-align:left}
+#overlayDesc{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:14px}
+#popupDesc{background:#fff;width:100%;max-width:420px;border-radius:14px;padding:16px;max-height:85vh;overflow:auto}
+#popupDesc h3{margin:0 0 10px;text-align:center;font-size:15px}
 #overlayChat{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:flex-end;padding:0}
 #popupChat{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:14px;max-height:85vh;overflow:auto}
 #messagesChat{min-height:60px;background:#f9f9f9;padding:8px;border-radius:8px;font-size:13px;line-height:1.5}
 #msgChat{width:100%;padding:10px;margin-top:8px;border:1px solid #ddd;border-radius:8px}
-.notif{position:fixed;top:60px;right:12px;background:#FF6B00;color:#fff;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;z-index:400;display:none;cursor:pointer;max-width:260px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.notif{position:fixed;top:60px;right:12px;background:#FF6B00;color:#fff;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;z-index:400;display:none;cursor:pointer;max-width:260px}
 @media(min-width:768px){.container{max-width:640px}.main-img{height:340px}h2{font-size:20px}}
 </style>
 </head>
@@ -49,7 +52,6 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 <div id="overlayMenu" onclick="fermerMenu()"></div>
 <div id="menuPanel" style="display:none"><h3>ROCY <span>INTER</span></h3><p id="menuBonjour">Bienvenue</p><div id="liensMenu"></div><br><a href="#" class="fermer" onclick="fermerMenu();return false;">Fermer ✕</a></div>
 <div id="notifChat" class="notif" onclick="ouvrirChat()">💬 Le vendeur a répondu - Clique pour voir</div>
-
 <div class="container">
 <div style="position:relative">
 <img id="photoProduit" class="main-img" src="" alt="Photo produit">
@@ -60,23 +62,13 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 <p class="stock"><span id="stockProduit"></span> • <span id="vuesProduit"></span> • <span id="villeProduit" data-original=""></span></p>
 <div class="vendeur">
 <div class="avatar" id="avatarVendeur">V</div>
-<div><b id="nomVendeur" data-original=""></b><br><span id="infoVendeur" data-original=""></span><br><span id="avisVendeur"></span></div>
+<div><b id="nomVendeur" data-original="">Chargement...</b><br><span id="infoVendeur" data-original=""></span><br><span id="avisVendeur"></span></div>
 <button id="btnChat" class="btn-chat" onclick="ouvrirChat()">💬 <span id="txtChatBtn">Discuter de la logistique</span></button>
 </div>
-<h3 id="titreDesc">Description</h3>
-<p class="desc" id="descProduit" data-original=""></p>
-<div style="background:#FFF8E1;padding:12px;border-radius:10px;margin-top:10px;font-size:12px;line-height:1.7">
-<b id="txtAvantPayer">🛡️ Avant de payer, tu vois tout :</b><br>
-<span id="txtLivraison">Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur</span><br>
-<span id="txtDelai">Délai : Selon le pays / ville</span><br>
-<span id="txtProtection">Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU</span><br>
-<span id="detailPrix"></span><br>
-<small id="txtCommission">Commission RocyInter : 8,5% jusqu'à 500 000F - 7,5% jusqu'à 2 000 000F - 6,5% au-delà - Déduite au vendeur, pas à toi.</small><br><br>
-<b id="txtComment">Comment ça marche ?</b><br>
-<span id="txtEtapes">1. Tu commandes → Argent bloqué<br>2. Le vendeur envoie → Tu suis ton colis<br>3. Tu reçois → Tu cliques COLIS REÇU<br>4. Le vendeur est payé<br>Problème ? 48h pour signaler un litige.</span>
-</div>
+<button class="btn-description" onclick="ouvrirDesc()">› <span id="titreDesc">Description</span></button>
+<p class="desc" id="descProduit" data-original="" style="margin:8px 0 0"></p>
 <div id="zoneAcheteur">
-<button onclick="commander()" class="btn" style="margin-top:10px">🛒 <span id="txtCommander">COMMANDER sur le site</span></button>
+<button onclick="commander()" class="btn" style="margin-top:12px">🛒 <span id="txtCommander">COMMANDER sur le site</span></button>
 <div id="choixPaiement" style="display:none;border:1px solid #FF6B00;border-radius:10px;padding:12px;margin-top:10px;background:#FFF8E1">
 <b><span id="txtPayer">Payer</span> <span id="totalAPayer"></span></b><br>
 <p style="font-size:12px;margin:6px 0" id="txtPaiementInfo">Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité. Le vendeur sera payé seulement quand tu cliqueras COLIS REÇU.</p>
@@ -97,8 +89,21 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 </div>
 <div id="zoneVendeur" style="display:none;background:#EFF6FF;padding:12px;border-radius:10px;margin-top:10px;text-align:center;font-size:12px;line-height:1.6"><span id="txtTonProduit">C'est ton produit. Tu ne peux pas te commander toi-même.</span><br><a href="vendeur.html" style="font-weight:800" id="txtAllerVendeur">→ Aller à mon Tableau Vendeur</a></div>
 </div>
-
-<!-- POPUP CHAT AU-DESSUS -->
+<div id="overlayDesc" onclick="fermerDesc()"><div id="popupDesc" onclick="event.stopPropagation()">
+<h3 id="titrePopupDesc">Description</h3>
+<p class="desc" id="descPopup" style="margin:0 0 10px"></p>
+<div style="background:#FFF8E1;padding:12px;border-radius:10px;font-size:12px;line-height:1.7">
+<b id="txtAvantPayer">🛡️ Avant de payer, tu vois tout :</b><br>
+<span id="txtLivraison">Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur</span><br>
+<span id="txtDelai">Délai : Selon le pays / ville</span><br>
+<span id="txtProtection">Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU</span><br>
+<span id="detailPrix"></span><br>
+<small id="txtCommission"></small><br><br>
+<b id="txtComment">Comment ça marche ?</b><br>
+<span id="txtEtapes">1. Tu commandes → Argent bloqué<br>2. Le vendeur envoie → Tu suis ton colis<br>3. Tu reçois → Tu cliques COLIS REÇU<br>4. Le vendeur est payé<br>Problème ? 48h pour signaler un litige.</span>
+</div>
+<button onclick="fermerDesc()" style="width:100%;background:#111;color:#fff;border:0;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:10px;font-size:12px">← <span id="txtRetourDesc">Retour au Détail</span></button>
+</div></div>
 <div id="overlayChat" onclick="fermerChat()"><div id="popupChat" onclick="event.stopPropagation()">
 <b id="txtChatTitre">Discuter de la logistique</b>
 <p style="font-size:11px;color:#666" id="txtChatInfo">Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids du colis ? Pas de négociation de prix.</p>
@@ -110,7 +115,6 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 <p id="traceWhatsApp" style="font-size:11px;color:#888"></p>
 <button onclick="fermerChat()" style="width:100%;padding:10px;margin-top:6px;background:#fff;border:1px solid #ddd;border-radius:8px" id="txtFermerChat">Fermer - Retour au Détail</button>
 </div></div>
-
 <footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; <span id="txtTel">Tél :</span> <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 <script>
 var LANGUE_ACTUELLE = localStorage.getItem("rocy_lang") || "fr";
@@ -132,6 +136,8 @@ function construireMenu(){
   document.getElementById('liensMenu').innerHTML=l;
 }
 function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
+function ouvrirDesc(){ document.getElementById('overlayDesc').style.display='flex'; }
+function fermerDesc(){ document.getElementById('overlayDesc').style.display='none'; }
 const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
 const params = new URLSearchParams(window.location.search);
 const produitId = params.get('id');
@@ -151,25 +157,45 @@ function chargerSupabase(){
 chargerSupabase();
 function mettreEnAttente(type, donnees){ try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); file.push({ type: type, donnees: donnees, date: new Date().toISOString() }); localStorage.setItem('file_attente_rocy', JSON.stringify(file)); }catch(e){} }
 async function envoyerFileAttente(){ if(!supabaseClient) return; try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); if(!file.length) return; var reste=[]; for(var i=0;i<file.length;i++){ var res = await supabaseClient.from(file[i].type).insert([file[i].donnees]); if(res.error) reste.push(file[i]); } localStorage.setItem('file_attente_rocy', JSON.stringify(reste)); }catch(e){} }
+async function chargerVendeurReel(p){
+  var nomV = p.nom_vendeur || p.vendeur_nom || "";
+  var villeV = p.ville || "";
+  var photoV = p.photo_vendeur || p.avatar_vendeur || p.photo_profil_vendeur || "";
+  var nomEstFaux = !nomV || nomV.toLowerCase()==="vendeur" || nomV.toLowerCase()==="seller";
+  if(nomEstFaux && vendeurId && supabaseClient){
+    try{
+      var res = await supabaseClient.from('profils').select('nom, nom_complet, nom_entreprise, ville, photo, photo_profil, avatar').eq('id', vendeurId).single();
+      if(res && res.data){
+        var pr = res.data;
+        var vraiNom = pr.nom_entreprise || pr.nom_complet || pr.nom || "";
+        if(vraiNom) nomV = vraiNom;
+        if(pr.ville) villeV = pr.ville;
+        if(pr.photo_profil || pr.photo || pr.avatar) photoV = pr.photo_profil || pr.photo || pr.avatar;
+      }
+    }catch(e){}
+  }
+  if(!nomV) nomV = "Vendeur";
+  var nomVEl=document.getElementById('nomVendeur'); nomVEl.textContent=nomV; nomVEl.setAttribute('data-original', nomV); nomVEl.setAttribute('data-ne-pas-traduire','1');
+  var infoEl=document.getElementById('infoVendeur'); infoEl.textContent=villeV; infoEl.setAttribute('data-original', villeV);
+  var av=document.getElementById('avatarVendeur');
+  if(photoV){ av.innerHTML='<img src="'+photoV+'" alt="Vendeur" onerror="this.parentElement.textContent=\''+nomV.charAt(0)+'\'">'; }
+  else { av.textContent = nomV.charAt(0); }
+  return { nom: nomV, ville: villeV, photo: photoV };
+}
 async function chargerProduit(){
   if(!produitId){ var n = document.getElementById('nomProduit'); if(n) n.textContent = "Aucun produit sélectionné"; return; }
   if(!supabaseClient) return;
   const { data, error } = await supabaseClient.from('produits').select('*').eq('id', produitId).single();
   if(error || !data){ document.getElementById('nomProduit').textContent = "Produit introuvable"; return; }
   const p = data;
-  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || ""; telVendeur = p.telephone_vendeur || p.tel_vendeur || "";
+  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || p.user_id || ""; telVendeur = p.telephone_vendeur || p.tel_vendeur || "";
   var img = document.getElementById('photoProduit'); if(img) img.src = p.photo || p.image || "";
   var nomEl=document.getElementById('nomProduit'); nomEl.textContent=p.nom; nomEl.setAttribute('data-original', p.nom);
   var elPrix = document.getElementById('prixProduit'); if(elPrix){ elPrix.setAttribute("data-prix", p.prix); elPrix.textContent = Number(p.prix).toLocaleString() + " F"; }
   var v = document.getElementById('villeProduit'); if(v){ v.textContent=p.ville||""; v.setAttribute('data-original', p.ville||""); }
   var descEl=document.getElementById('descProduit'); descEl.textContent=p.description||""; descEl.setAttribute('data-original', p.description||"");
-  var nomV = p.nom_vendeur || p.vendeur_nom || "Vendeur";
-  var nomVEl=document.getElementById('nomVendeur'); nomVEl.textContent=nomV; nomVEl.setAttribute('data-original', nomV);
-  var infoEl=document.getElementById('infoVendeur'); infoEl.textContent=p.ville||""; infoEl.setAttribute('data-original', p.ville||"");
-  var av=document.getElementById('avatarVendeur');
-  var photoV = p.photo_vendeur || p.avatar_vendeur || p.photo_profil_vendeur || "";
-  if(photoV){ av.innerHTML='<img src="'+photoV+'" alt="Vendeur" onerror="this.parentElement.textContent=\''+nomV.charAt(0)+'\'">'; }
-  else { av.textContent = nomV.charAt(0); }
+  var descPop=document.getElementById('descPopup'); if(descPop) descPop.textContent=p.description||"";
+  await chargerVendeurReel(p);
   var b = document.getElementById('badgeBoost'); if(b && (p.boost || p.booster || p.est_booste)) b.style.display = 'inline-block';
   const monEmail = localStorage.getItem('email_user') || ''; const monId = localStorage.getItem('user_id') || '';
   cestMonProduit = (p.vendeur_id && p.vendeur_id === monId) || (p.email_vendeur && p.email_vendeur === monEmail) || (p.email && p.email === monEmail);
@@ -178,131 +204,6 @@ async function chargerProduit(){
   if(!cestMonProduit) chargerMessages();
 }
 function calculerCommission(prix){ if(prix <= 500000) return prix * 0.085; if(prix <= 2000000) return prix * 0.075; return prix * 0.065; }
-function mettreAJourPrix(){
-  const sousTotal = prixProduit * qty; commission = calculerCommission(sousTotal); total = sousTotal;
-  const vendeurRecoit = sousTotal - commission;
-  var d = document.getElementById('detailPrix');
-  if(d) d.innerHTML = "Prix produit : <b>" + sousTotal.toLocaleString() + " F</b><br>Livraison : <b>Non incluse - À discuter avec le vendeur dans le Chat</b><br><b>Total à payer : " + Math.round(total).toLocaleString() + " F</b> <small>(sans livraison)</small><br><small>Le vendeur recevra " + Math.round(vendeurRecoit).toLocaleString() + " F après ton clic COLIS REÇU.</small>";
-}
-// ===== TRADUCTION TOUT, SANS EXCEPTION, EN FOND =====
-var cacheTraduction={}; try{ cacheTraduction=JSON.parse(localStorage.getItem("rocy_trad_cache")||"{}"); }catch(e){ cacheTraduction={}; }
-function sauverCacheTrad(){ try{ localStorage.setItem("rocy_trad_cache", JSON.stringify(cacheTraduction)); }catch(e){} }
-async function traduireAuto(texte, langueCible){
-  if(!texte || !texte.trim()) return texte; if(langueCible==='fr') return texte;
-  var cle=langueCible+'||'+texte; if(cacheTraduction[cle]) return cacheTraduction[cle];
-  if(langueCible==='fon' || langueCible==='goun') return texte;
-  try{ var url="https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl="+langueCible+"&dt=t&q="+encodeURIComponent(texte); var r=await fetch(url); var j=await r.json(); var trad=""; if(j && j[0]){ for(var i=0;i<j[0].length;i++){ trad+=j[0][i][0]; } } if(!trad) trad=texte; trad=trad.replace(/Rocy Inter/gi,"ROCY INTER"); cacheTraduction[cle]=trad; sauverCacheTrad(); return trad; }catch(e){ return texte; }
-}
-function appliquerTraductionProduits(){
-  if(LANGUE_ACTUELLE==='fr'){ document.querySelectorAll('[data-original]').forEach(function(el){ el.textContent=el.getAttribute('data-original'); }); return; }
-  document.querySelectorAll('[data-original]').forEach(function(el, idx){ setTimeout(function(){ traduireAuto(el.getAttribute('data-original'), LANGUE_ACTUELLE).then(function(t){ if(el.isConnected) el.textContent=t; }); }, 200+idx*150); });
-}
-// ===== CHAT POPUP AU-DESSUS =====
-function ouvrirChat(){
-  if(cestMonProduit){ alert("C'est ton produit, tu ne peux pas te parler à toi-même."); return; }
-  // Seulement ici on demande connexion
-  if(!localStorage.getItem('email_user') && !localStorage.getItem('user_id')){
-    var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
-    if(confirm(d.alerteChat)){ localStorage.setItem('retour_apres_connexion','article.html?id='+produitId); window.location.href="connexion.html"; } return;
-  }
-  document.getElementById('overlayChat').style.display='flex';
-  var inp=document.getElementById('msgChat');
-  if(inp && !inp.value){ inp.value="Bonjour, je suis à [ta ville], livraison possible vers chez moi ? Par DHL ou Bus ? Ça coûte combien et ça prend combien de jours ?"; }
-  document.getElementById('notifChat').style.display='none';
-}
-function fermerChat(){ document.getElementById('overlayChat').style.display='none'; }
-async function chargerMessages(){
-  if(!produitId || !supabaseClient || cestMonProduit) return;
-  const { data } = await supabaseClient.from('messages').select('*').eq('produit_id', produitId).order('created_at', {ascending:true});
-  const box = document.getElementById('messagesChat'); if(!box) return; box.innerHTML = "";
-  if(data) data.forEach(m => { box.innerHTML += "<div><b>Toi :</b> " + m.contenu + "</div>"; });
-  // Notification si le vendeur a répondu après notre dernier message
-  if(data && data.length){
-    var dernier = data[data.length-1];
-    if(dernier && dernier.expediteur && dernier.expediteur!=='acheteur'){
-      var notif=document.getElementById('notifChat'); if(notif) notif.style.display='block';
-    }
-  }
-}
-async function envoyerMsg(){
-  if(cestMonProduit) return;
-  const inp = document.getElementById('msgChat'); if(!inp) return; const m = inp.value; if(!m) return;
-  document.getElementById('messagesChat').innerHTML += "<div><b>Toi :</b> " + m + "</div>"; inp.value='';
-  var donnees = { produit_id: produitId, contenu: m, type: "logistique" };
-  if(supabaseClient){ var res = await supabaseClient.from('messages').insert([donnees]); if(res.error) mettreEnAttente('messages', donnees); else envoyerFileAttente(); } else { mettreEnAttente('messages', donnees); }
-  fermerChat();
-}
-function basculerWhatsApp(){
-  if(cestMonProduit) return;
-  const dateBascule = new Date().toLocaleString('fr-FR');
-  var t = document.getElementById('traceWhatsApp'); if(t) t.textContent = "Discussion basculée sur WhatsApp le " + dateBascule + " - Enregistré pour APDP";
-  const numero = telVendeur || "22900000000";
-  window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent("Bonjour, je suis intéressé par " + nomProduitActuel + " - " + Math.round(total) + "F. Je suis à [ma ville], livraison possible vers chez moi ? Par DHL ou Bus ? Ça coûte combien et délai ?"), "_blank");
-}
-async function commander(){
-  if(cestMonProduit){ alert("C'est ton produit. Tu ne peux pas te commander toi-même."); return; }
-  let estConnecte = !!localStorage.getItem('user_id') || !!localStorage.getItem('email_user');
-  if(!estConnecte){
-    var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
-    if(MODE_TEST){ alert(d.alerteTest); return; }
-    if(confirm(d.alerteCommander)){ localStorage.setItem('retour_apres_connexion', 'article.html?id=' + produitId); window.location.href="connexion.html"; }
-    return;
-  }
-  if(!produitId || !prixProduit){ alert("Aucun produit sélectionné"); return; }
-  var totalEl = document.getElementById('totalAPayer'); if(totalEl) totalEl.textContent = Math.round(total).toLocaleString() + " F";
-  var box = document.getElementById('choixPaiement'); if(box){ box.style.display = 'block'; box.scrollIntoView({ behavior: 'smooth' }); }
-}
-function fermerPaiement(){ var box = document.getElementById('choixPaiement'); if(box) box.style.display = 'none'; }
-async function payerAvec(moyen){
-  if(cestMonProduit) return;
-  var donneesCommande = { produit_id: produitId, nom: nomProduitActuel, taille: taille, quantite: qty, total: Math.round(total), commission: Math.round(commission), moyen_paiement: moyen, statut: "En attente de paiement" };
-  if(supabaseClient){ var res = await supabaseClient.from('commandes').insert([donneesCommande]); if(res.error) mettreEnAttente('commandes', donneesCommande); } else { mettreEnAttente('commandes', donneesCommande); }
-  alert("Commande enregistrée avec " + moyen + " - En attente de paiement FedaPay (Phase 1 à venir).");
-  fermerPaiement();
-}
-// ===== TRADUCTIONS FIXES =====
-var TRADUCTIONS={
- fr:{titreDesc:"Description",txtChatBtn:"Discuter de la logistique",txtCommander:"COMMANDER sur le site",txtPayer:"Payer",txtPaiementInfo:"Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité. Le vendeur sera payé seulement quand tu cliqueras COLIS REÇU.",txtAfrique:"Afrique - Mobile Money",txtCarte:"Monde - Carte bancaire",txtPortefeuille:"Monde - Portefeuille",txtAnnuler:"Annuler",txtTonProduit:"C'est ton produit. Tu ne peux pas te commander toi-même.",txtAllerVendeur:"→ Aller à mon Tableau Vendeur",txtAvantPayer:"🛡️ Avant de payer, tu vois tout :",txtLivraison:"Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur",txtDelai:"Délai : Selon le pays / ville",txtProtection:"Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU",txtCommission:"Commission RocyInter : 8,5% jusqu'à 500 000F - 7,5% jusqu'à 2 000 000F - 6,5% au-delà - Déduite au vendeur, pas à toi.",txtComment:"Comment ça marche ?",txtEtapes:"1. Tu commandes → Argent bloqué<br>2. Le vendeur envoie → Tu suis ton colis<br>3. Tu reçois → Tu cliques COLIS REÇU<br>4. Le vendeur est payé<br>Problème ? 48h pour signaler un litige.",txtChatTitre:"Discuter de la logistique",txtChatInfo:"Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids du colis ? Pas de négociation de prix.",txtEnvoyer:"Envoyer",txtWhatsApp:"Continuer sur WhatsApp",txtFermerChat:"Fermer - Retour au Détail",bonjour:"Bonjour,",bienvenue:"Bienvenue - Visiteur",menuAccueil:"Accueil",menuVendeur:"Tableau Vendeur",menuAcheteur:"Tableau Acheteur",menuAdmin:"Tableau Admin",menuPublier:"Publier",menuProfil:"Profil",menuConditions:"Conditions",menuContact:"Contact",menuApropos:"À Propos",menuConnecter:"Connecter",menuInscription:"Inscription",menuDeconnecter:"Déconnecter",txtEmail:"Email :",txtTel:"Tél :",alerteChat:"Pour discuter, connecte-toi d'abord.\n\nOK = Aller me connecter\nAnnuler = Continuer à voir le produit",alerteCommander:"Pour commander, connecte-toi ou crée ton compte.\n\nOK = Aller me connecter\nAnnuler = Continuer à voir le produit",alerteTest:"MODE TEST : Ça marche ! Tu n'as pas de compte, sur le vrai site on t'enverrait à connexion.html."},
- en:{titreDesc:"Description",txtChatBtn:"Discuss logistics",txtCommander:"ORDER on the site",txtPayer:"Pay",txtPaiementInfo:"Choose your country / method. Your money will be blocked safely. The seller will be paid only when you click PACKAGE RECEIVED.",txtAfrique:"Africa - Mobile Money",txtCarte:"World - Bank card",txtPortefeuille:"World - Wallet",txtAnnuler:"Cancel",txtTonProduit:"This is your product. You cannot order from yourself.",txtAllerVendeur:"→ Go to my Seller Dashboard",txtAvantPayer:"🛡️ Before you pay, you see everything:",txtLivraison:"Delivery: Worldwide - DHL / Bus / STM - To discuss with the seller",txtDelai:"Delay: Depends on country / city",txtProtection:"Protection: Money blocked - Seller paid only after you click PACKAGE RECEIVED",txtCommission:"RocyInter Commission: 8.5% up to 500,000F - 7.5% up to 2,000,000F - 6.5% beyond - Deducted from seller, not you.",txtComment:"How does it work?",txtEtapes:"1. You order → Money blocked<br>2. Seller ships → You track your parcel<br>3. You receive → You click PACKAGE RECEIVED<br>4. Seller is paid<br>Problem? 48h to report a dispute.",txtChatTitre:"Discuss logistics",txtChatInfo:"Logistics only: Where are you? Delivery possible? Delay? Parcel weight? No price negotiation.",txtEnvoyer:"Send",txtWhatsApp:"Continue on WhatsApp",txtFermerChat:"Close - Back to Detail",bonjour:"Hello,",bienvenue:"Welcome - Visitor",menuAccueil:"Home",menuVendeur:"Seller Dashboard",menuAcheteur:"Buyer Dashboard",menuAdmin:"Admin Dashboard",menuPublier:"Publish",menuProfil:"Profile",menuConditions:"Terms",menuContact:"Contact",menuApropos:"About",menuConnecter:"Login",menuInscription:"Sign up",menuDeconnecter:"Logout",txtEmail:"Email:",txtTel:"Tel:",alerteChat:"To discuss, please login first.",alerteCommander:"To order, please login or create an account.",alerteTest:"TEST MODE: It works!"},
- yo:{titreDesc:"Apejuwe",txtChatBtn:"Soro nipa eekun",txtCommander:"PASE lori aaye",txtPayer:"San",txtPaiementInfo:"Yan orilẹ-ede / ọna rẹ. Owo rẹ yoo di didi ni aabo.",txtAfrique:"Afirika - Owo Alagbeka",txtCarte:"Agbaye - Kaadi banki",txtPortefeuille:"Agbaye - Apamọwọ",txtAnnuler:"Fagilee",txtTonProduit:"Eyi ni oja rẹ. O ko le paṣẹ fun ara rẹ.",txtAllerVendeur:"→ Lọ si Tabili Olutaja mi",txtAvantPayer:"🛡️ Ṣaaju ki o to san, o ri ohun gbogbo:",txtLivraison:"Ifijiṣẹ: Agbaye - DHL / Bus / STM",txtDelai:"Idaduro: Da lori orilẹ-ede / ilu",txtProtection:"Aabo: Owo di didi - Olutaja gba owo nikan lẹhin ti o te PACKAGE RECEIVED",txtCommission:"Commission RocyInter: 8,5% titi de 500 000F - 7,5% titi de 2 000 000F - 6,5% ju bẹẹ lọ.",txtComment:"Bawo ni o se n sise?",txtEtapes:"1. O paṣẹ → Owo di didi<br>2. Olutaja firanṣẹ → O tẹle parcel rẹ<br>3. O gba → O te PACKAGE RECEIVED<br>4. Olutaja gba owo",txtChatTitre:"Soro nipa eekun",txtChatInfo:"Eekun nikan.",txtEnvoyer:"Firanṣẹ",txtWhatsApp:"Tẹsiwaju lori WhatsApp",txtFermerChat:"Pa - Pada si Apejuwe",bonjour:"Ẹ n lẹ,",bienvenue:"Kaabo - Alejo",menuAccueil:"Ile",menuVendeur:"Tabili Olutaja",menuAcheteur:"Tabili Olura",menuAdmin:"Tabili Admin",menuPublier:"Fi sori",menuProfil:"Profaili",menuConditions:"Awọn ipo",menuContact:"Olubasọrọ",menuApropos:"Nipa",menuConnecter:"Wọle",menuInscription:"Forukọsilẹ",menuDeconnecter:"Jade",txtEmail:"Email:",txtTel:"Tẹli:",alerteChat:"Lati soro, wọle ni akọkọ.",alerteCommander:"Lati paṣẹ, wọle tabi ṣẹda akọọlẹ.",alerteTest:"TEST MODE: O n sise!"},
- fon:{titreDesc:"Nu e gbon",txtChatBtn:"Xo gbon do sedo",txtCommander:"DE Gbe do wema ji",txtPayer:"Su akwe",txtPaiementInfo:"Sɔ otò / alɔ towe. Akwe towe na do te do medesuno me.",txtAfrique:"Afrique - Akwe Alagbeka",txtCarte:"Ayihongbe - Carte bancaire",txtPortefeuille:"Ayihongbe - Portefeuille",txtAnnuler:"Gbe vo",txtTonProduit:"E nyi nu towe. A sixu de gbe na hwe towe a.",txtAllerVendeur:"→ Yi Tabili Axoto ce ji",txtAvantPayer:"🛡️ Cobonu a su akwe, a mɔ nu bi:",txtLivraison:"Sedo : Ayihongbe - DHL / Bus / STM",txtDelai:"Azan : Do otò / toxo ji",txtProtection:"Mɛdesuno : Akwe do te - Axoto mo akwe cobonu a ze COLIS RECU",txtCommission:"Commission RocyInter : 8,5% kaka yi 500 000F - 7,5% kaka yi 2 000 000F - 6,5% ene gudo.",txtComment:"E no wazo gbon?",txtEtapes:"1. A de gbe → Akwe do te<br>2. Axoto se do → A kpon colis towe<br>3. A mɔ → A ze COLIS RECU<br>4. Axoto mo akwe",txtChatTitre:"Xo gbon do sedo",txtChatInfo:"Sedo kɛɖɛ.",txtEnvoyer:"Se do",txtWhatsApp:"Yi WhatsApp ji",txtFermerChat:"Su - Lɛkɔ yi Détail",bonjour:"Mido,",bienvenue:"Mido - Jonɔ",menuAccueil:"Xwé",menuVendeur:"Tabili Axoto",menuAcheteur:"Tabili Axolo",menuAdmin:"Tabili Admin",menuPublier:"De ji",menuProfil:"Profil",menuConditions:"Sewo",menuContact:"Kponon",menuApropos:"Ðo e",menuConnecter:"Biyo",menuInscription:"Kpon sin",menuDeconnecter:"Tɔn",txtEmail:"Email :",txtTel:"Tél :",alerteChat:"Nu xo gbon, biyo ɖo nukon.",alerteCommander:"Nu de gbe, biyo alo de compte.",alerteTest:"TEST MODE: E wazo!"},
- goun:{titreDesc:"Nu e gbon",txtChatBtn:"Xo gbon do sedo",txtCommander:"DE Gbe do wema ji",txtPayer:"Su akwe",txtPaiementInfo:"Sɔ otò / alɔ towe. Akwe towe na do te do medesuno me.",txtAfrique:"Afrique - Akwe Alagbeka",txtCarte:"Ayihongbe - Carte bancaire",txtPortefeuille:"Ayihongbe - Portefeuille",txtAnnuler:"Gbe vo",txtTonProduit:"E nyi nu towe. A sixu de gbe na hwe towe a.",txtAllerVendeur:"→ Yi Tabili Axoto ce ji",txtAvantPayer:"🛡️ Cobonu a su akwe, a mɔ nu bi:",txtLivraison:"Sedo : Ayihongbe - DHL / Bus / STM",txtDelai:"Azan : Do otò / toxo ji",txtProtection:"Mɛdesuno : Akwe do te - Axoto mo akwe cobonu a ze COLIS RECU",txtCommission:"Commission RocyInter : 8,5% kaka yi 500 000F - 7,5% kaka yi 2 000 000F - 6,5% ene gudo.",txtComment:"E no wazo gbon?",txtEtapes:"1. A de gbe → Akwe do te<br>2. Axoto se do → A kpon colis towe<br>3. A mɔ → A ze COLIS RECU<br>4. Axoto mo akwe",txtChatTitre:"Xo gbon do sedo",txtChatInfo:"Sedo kɛɖɛ.",txtEnvoyer:"Se do",txtWhatsApp:"Yi WhatsApp ji",txtFermerChat:"Su - Lɛkɔ yi Détail",bonjour:"Mido,",bienvenue:"Mido - Jonɔ",menuAccueil:"Xwé",menuVendeur:"Tabili Axoto",menuAcheteur:"Tabili Axolo",menuAdmin:"Tabili Admin",menuPublier:"De ji",menuProfil:"Profil",menuConditions:"Sewo",menuContact:"Kponon",menuApropos:"Ðo e",menuConnecter:"Biyo",menuInscription:"Kpon sin",menuDeconnecter:"Tɔn",txtEmail:"Email :",txtTel:"Tél :",alerteChat:"Nu xo gbon, biyo ɖo nukon.",alerteCommander:"Nu de gbe, biyo alo de compte.",alerteTest:"TEST MODE: E wazo!"},
- es:{titreDesc:"Descripción",txtChatBtn:"Hablar de logística",txtCommander:"PEDIR en el sitio",txtPayer:"Pagar",txtPaiementInfo:"Elige tu país / método. Tu dinero quedará bloqueado de forma segura.",txtAfrique:"África - Dinero móvil",txtCarte:"Mundo - Tarjeta bancaria",txtPortefeuille:"Mundo - Cartera",txtAnnuler:"Cancelar",txtTonProduit:"Este es tu producto. No puedes pedirte a ti mismo.",txtAllerVendeur:"→ Ir a mi Panel de Vendedor",txtAvantPayer:"🛡️ Antes de pagar, ves todo:",txtLivraison:"Entrega: Mundial - DHL / Bus / STM",txtDelai:"Plazo: Según país / ciudad",txtProtection:"Protección: Dinero bloqueado - Vendedor pagado solo después de tu clic PAQUETE RECIBIDO",txtCommission:"Comisión RocyInter: 8,5% hasta 500 000F - 7,5% hasta 2 000 000F - 6,5% más allá.",txtComment:"¿Cómo funciona?",txtEtapes:"1. Pides → Dinero bloqueado<br>2. Vendedor envía → Sigues tu paquete<br>3. Recibes → Haces clic PAQUETE RECIBIDO<br>4. Vendedor pagado",txtChatTitre:"Hablar de logística",txtChatInfo:"Solo logística.",txtEnvoyer:"Enviar",txtWhatsApp:"Continuar en WhatsApp",txtFermerChat:"Cerrar - Volver al Detalle",bonjour:"Hola,",bienvenue:"Bienvenido - Visitante",menuAccueil:"Inicio",menuVendeur:"Panel del Vendedor",menuAcheteur:"Panel del Comprador",menuAdmin:"Panel del Admin",menuPublier:"Publicar",menuProfil:"Perfil",menuConditions:"Condiciones",menuContact:"Contacto",menuApropos:"Acerca de",menuConnecter:"Iniciar sesión",menuInscription:"Registro",menuDeconnecter:"Cerrar sesión",txtEmail:"Email:",txtTel:"Tel:",alerteChat:"Para hablar, inicia sesión primero.",alerteCommander:"Para pedir, inicia sesión o crea una cuenta.",alerteTest:"MODO TEST: ¡Funciona!"},
- pt:{titreDesc:"Descrição",txtChatBtn:"Falar sobre logística",txtCommander:"PEDIR no site",txtPayer:"Pagar",txtPaiementInfo:"Escolha seu país / método. Seu dinheiro ficará bloqueado com segurança.",txtAfrique:"África - Dinheiro móvel",txtCarte:"Mundo - Cartão bancário",txtPortefeuille:"Mundo - Carteira",txtAnnuler:"Cancelar",txtTonProduit:"Este é seu produto. Você não pode pedir para si mesmo.",txtAllerVendeur:"→ Ir para meu Painel do Vendedor",txtAvantPayer:"🛡️ Antes de pagar, você vê tudo:",txtLivraison:"Entrega: Mundial - DHL / Bus / STM",txtDelai:"Prazo: Conforme país / cidade",txtProtection:"Proteção: Dinheiro bloqueado - Vendedor pago somente após seu clique PACOTE RECEBIDO",txtCommission:"Comissão RocyInter: 8,5% até 500 000F - 7,5% até 2 000 000F - 6,5% além.",txtComment:"Como funciona?",txtEtapes:"1. Você pede → Dinheiro bloqueado<br>2. Vendedor envia → Você acompanha seu pacote<br>3. Você recebe → Você clica PACOTE RECEBIDO<br>4. Vendedor é pago",txtChatTitre:"Falar sobre logística",txtChatInfo:"Somente logística.",txtEnvoyer:"Enviar",txtWhatsApp:"Continuar no WhatsApp",txtFermerChat:"Fechar - Voltar ao Detalhe",bonjour:"Olá,",bienvenue:"Bem-vindo - Visitante",menuAccueil:"Início",menuVendeur:"Painel do Vendedor",menuAcheteur:"Painel do Comprador",menuAdmin:"Painel do Admin",menuPublier:"Publicar",menuProfil:"Perfil",menuConditions:"Condições",menuContact:"Contato",menuApropos:"Sobre",menuConnecter:"Entrar",menuInscription:"Cadastro",menuDeconnecter:"Sair",txtEmail:"Email:",txtTel:"Tel:",alerteChat:"Para falar, entre primeiro.",alerteCommander:"Para pedir, entre ou crie uma conta.",alerteTest:"MODO TESTE: Funciona!"},
- de:{titreDesc:"Beschreibung",txtChatBtn:"Über Logistik sprechen",txtCommander:"AUF DER SEITE BESTELLEN",txtPayer:"Bezahlen",txtPaiementInfo:"Wähle dein Land / deine Methode. Dein Geld wird sicher blockiert.",txtAfrique:"Afrika - Mobiles Geld",txtCarte:"Welt - Bankkarte",txtPortefeuille:"Welt - Wallet",txtAnnuler:"Abbrechen",txtTonProduit:"Das ist dein Produkt. Du kannst nicht bei dir selbst bestellen.",txtAllerVendeur:"→ Zu meinem Verkäufer-Dashboard",txtAvantPayer:"🛡️ Bevor du bezahlst, siehst du alles:",txtLivraison:"Lieferung: Weltweit - DHL / Bus / STM",txtDelai:"Dauer: Je nach Land / Stadt",txtProtection:"Schutz: Geld blockiert - Verkäufer bezahlt nur nach deinem Klick PAKET ERHALTEN",txtCommission:"RocyInter Provision: 8,5% bis 500 000F - 7,5% bis 2 000 000F - 6,5% darüber.",txtComment:"Wie funktioniert es?",txtEtapes:"1. Du bestellst → Geld blockiert<br>2. Verkäufer sendet → Du verfolgst dein Paket<br>3. Du erhältst → Du klickst PAKET ERHALTEN<br>4. Verkäufer bezahlt",txtChatTitre:"Über Logistik sprechen",txtChatInfo:"Nur Logistik.",txtEnvoyer:"Senden",txtWhatsApp:"Weiter auf WhatsApp",txtFermerChat:"Schließen - Zurück zum Detail",bonjour:"Hallo,",bienvenue:"Willkommen - Besucher",menuAccueil:"Startseite",menuVendeur:"Verkäufer-Dashboard",menuAcheteur:"Käufer-Dashboard",menuAdmin:"Admin-Dashboard",menuPublier:"Veröffentlichen",menuProfil:"Profil",menuConditions:"Bedingungen",menuContact:"Kontakt",menuApropos:"Über uns",menuConnecter:"Anmelden",menuInscription:"Registrieren",menuDeconnecter:"Abmelden",txtEmail:"E-Mail:",txtTel:"Tel:",alerteChat:"Um zu sprechen, melde dich zuerst an.",alerteCommander:"Um zu bestellen, melde dich an oder erstelle ein Konto.",alerteTest:"TESTMODUS: Es funktioniert!"},
- ar:{titreDesc:"الوصف",txtChatBtn:"مناقشة اللوجستيات",txtCommander:"اطلب على الموقع",txtPayer:"ادفع",txtPaiementInfo:"اختر بلدك / طريقتك. سيتم حجز أموالك بأمان.",txtAfrique:"أفريقيا - أموال الهاتف",txtCarte:"العالم - بطاقة مصرفية",txtPortefeuille:"العالم - محفظة",txtAnnuler:"إلغاء",txtTonProduit:"هذا منتجك. لا يمكنك الطلب من نفسك.",txtAllerVendeur:"→ اذهب إلى لوحة البائع الخاصة بي",txtAvantPayer:"🛡️ قبل أن تدفع، ترى كل شيء:",txtLivraison:"التوصيل: عالمي - DHL / Bus / STM",txtDelai:"المدة: حسب البلد / المدينة",txtProtection:"الحماية: المال محجوز - البائع يُدفع فقط بعد نقرك تم الاستلام",txtCommission:"عمولة RocyInter: 8,5% حتى 500 000F - 7,5% حتى 2 000 000F - 6,5% بعد ذلك.",txtComment:"كيف يعمل؟",txtEtapes:"1. تطلب → المال محجوز<br>2. البائع يرسل → تتتبع طردك<br>3. تستلم → تنقر تم الاستلام<br>4. البائع يُدفع",txtChatTitre:"مناقشة اللوجستيات",txtChatInfo:"اللوجستيات فقط.",txtEnvoyer:"إرسال",txtWhatsApp:"متابعة على واتساب",txtFermerChat:"إغلاق - العودة إلى التفاصيل",bonjour:"مرحبًا،",bienvenue:"مرحبًا - زائر",menuAccueil:"الرئيسية",menuVendeur:"لوحة البائع",menuAcheteur:"لوحة المشتري",menuAdmin:"لوحة المسؤول",menuPublier:"نشر",menuProfil:"الملف",menuConditions:"الشروط",menuContact:"اتصل",menuApropos:"حول",menuConnecter:"تسجيل الدخول",menuInscription:"التسجيل",menuDeconnecter:"تسجيل الخروج",txtEmail:"البريد:",txtTel:"هاتف:",alerteChat:"للتحدث، سجل دخول أولاً.",alerteCommander:"للطلب، سجل دخول أو أنشئ حسابًا.",alerteTest:"وضع الاختبار: يعمل!"}
-};
-function changerLangue(lang){
-  LANGUE_ACTUELLE=lang; localStorage.setItem("rocy_lang",lang);
-  var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr;
-  function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.innerHTML=val; }
-  setTxt("titreDesc",dict.titreDesc); setTxt("txtChatBtn",dict.txtChatBtn); setTxt("txtCommander",dict.txtCommander);
-  setTxt("txtPayer",dict.txtPayer); setTxt("txtPaiementInfo",dict.txtPaiementInfo); setTxt("txtAfrique",dict.txtAfrique);
-  setTxt("txtCarte",dict.txtCarte); setTxt("txtPortefeuille",dict.txtPortefeuille); setTxt("txtAnnuler",dict.txtAnnuler);
-  setTxt("txtTonProduit",dict.txtTonProduit); setTxt("txtAllerVendeur",dict.txtAllerVendeur);
-  setTxt("txtAvantPayer",dict.txtAvantPayer); setTxt("txtLivraison",dict.txtLivraison); setTxt("txtDelai",dict.txtDelai);
-  setTxt("txtProtection",dict.txtProtection); setTxt("txtCommission",dict.txtCommission); setTxt("txtComment",dict.txtComment);
-  setTxt("txtEtapes",dict.txtEtapes); setTxt("txtChatTitre",dict.txtChatTitre); setTxt("txtChatInfo",dict.txtChatInfo);
-  setTxt("txtEnvoyer",dict.txtEnvoyer); setTxt("txtWhatsApp",dict.txtWhatsApp); setTxt("txtFermerChat",dict.txtFermerChat);
-  setTxt("txtEmail",dict.txtEmail); setTxt("txtTel",dict.txtTel);
-  construireMenu(); appliquerTraductionProduits(); mettreAJourPrix();
-}
-window.changerLangue=changerLangue;
-var taux={ XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
-var symboles={ XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
-async function chargerTauxInstantT(){ try{ var r=await fetch("https://open.er-api.com/v6/latest/XOF"); var j=await r.json(); if(j && j.rates){ taux.EUR=j.rates.EUR; taux.USD=j.rates.USD; taux.NGN=j.rates.NGN; taux.GHS=j.rates.GHS; taux.GBP=j.rates.GBP; convertirPrix(); } }catch(e){} }
-function convertirPrix(){
-  var deviseEl=document.getElementById("devise"); if(!deviseEl) return; var devise=deviseEl.value; localStorage.setItem("rocy_devise",devise);
-  document.querySelectorAll(".prix").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.textContent=converti.toLocaleString()+symboles[devise]; });
-}
-window.convertirPrix=convertirPrix;
-document.addEventListener("DOMContentLoaded",function(){
-  var saved=localStorage.getItem("rocy_lang"); var sel=document.getElementById("langue"); if(saved&&sel){ sel.value=saved; LANGUE_ACTUELLE=saved; }
-  var dev=localStorage.getItem("rocy_devise"); var selD=document.getElementById("devise"); if(dev&&selD){ selD.value=dev; }
-  if(saved) changerLangue(saved);
-  chargerTauxInstantT();
-});
-</script>
-<script src="commun.js"></script>
-</body>
-</html>
+function formaterPrix(prixFCFA){
+  var deviseEl=document.getElementById("devise"); var devise=deviseEl?deviseEl.value:"XOF";
+  var converti=Math.round(prixFCFA*taux[de
