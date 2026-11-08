@@ -73,7 +73,21 @@ function afficherErreur(msg){ var el=document.getElementById('msgErreur'); if(el
 function cacherErreur(){ var el=document.getElementById('msgErreur'); if(el){ el.style.display='none'; } }
 function voirMdp(){ var c=document.getElementById('mdp'); if(c) c.type=c.type==='password'?'text':'password'; }
 function estAdmin(email){ return (email||"").trim().toLowerCase()===EMAIL_ADMIN.trim().toLowerCase(); }
-function redirigerSelonRole(email, role){ var retour=localStorage.getItem('retour_apres_connexion'); if(estAdmin(email)){ localStorage.setItem('role_user','admin'); localStorage.removeItem('retour_apres_connexion'); window.location.href="admin.html"; return; } if(retour){ localStorage.removeItem('retour_apres_connexion'); window.location.href=retour; return; } if(role==='vendeur'){ window.location.href="vendeur.html"; } else if(role==='acheteur'){ window.location.href="acheteur.html"; } else{ window.location.href="index.html"; } }
+
+// ===== CORRIGÉ : TOUJOURS ACCUEIL D'ABORD, PEU IMPORTE LA PERSONNE =====
+function redirigerSelonRole(email, role){
+  // On garde le rôle pour le menu, mais on ne redirige plus vers vendeur / acheteur / admin
+  if(estAdmin(email)){
+    localStorage.setItem('role_user','admin');
+  } else {
+    localStorage.setItem('role_user', role || 'acheteur');
+  }
+  // On efface l'ancienne redirection qui renvoyait vers la page d'avant
+  localStorage.removeItem('retour_apres_connexion');
+  // TOUJOURS ACCUEIL
+  window.location.href = "index.html";
+}
+
 async function connecter(e){ if(e) e.preventDefault(); cacherErreur(); const login=document.getElementById('login').value.trim(); const password=document.getElementById('mdp').value; const btn=document.getElementById('btnSeConnecter'); if(!login || !password){ afficherErreur(t("errVide")); return; } if(btn){ btn.disabled=true; btn.textContent='Connexion...'; } let email=login; var sb = getSupabase(); try{ if(!sb){ afficherErreur(t("supabasePasCharge")); if(btn){ btn.disabled=false; btn.textContent=t("btnConnecter"); } return; } if(!login.includes('@')){ const { data: prof } = await sb.from('profils').select('email').eq('telephone', login).single(); if(!prof?.email){ afficherErreur(t("aucunTel")); if(btn){ btn.disabled=false; btn.textContent=t("btnConnecter"); } return; } email=prof.email; } const { data, error } = await sb.auth.signInWithPassword({ email, password }); if(error){ afficherErreur(t("errMauvais")); if(btn){ btn.disabled=false; btn.textContent=t("btnConnecter"); } return; } const { data: profil } = await sb.from('profils').select('*').eq('id', data.user.id).single(); let role = profil?.role || 'acheteur'; if(email === "rocyinter@gmail.com") role = "admin"; localStorage.setItem("rocy_role", role); localStorage.setItem('nom_user', profil?.nom || profil?.nom_complet || ''); localStorage.setItem('email_user', email); localStorage.setItem('telephone_user', profil?.telephone || ''); localStorage.setItem('ville_user', profil?.ville || ''); localStorage.setItem('user_id', data.user.id); await sb.from('logs').insert([{ user_id: data.user.id, action: "connexion", date: new Date().toISOString() }]); alert(t("bienvenue")); redirigerSelonRole(email, role); }catch(err){ afficherErreur('Erreur : '+err.message); if(btn){ btn.disabled=false; btn.textContent=t("btnConnecter"); } } }
 async function motDePasseOublie(){ const login=document.getElementById('login').value.trim(); if(!login){ alert(t("ecrisDabord")); return; } var sb = getSupabase(); if(!sb){ alert(t("supabasePasCharge")); return; } let email=login; if(!login.includes('@')){ const { data: prof } = await sb.from('profils').select('email').eq('telephone', login).single(); if(!prof?.email){ alert(t("aucunTel")); return; } email=prof.email; } const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/connexion.html' }); if(error){ alert(error.message); return; } alert(t("lienEnvoye")+email+t("verifieSpam")); }
 document.addEventListener("DOMContentLoaded", function(){ changerLangue(localStorage.getItem("rocy_lang")||"fr"); });
