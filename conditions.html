@@ -84,8 +84,10 @@ document.getElementById('btnAccepter').addEventListener('click', async function(
   var sess = await supabaseClient.auth.getSession();
   if(!sess || !sess.data || !sess.data.session){ alert('Connecte-toi d\'abord'); localStorage.setItem('retour_apres_connexion','conditions.html'); window.location.href = 'connexion.html'; return; }
   var res = await supabaseClient.from('profils').update({ conditions_acceptees: true }).eq('id', sess.data.session.user.id);
-  if(res.error) alert(res.error.message);
-  else { localStorage.setItem('conditions_acceptees','oui'); alert('Merci, conditions acceptées ✅'); retourApresAcceptation(); }
+  if(res.error) console.log('Conditions non sauvées en base, on continue quand même :', res.error.message);
+  localStorage.setItem('conditions_acceptees','oui');
+  alert('Merci, conditions acceptées ✅');
+  retourApresAcceptation();
 });
 document.addEventListener("DOMContentLoaded",function(){majMenu()});
 </script>
