@@ -272,3 +272,29 @@ document.addEventListener('click', function(e){
 document.addEventListener('DOMContentLoaded', verifierEmailAuRetrait);
 setTimeout(verifierEmailAuRetrait, 1000);
 setTimeout(verifierEmailAuRetrait, 3000);
+// ===== SUPPRIMER DOUBLON DEVISE DU BAS - SANS TRAVAIL EN ARRIÈRE-PLAN =====
+(function(){
+  var dejaFait = false;
+  function supprimerDeviseBas(){
+    if(dejaFait) return; // On ne le fait qu'une fois, puis on s'arrête
+    var trouves = document.querySelectorAll('select#devise, #devise');
+    if(trouves.length === 0 && !document.getElementById('tauxInfo')) return;
+
+    trouves.forEach(function(sel){
+      if(sel.closest('header') || sel.closest('.header-right')) return; // Jamais le haut
+      var prev = sel.previousElementSibling;
+      if(prev && prev.tagName === 'LABEL') prev.remove();
+      sel.remove(); // On enlève, on ne cache pas, donc plus aucun événement
+    });
+    document.querySelectorAll('#tauxInfo').forEach(function(el){
+      if(!el.closest('header')) el.remove();
+    });
+    // Une fois supprimé, on ne revient plus
+    dejaFait = true;
+  }
+  document.addEventListener('DOMContentLoaded', supprimerDeviseBas);
+  setTimeout(supprimerDeviseBas, 500);
+  setTimeout(supprimerDeviseBas, 1500);
+  // Après 3 secondes, on arrête tout. Plus rien ne tourne en arrière-plan.
+  setTimeout(function(){ dejaFait = true; }, 3000);
+})();
