@@ -72,13 +72,13 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 
 <label id="lblCategorie">Catégorie</label>
 <select id="categorie">
-<option value="general" id="catGeneral">Général</option>
-<option value="maison" id="catMaison">Maison</option>
-<option value="mode" id="catMode">Mode</option>
-<option value="electronique" id="catElec">Électronique</option>
-<option value="beaute" id="catBeaute">Beauté</option>
-<option value="service" id="catService">Service</option>
-<option value="autre" id="catAutre">Autre</option>
+<option value="general">Général</option>
+<option value="maison">Maison</option>
+<option value="mode">Mode</option>
+<option value="electronique">Électronique</option>
+<option value="beaute">Beauté</option>
+<option value="service">Service</option>
+<option value="autre">Autre</option>
 </select>
 
 <label id="lblPhoto">Photo du produit *</label>
@@ -91,49 +91,20 @@ footer a{color:#FFC107;text-decoration:none;font-weight:700}
 <textarea id="description" placeholder="Décris ton produit : taille, couleur, état, livraison..."></textarea>
 
 <button class="btn" id="btnPublier" onclick="publier()">🚀 PUBLIER MON PRODUIT</button>
-<button class="btn2" id="btnTableau" onclick="window.location.href='vendeur.html'">← Aller à mon Tableau Vendeur</button>
+<button class="btn2" onclick="window.location.href='vendeur.html'">← Aller à mon Tableau Vendeur</button>
 <div id="msg" class="msg"></div>
 </div>
 
 <footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 <script>
 var LANGUE_ACTUELLE = localStorage.getItem("rocy_lang") || "fr";
-// ===== TRADUCTION MONDIALE COMPLÈTE - TOUTES LES LANGUES =====
 var TRADUCTIONS = {
-fr:{bonjour:"Bonjour",bienvenue:"Bienvenue",menuAccueil:"🏠 Accueil",menuVendeur:"📦 Mon Tableau Vendeur",menuAcheteur:"🛒 Mes Commandes",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publier un produit",menuProfil:"👤 Mon Profil",menuConditions:"📜 Conditions",menuContact:"📞 Contact",menuApropos:"ℹ️ À propos",menuConnecter:"🔑 Se connecter",menuInscription:"✍️ S'inscrire",menuDeconnecter:"🚪 Se déconnecter",fermer:"Fermer ✕",titre:"➕ Publier un produit",sous:"Ton nom et ta photo seront affichés automatiquement aux acheteurs.",verifie:"● Vendeur vérifié pour publication",lblNom:"Nom du produit *",lblPrix:"Prix en FCFA *",lblVille:"Ville *",lblStock:"Stock",lblCat:"Catégorie",catGeneral:"Général",catMaison:"Maison",catMode:"Mode",catElec:"Électronique",catBeaute:"Beauté",catService:"Service",catAutre:"Autre",lblPhoto:"Photo du produit *",lblPhotoUrl:"Ou lien photo (optionnel)",lblDesc:"Description *",btnPublier:"🚀 PUBLIER MON PRODUIT",btnTableau:"← Aller à mon Tableau Vendeur",phNom:"Ex: Ustensiles de maison, Chaussures...",phPrix:"Ex: 15000",phVille:"Ex: Cotonou, Abomey-Calavi...",phDesc:"Décris ton produit : taille, couleur, état, livraison...",errRemplis:"Remplis : Nom, Prix, Ville et Description.",errPhoto:"Mets une photo du produit (fichier ou lien).",errVendeur:"Erreur vendeur : reconnecte-toi et réessaie.",errNom:"Ton profil n'a pas de nom. Va dans Mon Profil, mets ton vrai nom, puis reviens publier.",enCours:"Publication en cours...",publie:"✅ Publié ! Vendeur : ",redirection:" - Redirection...",errPub:"Erreur : ",publication:"Publication...",email:"Email :",doitConnecter:"Tu dois te connecter comme vendeur pour publier. Redirection..."},
-en:{bonjour:"Hello",bienvenue:"Welcome",menuAccueil:"🏠 Home",menuVendeur:"📦 My Seller Dashboard",menuAcheteur:"🛒 My Orders",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publish a product",menuProfil:"👤 My Profile",menuConditions:"📜 Terms",menuContact:"📞 Contact",menuApropos:"ℹ️ About",menuConnecter:"🔑 Log in",menuInscription:"✍️ Sign up",menuDeconnecter:"🚪 Log out",fermer:"Close ✕",titre:"➕ Publish a product",sous:"Your name and photo will be shown automatically to buyers.",verifie:"● Verified seller for publishing",lblNom:"Product name *",lblPrix:"Price in FCFA *",lblVille:"City *",lblStock:"Stock",lblCat:"Category",catGeneral:"General",catMaison:"Home",catMode:"Fashion",catElec:"Electronics",catBeaute:"Beauty",catService:"Service",catAutre:"Other",lblPhoto:"Product photo *",lblPhotoUrl:"Or photo link (optional)",lblDesc:"Description *",btnPublier:"🚀 PUBLISH MY PRODUCT",btnTableau:"← Go to my Seller Dashboard",phNom:"Ex: Household utensils, Shoes...",phPrix:"Ex: 15000",phVille:"Ex: Cotonou, Abomey-Calavi...",phDesc:"Describe your product: size, colour, condition, delivery...",errRemplis:"Fill in: Name, Price, City and Description.",errPhoto:"Add a product photo (file or link).",errVendeur:"Seller error: log in again and retry.",errNom:"Your profile has no name. Go to My Profile, add your real name, then come back to publish.",enCours:"Publishing...",publie:"✅ Published! Seller: ",redirection:" - Redirecting...",errPub:"Error: ",publication:"Publishing...",email:"Email:",doitConnecter:"You must log in as a seller to publish. Redirecting..."},
-es:{bonjour:"Hola",bienvenue:"Bienvenido",menuAccueil:"🏠 Inicio",menuVendeur:"📦 Mi Panel de Vendedor",menuAcheteur:"🛒 Mis Pedidos",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publicar un producto",menuProfil:"👤 Mi Perfil",menuConditions:"📜 Condiciones",menuContact:"📞 Contacto",menuApropos:"ℹ️ Acerca de",menuConnecter:"🔑 Iniciar sesión",menuInscription:"✍️ Registrarse",menuDeconnecter:"🚪 Cerrar sesión",fermer:"Cerrar ✕",titre:"➕ Publicar un producto",sous:"Tu nombre y tu foto se mostrarán automáticamente a los compradores.",verifie:"● Vendedor verificado para publicar",lblNom:"Nombre del producto *",lblPrix:"Precio en FCFA *",lblVille:"Ciudad *",lblStock:"Stock",lblCat:"Categoría",catGeneral:"General",catMaison:"Hogar",catMode:"Moda",catElec:"Electrónica",catBeaute:"Belleza",catService:"Servicio",catAutre:"Otro",lblPhoto:"Foto del producto *",lblPhotoUrl:"O enlace de foto (opcional)",lblDesc:"Descripción *",btnPublier:"🚀 PUBLICAR MI PRODUCTO",btnTableau:"← Ir a mi Panel de Vendedor",phNom:"Ej: Utensilios de casa, Zapatos...",phPrix:"Ej: 15000",phVille:"Ej: Cotonou, Abomey-Calavi...",phDesc:"Describe tu producto: talla, color, estado, entrega...",errRemplis:"Completa: Nombre, Precio, Ciudad y Descripción.",errPhoto:"Añade una foto del producto (archivo o enlace).",errVendeur:"Error de vendedor: vuelve a iniciar sesión.",errNom:"Tu perfil no tiene nombre. Ve a Mi Perfil, pon tu nombre real y vuelve a publicar.",enCours:"Publicando...",publie:"✅ ¡Publicado! Vendedor: ",redirection:" - Redirigiendo...",errPub:"Error: ",publication:"Publicando...",email:"Correo:",doitConnecter:"Debes iniciar sesión como vendedor para publicar. Redirigiendo..."},
-pt:{bonjour:"Olá",bienvenue:"Bem-vindo",menuAccueil:"🏠 Início",menuVendeur:"📦 Meu Painel de Vendedor",menuAcheteur:"🛒 Meus Pedidos",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publicar um produto",menuProfil:"👤 Meu Perfil",menuConditions:"📜 Termos",menuContact:"📞 Contato",menuApropos:"ℹ️ Sobre",menuConnecter:"🔑 Entrar",menuInscription:"✍️ Cadastrar",menuDeconnecter:"🚪 Sair",fermer:"Fechar ✕",titre:"➕ Publicar um produto",sous:"Seu nome e sua foto serão mostrados automaticamente aos compradores.",verifie:"● Vendedor verificado para publicar",lblNom:"Nome do produto *",lblPrix:"Preço em FCFA *",lblVille:"Cidade *",lblStock:"Estoque",lblCat:"Categoria",catGeneral:"Geral",catMaison:"Casa",catMode:"Moda",catElec:"Eletrônicos",catBeaute:"Beleza",catService:"Serviço",catAutre:"Outro",lblPhoto:"Foto do produto *",lblPhotoUrl:"Ou link da foto (opcional)",lblDesc:"Descrição *",btnPublier:"🚀 PUBLICAR MEU PRODUTO",btnTableau:"← Ir para meu Painel de Vendedor",phNom:"Ex: Utensílios de casa, Sapatos...",phPrix:"Ex: 15000",phVille:"Ex: Cotonou, Abomey-Calavi...",phDesc:"Descreva seu produto: tamanho, cor, estado, entrega...",errRemplis:"Preencha: Nome, Preço, Cidade e Descrição.",errPhoto:"Adicione uma foto do produto (arquivo ou link).",errVendeur:"Erro de vendedor: entre novamente.",errNom:"Seu perfil não tem nome. Vá para Meu Perfil, coloque seu nome real e volte para publicar.",enCours:"Publicando...",publie:"✅ Publicado! Vendedor: ",redirection:" - Redirecionando...",errPub:"Erro: ",publication:"Publicando...",email:"E-mail:",doitConnecter:"Você precisa entrar como vendedor para publicar. Redirecionando..."},
-de:{bonjour:"Hallo",bienvenue:"Willkommen",menuAccueil:"🏠 Startseite",menuVendeur:"📦 Mein Verkäufer-Dashboard",menuAcheteur:"🛒 Meine Bestellungen",menuAdmin:"🛡️ Admin",menuPublier:"➕ Produkt veröffentlichen",menuProfil:"👤 Mein Profil",menuConditions:"📜 Bedingungen",menuContact:"📞 Kontakt",menuApropos:"ℹ️ Über uns",menuConnecter:"🔑 Anmelden",menuInscription:"✍️ Registrieren",menuDeconnecter:"🚪 Abmelden",fermer:"Schließen ✕",titre:"➕ Produkt veröffentlichen",sous:"Dein Name und dein Foto werden Käufern automatisch angezeigt.",verifie:"● Verifizierter Verkäufer zum Veröffentlichen",lblNom:"Produktname *",lblPrix:"Preis in FCFA *",lblVille:"Stadt *",lblStock:"Bestand",lblCat:"Kategorie",catGeneral:"Allgemein",catMaison:"Haushalt",catMode:"Mode",catElec:"Elektronik",catBeaute:"Schönheit",catService:"Dienstleistung",catAutre:"Andere",lblPhoto:"Produktfoto *",lblPhotoUrl:"Oder Fotolink (optional)",lblDesc:"Beschreibung *",btnPublier:"🚀 MEIN PRODUKT VERÖFFENTLICHEN",btnTableau:"← Zu meinem Verkäufer-Dashboard",phNom:"Z.B.: Haushaltsutensilien, Schuhe...",phPrix:"Z.B.: 15000",phVille:"Z.B.: Cotonou, Abomey-Calavi...",phDesc:"Beschreibe dein Produkt: Größe, Farbe, Zustand, Lieferung...",errRemplis:"Fülle aus: Name, Preis, Stadt und Beschreibung.",errPhoto:"Füge ein Produktfoto hinzu (Datei oder Link).",errVendeur:"Verkäuferfehler: melde dich erneut an.",errNom:"Dein Profil hat keinen Namen. Gehe zu Mein Profil, trage deinen echten Namen ein und komme zurück.",enCours:"Wird veröffentlicht...",publie:"✅ Veröffentlicht! Verkäufer: ",redirection:" - Weiterleitung...",errPub:"Fehler: ",publication:"Wird veröffentlicht...",email:"E-Mail:",doitConnecter:"Du musst dich als Verkäufer anmelden, um zu veröffentlichen. Weiterleitung..."},
-ar:{bonjour:"مرحبا",bienvenue:"مرحباً",menuAccueil:"🏠 الرئيسية",menuVendeur:"📦 لوحة البائع",menuAcheteur:"🛒 طلباتي",menuAdmin:"🛡️ المدير",menuPublier:"➕ نشر منتج",menuProfil:"👤 ملفي",menuConditions:"📜 الشروط",menuContact:"📞 اتصل",menuApropos:"ℹ️ حول",menuConnecter:"🔑 تسجيل الدخول",menuInscription:"✍️ التسجيل",menuDeconnecter:"🚪 تسجيل الخروج",fermer:"إغلاق ✕",titre:"➕ نشر منتج",sous:"سيتم عرض اسمك وصورتك تلقائياً للمشترين.",verifie:"● بائع موثّق للنشر",lblNom:"اسم المنتج *",lblPrix:"السعر بالفرنك *",lblVille:"المدينة *",lblStock:"المخزون",lblCat:"الفئة",catGeneral:"عام",catMaison:"المنزل",catMode:"الموضة",catElec:"إلكترونيات",catBeaute:"الجمال",catService:"خدمة",catAutre:"أخرى",lblPhoto:"صورة المنتج *",lblPhotoUrl:"أو رابط الصورة (اختياري)",lblDesc:"الوصف *",btnPublier:"🚀 انشر منتجي",btnTableau:"← اذهب إلى لوحة البائع",phNom:"مثال: أدوات منزلية، أحذية...",phPrix:"مثال: 15000",phVille:"مثال: كوتونو، أبومي كالافي...",phDesc:"صف منتجك: الحجم، اللون، الحالة، التوصيل...",errRemplis:"املأ: الاسم، السعر، المدينة والوصف.",errPhoto:"أضف صورة للمنتج (ملف أو رابط).",errVendeur:"خطأ في البائع: سجّل دخولك من جديد.",errNom:"ملفك ليس فيه اسم. اذهب إلى ملفي، ضع اسمك الحقيقي ثم عد للنشر.",enCours:"جارٍ النشر...",publie:"✅ تم النشر! البائع: ",redirection:" - جارٍ التوجيه...",errPub:"خطأ: ",publication:"جارٍ النشر...",email:"البريد:",doitConnecter:"يجب أن تسجّل دخولك كبائع للنشر. جارٍ التوجيه..."},
-yo:{bonjour:"Ẹ n lẹ",bienvenue:"Ẹ ku abọ",menuAccueil:"🏠 Ilé",menuVendeur:"📦 Pẹpẹ Olùtajà mi",menuAcheteur:"🛒 Àwọn Àṣẹ mi",menuAdmin:"🛡️ Admin",menuPublier:"➕ Fi ọjà hàn",menuProfil:"👤 Profaili mi",menuConditions:"📜 Àwọn Ofin",menuContact:"📞 Kànsí",menuApropos:"ℹ️ Nípa",menuConnecter:"🔑 Wọlé",menuInscription:"✍️ Forúkọsílẹ̀",menuDeconnecter:"🚪 Jáde",fermer:"Ti ✕",titre:"➕ Fi ọjà hàn",sous:"Orúkọ rẹ àti fọ́tò rẹ yóò fi ara wọn hàn fún àwọn oníbàárà.",verifie:"● Olùtajà tí a ti jẹ́rìí fún fífi hàn",lblNom:"Orúkọ ọjà *",lblPrix:"Iye ní FCFA *",lblVille:"Ìlú *",lblStock:"Ọjà tó kù",lblCat:"Ẹ̀ka",catGeneral:"Gbogbogbò",catMaison:"Ilé",catMode:"Aṣọ",catElec:"Ẹ̀rọ itanna",catBeaute:"Ẹwà",catService:"Iṣẹ́",catAutre:"Míràn",lblPhoto:"Fọ́tò ọjà *",lblPhotoUrl:"Àbí ọ̀nà fọ́tò (àṣàyàn)",lblDesc:"Àpèjúwe *",btnPublier:"🚀 FI ỌJÀ MI HÀN",btnTableau:"← Lọ sí Pẹpẹ Olùtajà mi",phNom:"Àpẹẹrẹ: Ohun èlò ilé, Bàtà...",phPrix:"Àpẹẹrẹ: 15000",phVille:"Àpẹẹrẹ: Cotonou, Abomey-Calavi...",phDesc:"Ṣàpèjúwe ọjà rẹ: ìwọ̀n, àwọ̀, ipò, ìfijiṣẹ́...",errRemplis:"Fọwọ́ sí: Orúkọ, Iye, Ìlú àti Àpèjúwe.",errPhoto:"Fi fọ́tò ọjà kún (fáìlì tàbí ọ̀nà).",errVendeur:"Àṣìṣe olùtajà: wọlé lẹ́ẹ̀kan sí i.",errNom:"Profaili rẹ kò ní orúkọ. Lọ sí Profaili mi, fi orúkọ gidi rẹ sí, kí o tó padà wá fi hàn.",enCours:"Nfi hàn...",publie:"✅ Ti fi hàn! Olùtajà: ",redirection:" - Ndarí...",errPub:"Àṣìṣe: ",publication:"Nfi hàn...",email:"Imeeli:",doitConnecter:"O gbọ́dọ̀ wọlé gẹ́gẹ́ bí olùtajà láti fi hàn. Ndarí..."},
-fon:{bonjour:"A fɔn",bienvenue:"Mì kù abọ",menuAccueil:"🏠 Xwé",menuVendeur:"📦 Nùxótɔ́ ce tɔn",menuAcheteur:"🛒 Nùxɔxɔ ce lɛ",menuAdmin:"🛡️ Admin",menuPublier:"➕ Zé nùxɔ́ ɖé",menuProfil:"👤 Profaili ce",menuConditions:"📜 Sɛ́n lɛ",menuContact:"📞 Ylɔ́",menuApropos:"ℹ️ Dó",menuConnecter:"🔑 Byɔ́",menuInscription:"✍️ Wlán",menuDeconnecter:"🚪 Tɔ́n",fermer:"Sú ✕",titre:"➕ Zé nùxɔ́ ɖé",sous:"Nyíkɔ towe kpó fótò towe kpó ná xlé ɖò éɖée sí nùxɔ́tɔ́ lɛ.",verifie:"● Nùxótɔ́ e è ɖɔ nǔgbó ná zé nùxɔ́ ɖé",lblNom:"Nyíkɔ nùxɔ́ tɔn *",lblPrix:"Axɔ́ ɖò FCFA mɛ *",lblVille:"Tòxó *",lblStock:"Nùxɔ́ e kpo lɛ",lblCat:"Hǎ",catGeneral:"Bǐ",catMaison:"Xwé",catElec:"Èlɛ́ktrónìkì",catMode:"Awù",catBeaute:"Ɖagbewi",catService:"Azɔ̌",catAutre:"Ðevo",lblPhoto:"Fótò nùxɔ́ tɔn *",lblPhotoUrl:"Àbí fótò sín xóxó (é sɔ́gán)",lblDesc:"Tínmɛ *",btnPublier:"🚀 ZÉ NÙXƆ́ CE",btnTableau:"← Yì Nùxótɔ́ ce tɔn jí",phNom:"Kpɔ́ndéwú: Nùxɔ́ xwé tɔn, Afɔkpa...",phPrix:"Kpɔ́ndéwú: 15000",phVille:"Kpɔ́ndéwú: Cotonou, Abomey-Calavi...",phDesc:"Ðɔ nùxɔ́ towe sín xó: gbè, àmà, nǔ e é ɖe, sɛ́dó...",errRemplis:"Blá: Nyíkɔ, Axɔ́, Tòxó kpó Tínmɛ kpó.",errPhoto:"Zé fótò nùxɔ́ tɔn (fichie àbí xóxó).",errVendeur:"Tagba nùxótɔ́ tɔn: lɛ̌ byɔ́.",errNom:"Profaili towe ɖó nyíkɔ ɖé ǎ. Yì Profaili ce, zé nyíkɔ gidi towe, bɔ è nǎ lɛ̌ wá zé.",enCours:"È ɖò zé wɛ...",publie:"✅ È zé! Nùxótɔ́: ",redirection:" - È ɖò sɛ́dó wɛ...",errPub:"Tagba: ",publication:"È ɖò zé wɛ...",email:"Email:",doitConnecter:"A ɖó ná byɔ́ tayiɖi nùxótɔ́ dó ná zé nùxɔ́ ɖé. È ɖò sɛ́dó wɛ..."},
-goun:{bonjour:"A fɔn",bienvenue:"Mì kù abọ",menuAccueil:"🏠 Xwé",menuVendeur:"📦 Nùxótɔ́ ce tɔn",menuAcheteur:"🛒 Nùxɔxɔ ce lɛ",menuAdmin:"🛡️ Admin",menuPublier:"➕ Zé nùxɔ́ ɖé",menuProfil:"👤 Profaili ce",menuConditions:"📜 Sɛ́n lɛ",menuContact:"📞 Ylɔ́",menuApropos:"ℹ️ Dó",menuConnecter:"🔑 Byɔ́",menuInscription:"✍️ Wlán",menuDeconnecter:"🚪 Tɔ́n",fermer:"Sú ✕",titre:"➕ Zé nùxɔ́ ɖé",sous:"Nyíkɔ towe kpó fótò towe kpó ná xlé ɖò éɖée sí nùxɔ́tɔ́ lɛ.",verifie:"● Nùxótɔ́ e è ɖɔ nǔgbó ná zé nùxɔ́ ɖé",lblNom:"Nyíkɔ nùxɔ́ tɔn *",lblPrix:"Axɔ́ ɖò FCFA mɛ *",lblVille:"Tòxó *",lblStock:"Nùxɔ́ e kpo lɛ",lblCat:"Hǎ",catGeneral:"Bǐ",catMaison:"Xwé",catElec:"Èlɛ́ktrónìkì",catMode:"Awù",catBeaute:"Ɖagbewi",catService:"Azɔ̌",catAutre:"Ðevo",lblPhoto:"Fótò nùxɔ́ tɔn *",lblPhotoUrl:"Àbí fótò sín xóxó (é sɔ́gán)",lblDesc:"Tínmɛ *",btnPublier:"🚀 ZÉ NÙXƆ́ CE",btnTableau:"← Yì Nùxótɔ́ ce tɔn jí",phNom:"Kpɔ́ndéwú: Nùxɔ́ xwé tɔn, Afɔkpa...",phPrix:"Kpɔ́ndéwú: 15000",phVille:"Kpɔ́ndéwú: Cotonou, Abomey-Calavi...",phDesc:"Ðɔ nùxɔ́ towe sín xó: gbè, àmà, nǔ e é ɖe, sɛ́dó...",errRemplis:"Blá: Nyíkɔ, Axɔ́, Tòxó kpó Tínmɛ kpó.",errPhoto:"Zé fótò nùxɔ́ tɔn (fichie àbí xóxó).",errVendeur:"Tagba nùxótɔ́ tɔn: lɛ̌ byɔ́.",errNom:"Profaili towe ɖó nyíkɔ ɖé ǎ. Yì Profaili ce, zé nyíkɔ gidi towe, bɔ è nǎ lɛ̌ wá zé.",enCours:"È ɖò zé wɛ...",publie:"✅ È zé! Nùxótɔ́: ",redirection:" - È ɖò sɛ́dó wɛ...",errPub:"Tagba: ",publication:"È ɖò zé wɛ...",email:"Email:",doitConnecter:"A ɖó ná byɔ́ tayiɖi nùxótɔ́ dó ná zé nùxɔ́ ɖé. È ɖò sɛ́dó wɛ..."}
+fr:{bonjour:"Bonjour",bienvenue:"Bienvenue",menuAccueil:"🏠 Accueil",menuVendeur:"📦 Mon Tableau Vendeur",menuAcheteur:"🛒 Mes Commandes",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publier un produit",menuProfil:"👤 Mon Profil",menuConditions:"📜 Conditions",menuContact:"📞 Contact",menuApropos:"ℹ️ À propos",menuConnecter:"🔑 Se connecter",menuInscription:"✍️ S'inscrire",menuDeconnecter:"🚪 Se déconnecter"},
+en:{bonjour:"Hello",bienvenue:"Welcome",menuAccueil:"🏠 Home",menuVendeur:"📦 My Seller Dashboard",menuAcheteur:"🛒 My Orders",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publish a product",menuProfil:"👤 My Profile",menuConditions:"📜 Terms",menuContact:"📞 Contact",menuApropos:"ℹ️ About",menuConnecter:"🔑 Log in",menuInscription:"✍️ Sign up",menuDeconnecter:"🚪 Log out"}
 };
+TRADUCTIONS.yo=TRADUCTIONS.en; TRADUCTIONS.fon=TRADUCTIONS.en; TRADUCTIONS.goun=TRADUCTIONS.en; TRADUCTIONS.es=TRADUCTIONS.en; TRADUCTIONS.pt=TRADUCTIONS.en; TRADUCTIONS.de=TRADUCTIONS.en; TRADUCTIONS.ar=TRADUCTIONS.en;
 
-function appliquerTraductionPublier(){
-  var d = TRADUCTIONS[LANGUE_ACTUELLE] || TRADUCTIONS.fr;
-  var set = function(id, txt){ var el=document.getElementById(id); if(el) el.textContent=txt; };
-  var setPH = function(id, txt){ var el=document.getElementById(id); if(el) el.placeholder=txt; };
-  set('titrePublier', d.titre); set('sousPublier', d.sous); set('statutVendeur', d.verifie);
-  set('lblNom', d.lblNom); set('lblPrix', d.lblPrix); set('lblVille', d.lblVille); set('lblStock', d.lblStock);
-  set('lblCategorie', d.lblCat); set('catGeneral', d.catGeneral); set('catMaison', d.catMaison); set('catMode', d.catMode);
-  set('catElec', d.catElec); set('catBeaute', d.catBeaute); set('catService', d.catService); set('catAutre', d.catAutre);
-  set('lblPhoto', d.lblPhoto); set('lblPhotoUrl', d.lblPhotoUrl); set('lblDesc', d.lblDesc);
-  set('btnPublier', d.btnPublier); set('btnTableau', d.btnTableau); set('txtEmail', d.email);
-  setPH('nom', d.phNom); setPH('prix', d.phPrix); setPH('ville', d.phVille); setPH('description', d.phDesc);
-  var fer = document.querySelector('#menuPanel .fermer'); if(fer) fer.textContent = d.fermer;
-  try{ construireMenu(); }catch(e){}
-  // RTL pour l'arabe
-  document.documentElement.dir = (LANGUE_ACTUELLE==="ar") ? "rtl" : "ltr";
-  document.documentElement.lang = LANGUE_ACTUELLE;
-}
-function changerLangue(v){
-  LANGUE_ACTUELLE=v; localStorage.setItem("rocy_lang",v);
-  var sel=document.getElementById("langue"); if(sel) sel.value=v;
-  // NE JAMAIS changer window.location ici, sinon on tombe sur /ar /es et on perd la page
-  appliquerTraductionPublier();
-}
+function changerLangue(v){ LANGUE_ACTUELLE=v; localStorage.setItem("rocy_lang",v); var sel=document.getElementById("langue"); if(sel) sel.value=v; construireMenu(); }
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
 function ouvrirMenu(){ construireMenu(); document.getElementById('overlayMenu').style.display='block'; document.getElementById('menuPanel').style.display='block'; }
 function fermerMenu(){ document.getElementById('overlayMenu').style.display='none'; document.getElementById('menuPanel').style.display='none'; }
@@ -169,9 +140,9 @@ function initSupabase(){
 
 async function chargerVendeur(){
   var msgEl = document.getElementById('msg');
-  var d = TRADUCTIONS[LANGUE_ACTUELLE] || TRADUCTIONS.fr;
+  // Si pas connecté, on bloque
   if(!localStorage.getItem("rocy_user")){
-    if(msgEl){ msgEl.className="msg err"; msgEl.textContent=d.doitConnecter; }
+    if(msgEl){ msgEl.className="msg err"; msgEl.textContent="Tu dois te connecter comme vendeur pour publier. Redirection..."; }
     setTimeout(function(){ window.location.href="connexion.html"; }, 1200);
     return;
   }
@@ -180,7 +151,10 @@ async function chargerVendeur(){
   var nomLocal = localStorage.getItem("nom_user") || "";
   var telLocal = localStorage.getItem("tel_user") || localStorage.getItem("telephone_user") || "";
   var photoLocal = localStorage.getItem("photo_user") || "";
+
   vendeurInfos = { id: userId, nom: nomLocal, email: email, telephone: telLocal, photo: photoLocal };
+
+  // On va chercher le vrai profil dans Supabase, c'est la source de vérité
   if(supabaseClient && userId){
     try{
       var r = await supabaseClient.from('profils').select('*').eq('id', userId).maybeSingle();
@@ -190,12 +164,14 @@ async function chargerVendeur(){
         vendeurInfos.telephone = p.telephone || p.tel || vendeurInfos.telephone;
         vendeurInfos.photo = p.photo_profil || p.photo || p.avatar || vendeurInfos.photo;
         vendeurInfos.email = p.email || vendeurInfos.email;
+        // On met à jour localStorage pour la prochaine fois
         if(vendeurInfos.nom) localStorage.setItem("nom_user", vendeurInfos.nom);
         if(vendeurInfos.telephone) localStorage.setItem("tel_user", vendeurInfos.telephone);
         if(vendeurInfos.photo) localStorage.setItem("photo_user", vendeurInfos.photo);
       }
     }catch(e){ console.log("profil vendeur", e); }
   }
+  // Affichage
   var nomEl = document.getElementById('nomVendeurAffiche');
   if(nomEl) nomEl.textContent = vendeurInfos.nom || "Vendeur ROCYINTER";
   var emailEl = document.getElementById('emailVendeurAffiche');
@@ -218,7 +194,6 @@ function previewPhoto(input){
 async function publier(){
   var btn = document.getElementById('btnPublier');
   var msgEl = document.getElementById('msg');
-  var d = TRADUCTIONS[LANGUE_ACTUELLE] || TRADUCTIONS.fr;
   var nom = document.getElementById('nom').value.trim();
   var prix = Number(document.getElementById('prix').value);
   var ville = document.getElementById('ville').value.trim();
@@ -228,15 +203,15 @@ async function publier(){
   var photoUrl = document.getElementById('photoUrl').value.trim();
   var photoFinale = photoUrl || photoBase64 || "";
 
-  if(!nom || !prix || !ville || !desc){ msgEl.className="msg err"; msgEl.textContent=d.errRemplis; return; }
-  if(!photoFinale){ msgEl.className="msg err"; msgEl.textContent=d.errPhoto; return; }
-  if(!vendeurInfos.id){ msgEl.className="msg err"; msgEl.textContent=d.errVendeur; return; }
+  if(!nom || !prix || !ville || !desc){ msgEl.className="msg err"; msgEl.textContent="Remplis : Nom, Prix, Ville et Description."; return; }
+  if(!photoFinale){ msgEl.className="msg err"; msgEl.textContent="Mets une photo du produit (fichier ou lien)."; return; }
+  if(!vendeurInfos.id){ msgEl.className="msg err"; msgEl.textContent="Erreur vendeur : reconnecte-toi et réessaie."; return; }
   if(!vendeurInfos.nom || vendeurInfos.nom==="Vendeur" || vendeurInfos.nom==="V"){
-    msgEl.className="msg err"; msgEl.textContent=d.errNom; return;
+    msgEl.className="msg err"; msgEl.textContent="Ton profil n'a pas de nom. Va dans Mon Profil, mets ton vrai nom, puis reviens publier."; return;
   }
 
-  btn.disabled = true; btn.textContent = d.publication;
-  msgEl.className="msg"; msgEl.textContent=d.enCours;
+  btn.disabled = true; btn.textContent = "Publication...";
+  msgEl.className="msg"; msgEl.textContent="Publication en cours...";
 
   try{
     var aPublier = {
@@ -248,6 +223,7 @@ async function publier(){
       description: desc,
       photo: photoFinale,
       image: photoFinale,
+      // ===== JAMAIS VIDE : infos vendeur obligatoires =====
       vendeur_id: vendeurInfos.id,
       nom_vendeur: vendeurInfos.nom,
       email_vendeur: vendeurInfos.email,
@@ -257,17 +233,17 @@ async function publier(){
     };
     var res = await supabaseClient.from('produits').insert([aPublier]).select().single();
     if(res.error) throw res.error;
-    msgEl.className="msg ok"; msgEl.textContent=d.publie+vendeurInfos.nom+d.redirection;
+    msgEl.className="msg ok"; msgEl.textContent="✅ Publié ! Vendeur : "+vendeurInfos.nom+" - Redirection...";
     setTimeout(function(){ window.location.href="article.html?id="+res.data.id; }, 1200);
   }catch(e){
-    msgEl.className="msg err"; msgEl.textContent=d.errPub+(e.message||JSON.stringify(e));
-    btn.disabled=false; btn.textContent=d.btnPublier;
+    msgEl.className="msg err"; msgEl.textContent="Erreur : "+(e.message||JSON.stringify(e));
+    btn.disabled=false; btn.textContent="🚀 PUBLIER MON PRODUIT";
   }
 }
 
 document.addEventListener("DOMContentLoaded", function(){
   var sel=document.getElementById("langue"); if(sel) sel.value=LANGUE_ACTUELLE;
-  initSupabase(); chargerVendeur(); appliquerTraductionPublier();
+  initSupabase(); chargerVendeur(); construireMenu();
 });
 </script>
 </body>
