@@ -5,55 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROCYINTER - Acheter et vendre partout dans le monde</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;margin:0;background:#f6f6f6;color:#222}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;margin:0;background:#f6f6f6;color:#1a1a1a;-webkit-font-smoothing:antialiased;letter-spacing:-0.1px}
 header{background:#111;color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-header .logo{font-size:19px;font-weight:900;letter-spacing:.5px}
+header .logo{font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;letter-spacing:.3px}
 header .logo span{color:#FFC107}
 .header-droite{display:flex;gap:8px;align-items:center}
-.header-droite select{background:#fff;border:0;border-radius:10px;height:38px;padding:0 8px;font-size:13px;font-weight:bold;color:#111;cursor:pointer}
+.header-droite select{font-family:'Inter',sans-serif;background:#fff;border:0;border-radius:10px;height:38px;padding:0 8px;font-size:13px;font-weight:600;color:#111;cursor:pointer}
 .btn-menu{background:#fff;color:#111;border:0;font-size:20px;line-height:1;width:38px;height:38px;border-radius:10px;cursor:pointer;font-weight:900}
 #overlayMenu{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
-#menuPanel{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:16px;overflow:auto}
-#menuPanel h3{margin:0 0 4px;color:#111;font-size:18px}
+#menuPanel{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:16px;overflow:auto;font-family:'Inter',sans-serif}
+#menuPanel h3{font-family:'Poppins',sans-serif;margin:0 0 4px;color:#111;font-size:20px;font-weight:800;letter-spacing:.2px}
 #menuPanel h3 span{color:#FFC107}
-#menuPanel p{margin:0 0 12px;color:#666;font-size:13px}
-#menuPanel a{display:block;padding:11px 10px;border-radius:10px;text-decoration:none;color:#222;font-weight:700;border-bottom:1px solid #f0f0f0}
+#menuPanel p{margin:0 0 12px;color:#666;font-size:13px;font-weight:500}
+#menuPanel a{display:block;padding:12px 10px;border-radius:10px;text-decoration:none;color:#1a1a1a;font-weight:600;font-size:15px;border-bottom:1px solid #f0f0f0;letter-spacing:-0.1px}
 #menuPanel .rouge{color:#D32F2F}
-#menuPanel .fermer{background:#111;color:#fff;text-align:center;border:0}
-.btn-jaune{background:#FFC107;color:black;padding:12px 18px;border-radius:10px;font-weight:bold;text-decoration:none;display:inline-block}
+#menuPanel .fermer{background:#111;color:#fff;text-align:center;border:0;font-weight:700}
+.btn-jaune{font-family:'Inter',sans-serif;background:#FFC107;color:black;padding:12px 18px;border-radius:10px;font-weight:800;text-decoration:none;display:inline-block;letter-spacing:-0.1px}
 .hero{background:white;padding:20px 14px;text-align:center}
-.hero h1{font-size:20px;margin:10px 0;line-height:1.35}
-.hero p{color:#666;font-size:14px;margin:6px 0}
-/* Comment ça marche : BLEU, SANS SOULIGNEMENT, SANS ? */
-.btn-comment{margin-top:12px;background:none;border:0;color:#0B5ED7;font-weight:800;font-size:14px;text-decoration:none;cursor:pointer}
+.hero h1{font-family:'Inter',sans-serif;font-size:21px;font-weight:800;margin:10px 0;line-height:1.3;letter-spacing:-0.4px;color:#111}
+.hero p{color:#666;font-size:14px;margin:6px 0;font-weight:400;line-height:1.5}
+.btn-comment{margin-top:12px;background:none;border:0;color:#0B5ED7;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif}
 .barre-prix{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 0;max-width:1100px;margin:auto}
-.barre-prix .compteur{color:#666;font-size:13px}
-.convertisseur{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;font-weight:700}
-.convertisseur select{border:0;background:transparent;font-size:12px;font-weight:800;outline:none;cursor:pointer}
-.txt-taux{text-align:center;font-size:10px;color:#999;margin:2px 0 0}
+.barre-prix .compteur{color:#666;font-size:13px;font-weight:500}
+.convertisseur{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif}
+.convertisseur select{border:0;background:transparent;font-size:12px;font-weight:700;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
+.txt-taux{text-align:center;font-size:10px;color:#999;margin:2px 0 0;font-weight:400}
 .grid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:white;border-radius:12px;overflow:hidden;cursor:pointer}
 .card img{width:100%;height:130px;object-fit:cover;background:#eee}
 .card div{padding:10px}
-.prix{color:#000;font-weight:bold}
+.card b{font-weight:700;font-size:14px;letter-spacing:-0.2px;line-height:1.3;display:block}
+.card small{font-size:12px;color:#666;font-weight:400;line-height:1.4}
+.prix{color:#000;font-weight:800;font-size:15px;letter-spacing:-0.2px}
 #overlayComment{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:16px}
-#popupComment{background:#fff;width:100%;max-width:420px;border-radius:16px;padding:20px;position:relative;text-align:left}
-#popupComment h3{margin:0 0 12px;text-align:center}
+#popupComment{background:#fff;width:100%;max-width:420px;border-radius:16px;padding:20px;position:relative;text-align:left;font-family:'Inter',sans-serif}
+#popupComment h3{margin:0 0 12px;text-align:center;font-weight:800;font-size:18px;letter-spacing:-0.3px}
 #popupComment p{margin:10px 0;font-size:14px;line-height:1.5;color:#333}
-#popupComment .etape{background:#FFF8E1;border-radius:10px;padding:10px;margin:8px 0;font-size:13px}
-#popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:12px;border-radius:10px;font-weight:900;cursor:pointer;margin-top:10px}
-/* PIED DE PAGE : MEME HAUTEUR QUE EN-TETE, POLICE PETITE, SANS ROCY INTER */
-footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:11px;line-height:1.4}
-footer a{color:#FFC107;text-decoration:none;font-weight:bold}
+#popupComment .etape{background:#FFF8E1;border-radius:10px;padding:10px;margin:8px 0;font-size:13px;line-height:1.5;font-weight:500}
+#popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Inter',sans-serif}
+footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:11px;line-height:1.4;font-family:'Inter',sans-serif;font-weight:500}
+footer a{color:#FFC107;text-decoration:none;font-weight:700}
 footer p{margin:1px 0}
 @media(max-width:480px){
-  header .logo{font-size:17px}
-  .hero h1{font-size:18px}
+  header .logo{font-size:18px}
+  .hero h1{font-size:19px}
   .grid{grid-template-columns:1fr 1fr;gap:8px;padding:8px}
   .card img{height:110px}
-  .card div{padding:8px;font-size:13px}
+  .card div{padding:8px}
+  .card b{font-size:13px}
   .btn-jaune{font-size:13px;padding:11px}
   footer{font-size:10.5px;padding:10px 8px}
 }
@@ -78,9 +82,9 @@ footer p{margin:1px 0}
 <div class="hero">
   <h1 id="titreHero">Acheter et vendre partout dans le monde, en toute confiance.</h1>
   <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p><br>
-  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:13px;border-radius:8px;font-weight:900">Publier mon produit pour 2000F - 30 jours</a>
+  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:13px;border-radius:8px;font-weight:800">Publier mon produit pour 2000F - 30 jours</a>
   <p id="txtBoost" style="font-size:12px;margin-top:10px">Boost : 20 premiers gratuits, après 500F / 3 jours</p>
-  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:10px" oninput="filtrerProduits()">
+  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:10px;font-family:'Inter',sans-serif;font-size:14px" oninput="filtrerProduits()">
   <button class="btn-comment" onclick="ouvrirComment()"><span id="titreComment">Comment ça marche ?</span></button>
 </div>
 
@@ -102,7 +106,6 @@ footer p{margin:1px 0}
   </div>
 </div>
 
-<!-- PIED DE PAGE CORRIGE : VRAIES INFOS, PETITE POLICE, SANS ROCY INTER, MEME HAUTEUR QUE EN-TETE -->
 <footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 
 <script>
