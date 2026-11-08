@@ -43,8 +43,8 @@ input.erreur{border-color:#e53935;background:#FFF5F5}
 <button type="button" id="btnVendeur" onclick="choisir('vendeur')">🛍️ <span data-i18n="jeVendeur">Je suis VENDEUR</span><br><span data-i18n="jeVeuxVendre">Je veux vendre</span></button>
 <button type="button" id="btnAcheteur" onclick="choisir('acheteur')">🛒 <span data-i18n="jeAcheteur">Je suis ACHETEUR</span><br><span data-i18n="jeVeuxAcheter">Je veux acheter</span></button>
 </div>
-<div id="infoVendeur" class="info-vendeur" data-i18n="infoVendeur"><b>Compte VENDEUR :</b> Tu pourras publier tes produits (2000F / exposition), voir Mes ventes, Mon argent, recevoir les commandes et envoyer les preuves.</div>
-<div id="infoAcheteur" class="info-acheteur" data-i18n="infoAcheteur"><b>Compte ACHETEUR :</b> Tu pourras cliquer sur COMMANDER sur le site, discuter logistique, suivre ton colis et cliquer sur "Colis reçu".</div>
+<div id="infoVendeur" class="info-vendeur" data-i18n="infoVendeur"><b>Compte VENDEUR :</b> Tu pourras publier tes produits, vendre, recevoir les commandes et envoyer les preuves en toutes sécurités.</div>
+<div id="infoAcheteur" class="info-acheteur" data-i18n="infoAcheteur"><b>Compte ACHETEUR :</b> Tu pourras commander sur le site en toutes sécurités, discuter logistique, suivre ton colis et cliquer sur "Colis reçu".</div>
 <p id="msgErreur" style="display:none;background:#FFE0E0;color:#C00;padding:10px;border-radius:8px;font-size:13px;text-align:center"></p>
 <form onsubmit="inscrire(event)">
 <label data-i18n="lblRole">Ton rôle *</label>
@@ -53,7 +53,7 @@ input.erreur{border-color:#e53935;background:#FFF5F5}
 <input type="text" id="nom" data-i18n-ph="phNom" placeholder="Ex: Rochelle Agossou" required>
 <label data-i18n="lblEmail">Email (optionnel)</label>
 <input type="email" id="email" data-i18n-ph="phEmail" placeholder="Ex: toi@gmail.com">
-<p style="font-size:12px;color:#666;margin:5px 0 0" data-i18n="infoSansEmail">Tu peux t'inscrire sans email. Mais pour vendre, tu devras compléter ton vrai email dans <b>Profil</b>.</p>
+<p style="font-size:12px;color:#666;margin:5px 0 0" data-i18n="infoSansEmail">Tu peux t'inscrire sans email. Mais tu devras compléter ton vrai email dans <b>Profil</b>.</p>
 <label data-i18n="lblTel">Téléphone WhatsApp *</label>
 <div style="display:flex;gap:8px">
 <select id="indicatif" onchange="changerPaysDepuisIndicatif()" style="width:38%"><option value="+229">+229 Bénin</option><option value="+228">+228 Togo</option><option value="+234">+234 Nigeria</option><option value="+233">+233 Ghana</option><option value="+225">+225 Cote-Ivoire</option><option value="+221">+221 Sénégal</option><option value="+226">+226 Burkina</option><option value="+227">+227 Niger</option><option value="+223">+223 Mali</option><option value="+33">+33 France</option><option value="+1">+1 USA</option></select>
