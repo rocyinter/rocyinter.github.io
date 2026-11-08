@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Produit - ROCYINTER</title>
+<title>Publier - ROCYINTER</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="commun.js"></script>
 <style>
@@ -24,109 +24,87 @@ header .logo span{color:#FFC107}
 #menuPanel .rouge{color:#D32F2F}
 #menuPanel .fermer{background:#111;color:#fff;text-align:center}
 .container{max-width:520px;margin:12px auto;background:#fff;padding:14px;border-radius:12px}
-.main-img{width:100%;height:260px;object-fit:cover;border-radius:12px;background:#eee}
-h2{margin:10px 0 4px;font-size:18px;line-height:1.3}
-.price{font-size:19px;font-weight:800;color:#111;margin:4px 0}
-.stock{color:#2e7d32;font-size:11px;font-weight:700}
-.vendeur{display:flex;gap:10px;align-items:center;background:#f9f9f9;padding:10px;border-radius:10px;margin:12px 0;font-size:12px;line-height:1.5}
-.avatar{width:45px;height:45px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;overflow:hidden}
+h2{margin:0 0 4px;font-size:18px}
+.sous{color:#666;font-size:12px;margin:0 0 12px}
+label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px}
+input,textarea,select{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;font-size:13px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+.btn{width:100%;background:#FF6B00;color:#fff;border:0;padding:13px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;margin-top:14px}
+.btn:disabled{opacity:.6}
+.btn2{width:100%;background:#111;color:#fff;border:0;padding:11px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
+.info-vendeur{display:flex;gap:10px;align-items:center;background:#FFF8E1;border:1px solid #FFC107;padding:10px;border-radius:10px;font-size:12px;line-height:1.5}
+.avatar{width:42px;height:42px;background:#FF6B00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.btn-chat{background:#111;color:#fff;border:0;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
-.desc{color:#444;font-size:13px;line-height:1.6}
-.btn{width:100%;background:#FF6B00;color:#fff;border:0;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer}
+.preview{width:100%;height:200px;object-fit:cover;border-radius:10px;background:#eee;display:none;margin-top:8px}
+.msg{font-size:12px;margin-top:10px;line-height:1.5}
+.msg.ok{color:#2e7d32}
+.msg.err{color:#D32F2F}
 footer{background:#111;color:#fff;padding:10px 12px;text-align:center;margin-top:10px;font-size:9px;line-height:1.4}
 footer a{color:#FFC107;text-decoration:none;font-weight:700}
-.btn-description{background:none;border:0;color:#0B5ED7;font-weight:800;font-size:15px;cursor:pointer;padding:0;text-align:left}
-#overlayDesc{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:14px}
-#popupDesc{background:#fff;width:100%;max-width:420px;border-radius:14px;padding:16px;max-height:85vh;overflow:auto}
-#popupDesc h3{margin:0 0 10px;text-align:center;font-size:15px}
-#overlayChat{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:flex-end;padding:0}
-#popupChat{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:14px;max-height:85vh;overflow:auto}
-#messagesChat{min-height:60px;background:#f9f9f9;padding:8px;border-radius:8px;font-size:13px;line-height:1.5}
-#msgChat{width:100%;padding:10px;margin-top:8px;border:1px solid #ddd;border-radius:8px}
-.notif{position:fixed;top:60px;right:12px;background:#FF6B00;color:#fff;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;z-index:400;display:none;cursor:pointer;max-width:260px}
-@media(min-width:768px){.container{max-width:640px}.main-img{height:340px}h2{font-size:20px}}
+@media(min-width:768px){.container{max-width:640px}}
 </style>
 </head>
 <body>
-<header><div class="logo">ROCY<span>INTER</span></div><div class="header-droite"><select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option></select><select id="devise" onchange="convertirPrix()"><option value="XOF">FCFA</option><option value="EUR">Euro</option><option value="USD">Dollar</option><option value="NGN">Naira</option><option value="GHS">Cedi</option><option value="GBP">Livre</option></select><button class="btn-menu" onclick="ouvrirMenu()">☰</button></div></header>
+<header><div class="logo">ROCY<span>INTER</span></div><div class="header-droite"><select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option></select><button class="btn-menu" onclick="ouvrirMenu()">☰</button></div></header>
 <div id="overlayMenu" onclick="fermerMenu()"></div>
 <div id="menuPanel" style="display:none"><h3>ROCY <span>INTER</span></h3><p id="menuBonjour">Bienvenue</p><div id="liensMenu"></div><br><a href="#" class="fermer" onclick="fermerMenu();return false;">Fermer ✕</a></div>
-<div id="notifChat" class="notif" onclick="ouvrirChat()">💬 Le vendeur a répondu - Clique pour voir</div>
+
 <div class="container">
-<div style="position:relative">
-<img id="photoProduit" class="main-img" src="" alt="Photo produit">
-<span id="badgeBoost" style="display:none;position:absolute;top:10px;left:10px;background:#FFC107;color:#111;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800">⭐ À LA UNE - BOOSTÉ</span>
-</div>
-<h2 id="nomProduit" data-original="">Chargement...</h2>
-<p class="price"><span id="prixProduit" class="prix" data-prix="0"></span></p>
-<p class="stock"><span id="stockProduit"></span> • <span id="vuesProduit"></span> • <span id="villeProduit" data-original=""></span></p>
-<div class="vendeur">
+<h2 id="titrePublier">➕ Publier un produit</h2>
+<p class="sous" id="sousPublier">Ton nom et ta photo seront affichés automatiquement aux acheteurs.</p>
+
+<div class="info-vendeur">
 <div class="avatar" id="avatarVendeur">V</div>
-<div><b id="nomVendeur" data-original="">Chargement...</b><br><span id="infoVendeur" data-original=""></span><br><span id="avisVendeur"></span></div>
-<button id="btnChat" class="btn-chat" onclick="ouvrirChat()">💬 <span id="txtChatBtn">Discuter de la logistique</span></button>
+<div><b id="nomVendeurAffiche">Chargement...</b><br><span id="emailVendeurAffiche" style="color:#666"></span><br><span id="statutVendeur" style="color:#2e7d32;font-weight:700">● Vendeur vérifié pour publication</span></div>
 </div>
-<button class="btn-description" onclick="ouvrirDesc()">› <span id="titreDesc">Description</span></button>
-<p class="desc" id="descProduit" data-original="" style="margin:8px 0 0"></p>
-<div id="zoneAcheteur">
-<button onclick="commander()" class="btn" style="margin-top:12px">🛒 <span id="txtCommander">COMMANDER sur le site</span></button>
-<div id="choixPaiement" style="display:none;border:1px solid #FF6B00;border-radius:10px;padding:12px;margin-top:10px;background:#FFF8E1">
-<b><span id="txtPayer">Payer</span> <span id="totalAPayer"></span></b><br>
-<p style="font-size:12px;margin:6px 0" id="txtPaiementInfo">Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité. Le vendeur sera payé seulement quand tu cliqueras COLIS REÇU.</p>
-<b style="font-size:12px" id="txtAfrique">Afrique - Mobile Money</b>
-<button onclick="payerAvec('MTN MoMo')" style="width:100%;padding:11px;margin-top:6px;background:#FFCC00;border:none;border-radius:8px;font-weight:800;cursor:pointer">MTN MoMo</button>
-<button onclick="payerAvec('Moov Money')" style="width:100%;padding:11px;margin-top:6px;background:#0066FF;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">Moov Money</button>
-<button onclick="payerAvec('Orange Money')" style="width:100%;padding:11px;margin-top:6px;background:#FF7900;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">Orange Money</button>
-<button onclick="payerAvec('Wave')" style="width:100%;padding:11px;margin-top:6px;background:#1DC4F2;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">Wave</button>
-<button onclick="payerAvec('Airtel Money')" style="width:100%;padding:11px;margin-top:6px;background:#E40000;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">Airtel Money</button>
-<button onclick="payerAvec('M-Pesa')" style="width:100%;padding:11px;margin-top:6px;background:#4CAF50;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">M-Pesa</button>
-<b style="font-size:12px;display:block;margin-top:12px" id="txtCarte">Monde - Carte bancaire</b>
-<button onclick="payerAvec('Visa / Mastercard')" style="width:100%;padding:11px;margin-top:6px;background:#111;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">💳 Visa / Mastercard</button>
-<b style="font-size:12px;display:block;margin-top:12px" id="txtPortefeuille">Monde - Portefeuille</b>
-<button onclick="payerAvec('PayPal')" style="width:100%;padding:11px;margin-top:6px;background:#003087;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">PayPal</button>
-<button onclick="payerAvec('Apple Pay / Google Pay')" style="width:100%;padding:11px;margin-top:6px;background:#000;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer">Apple Pay / Google Pay</button>
-<button onclick="fermerPaiement()" style="width:100%;padding:10px;margin-top:10px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer" id="txtAnnuler">Annuler</button>
+
+<label id="lblNom">Nom du produit *</label>
+<input id="nom" placeholder="Ex: Ustensiles de maison, Chaussures...">
+
+<label id="lblPrix">Prix en FCFA *</label>
+<input id="prix" type="number" inputmode="numeric" placeholder="Ex: 15000">
+
+<label id="lblVille">Ville *</label>
+<input id="ville" placeholder="Ex: Cotonou, Abomey-Calavi...">
+
+<label id="lblStock">Stock</label>
+<input id="stock" type="number" value="1" min="1">
+
+<label id="lblCategorie">Catégorie</label>
+<select id="categorie">
+<option value="general">Général</option>
+<option value="maison">Maison</option>
+<option value="mode">Mode</option>
+<option value="electronique">Électronique</option>
+<option value="beaute">Beauté</option>
+<option value="service">Service</option>
+<option value="autre">Autre</option>
+</select>
+
+<label id="lblPhoto">Photo du produit *</label>
+<input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(this)">
+<img id="previewImg" class="preview">
+<label id="lblPhotoUrl">Ou lien photo (optionnel)</label>
+<input id="photoUrl" placeholder="https://...">
+
+<label id="lblDesc">Description *</label>
+<textarea id="description" placeholder="Décris ton produit : taille, couleur, état, livraison..."></textarea>
+
+<button class="btn" id="btnPublier" onclick="publier()">🚀 PUBLIER MON PRODUIT</button>
+<button class="btn2" onclick="window.location.href='vendeur.html'">← Aller à mon Tableau Vendeur</button>
+<div id="msg" class="msg"></div>
 </div>
-</div>
-<div id="zoneVendeur" style="display:none;background:#EFF6FF;padding:12px;border-radius:10px;margin-top:10px;text-align:center;font-size:12px;line-height:1.6"><span id="txtTonProduit">C'est ton produit. Tu ne peux pas te commander toi-même.</span><br><a href="vendeur.html" style="font-weight:800" id="txtAllerVendeur">→ Aller à mon Tableau Vendeur</a></div>
-<div id="msgErreur" style="display:none;color:#D32F2F;font-size:12px;margin-top:10px"></div>
-</div>
-<div id="overlayDesc" onclick="fermerDesc()"><div id="popupDesc" onclick="event.stopPropagation()">
-<h3 id="titrePopupDesc">Description</h3>
-<p class="desc" id="descPopup" style="margin:0 0 10px"></p>
-<div style="background:#FFF8E1;padding:12px;border-radius:10px;font-size:12px;line-height:1.7">
-<b id="txtAvantPayer">🛡️ Avant de payer, tu vois tout :</b><br>
-<span id="txtLivraison">Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur</span><br>
-<span id="txtDelai">Délai : Selon le pays / ville</span><br>
-<span id="txtProtection">Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU</span><br>
-<span id="detailPrix"></span><br>
-<small id="txtCommission"></small><br><br>
-<b id="txtComment">Comment ça marche ?</b><br>
-<span id="txtEtapes">1. Tu commandes → Argent bloqué<br>2. Le vendeur envoie → Tu suis ton colis<br>3. Tu reçois → Tu cliques COLIS REÇU<br>4. Le vendeur est payé<br>Problème ? 48h pour signaler un litige.</span>
-</div>
-<button onclick="fermerDesc()" style="width:100%;background:#111;color:#fff;border:0;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:10px;font-size:12px">← <span id="txtRetourDesc">Retour au Détail</span></button>
-</div></div>
-<div id="overlayChat" onclick="fermerChat()"><div id="popupChat" onclick="event.stopPropagation()">
-<b id="txtChatTitre">Discuter de la logistique</b>
-<p style="font-size:11px;color:#666" id="txtChatInfo">Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids du colis ? Pas de négociation de prix.</p>
-<div id="messagesChat"></div>
-<input id="msgChat" placeholder="Ex: Tu es où ? Livraison possible vers mon pays ?">
-<input type="file" id="photoChat" accept="image/*" style="margin-top:8px">
-<button onclick="envoyerMsg()" style="width:100%;padding:10px;margin-top:8px;background:#111;color:#fff;border:none;border-radius:8px" id="txtEnvoyer">Envoyer</button>
-<button onclick="basculerWhatsApp()" style="width:100%;padding:10px;margin-top:8px;background:#25D366;color:#fff;border:none;border-radius:8px" id="txtWhatsApp">Continuer sur WhatsApp</button>
-<p id="traceWhatsApp" style="font-size:11px;color:#888"></p>
-<button onclick="fermerChat()" style="width:100%;padding:10px;margin-top:6px;background:#fff;border:1px solid #ddd;border-radius:8px" id="txtFermerChat">Fermer - Retour au Détail</button>
-</div></div>
-<footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; <span id="txtTel">Tél :</span> <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
+
+<footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 <script>
 var LANGUE_ACTUELLE = localStorage.getItem("rocy_lang") || "fr";
-var taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
-var symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
 var TRADUCTIONS = {
 fr:{bonjour:"Bonjour",bienvenue:"Bienvenue",menuAccueil:"🏠 Accueil",menuVendeur:"📦 Mon Tableau Vendeur",menuAcheteur:"🛒 Mes Commandes",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publier un produit",menuProfil:"👤 Mon Profil",menuConditions:"📜 Conditions",menuContact:"📞 Contact",menuApropos:"ℹ️ À propos",menuConnecter:"🔑 Se connecter",menuInscription:"✍️ S'inscrire",menuDeconnecter:"🚪 Se déconnecter"},
 en:{bonjour:"Hello",bienvenue:"Welcome",menuAccueil:"🏠 Home",menuVendeur:"📦 My Seller Dashboard",menuAcheteur:"🛒 My Orders",menuAdmin:"🛡️ Admin",menuPublier:"➕ Publish a product",menuProfil:"👤 My Profile",menuConditions:"📜 Terms",menuContact:"📞 Contact",menuApropos:"ℹ️ About",menuConnecter:"🔑 Log in",menuInscription:"✍️ Sign up",menuDeconnecter:"🚪 Log out"}
 };
-TRADUCTIONS.yo=TRADUCTIONS.fr; TRADUCTIONS.fon=TRADUCTIONS.fr; TRADUCTIONS.goun=TRADUCTIONS.fr; TRADUCTIONS.es=TRADUCTIONS.fr; TRADUCTIONS.pt=TRADUCTIONS.fr; TRADUCTIONS.de=TRADUCTIONS.fr; TRADUCTIONS.ar=TRADUCTIONS.fr;
+TRADUCTIONS.yo=TRADUCTIONS.en; TRADUCTIONS.fon=TRADUCTIONS.en; TRADUCTIONS.goun=TRADUCTIONS.en; TRADUCTIONS.es=TRADUCTIONS.en; TRADUCTIONS.pt=TRADUCTIONS.en; TRADUCTIONS.de=TRADUCTIONS.en; TRADUCTIONS.ar=TRADUCTIONS.en;
+
+function changerLangue(v){ LANGUE_ACTUELLE=v; localStorage.setItem("rocy_lang",v); var sel=document.getElementById("langue"); if(sel) sel.value=v; construireMenu(); }
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
 function ouvrirMenu(){ construireMenu(); document.getElementById('overlayMenu').style.display='block'; document.getElementById('menuPanel').style.display='block'; }
 function fermerMenu(){ document.getElementById('overlayMenu').style.display='none'; document.getElementById('menuPanel').style.display='none'; }
@@ -145,170 +123,127 @@ function construireMenu(){
   document.getElementById('liensMenu').innerHTML=l;
 }
 function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
-function ouvrirDesc(){ document.getElementById('overlayDesc').style.display='flex'; }
-function fermerDesc(){ document.getElementById('overlayDesc').style.display='none'; }
-function ouvrirChat(){ document.getElementById('overlayChat').style.display='flex'; }
-function fermerChat(){ document.getElementById('overlayChat').style.display='none'; }
-function changerLangue(v){
-  LANGUE_ACTUELLE=v; localStorage.setItem("rocy_lang",v);
-  var sel=document.getElementById("langue"); if(sel) sel.value=v;
-  appliquerTraductionProduits();
-  // NE PAS changer l'URL, sinon on perd ?id=
-}
-function appliquerTraductionProduits(){ try{ construireMenu(); }catch(e){} }
 
-// ===== FIX ARTICLE V3 - COMPLET =====
-const params = new URLSearchParams(window.location.search);
-const produitId = params.get('id');
-let prixProduit = 0, commission = 0, total = 0, qty = 1, taille = '42';
-let nomProduitActuel = "", telVendeur = "", vendeurId = "";
-let cestMonProduit = false;
+// ===== CORRECTION VENDEUR - NE PLUS JAMAIS PUBLIER SANS VENDEUR =====
 let supabaseClient = window.rocyClient || null;
+let vendeurInfos = { id:"", nom:"", email:"", telephone:"", photo:"" };
+let photoBase64 = "";
 
-function chargerSupabase(){
+function initSupabase(){
   try{
     if(window.rocyClient) supabaseClient = window.rocyClient;
     else if(window.supabase && window.supabase.createClient){
       supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
     }
-  }catch(e){ console.log("supabase err", e); }
-  console.log("ID demande:", produitId, "client OK:", !!supabaseClient);
-  chargerProduit();
-  envoyerFileAttente();
+  }catch(e){}
 }
-function mettreEnAttente(type, donnees){ try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); file.push({ type: type, donnees: donnees, date: new Date().toISOString() }); localStorage.setItem('file_attente_rocy', JSON.stringify(file)); }catch(e){} }
-async function envoyerFileAttente(){ if(!supabaseClient) return; try{ var file = JSON.parse(localStorage.getItem('file_attente_rocy') || '[]'); if(!file.length) return; var reste=[]; for(var i=0;i<file.length;i++){ var res = await supabaseClient.from(file[i].type).insert([file[i].donnees]); if(res.error) reste.push(file[i]); } localStorage.setItem('file_attente_rocy', JSON.stringify(reste)); }catch(e){} }
-async function chargerVendeurReel(p){
-  var nomV = p.nom_vendeur || p.vendeur_nom || "";
-  var villeV = p.ville || "";
-  var photoV = p.photo_vendeur || p.avatar_vendeur || p.photo_profil_vendeur || "";
-  var nomEstFaux = !nomV || nomV.toLowerCase()==="vendeur" || nomV.toLowerCase()==="seller";
-  if(nomEstFaux && vendeurId && supabaseClient){
-    try{
-      var res = await supabaseClient.from('profils').select('nom, nom_complet, nom_entreprise, ville, photo, photo_profil, avatar').eq('id', vendeurId).maybeSingle();
-      if(res && res.data){
-        var pr = res.data;
-        var vraiNom = pr.nom_entreprise || pr.nom_complet || pr.nom || "";
-        if(vraiNom) nomV = vraiNom;
-        if(pr.ville) villeV = pr.ville;
-        if(pr.photo_profil || pr.photo || pr.avatar) photoV = pr.photo_profil || pr.photo || pr.avatar;
-      }
-    }catch(e){}
-  }
-  if(!nomV) nomV = "Vendeur";
-  var nomVEl=document.getElementById('nomVendeur'); if(nomVEl){ nomVEl.textContent=nomV; nomVEl.setAttribute('data-original', nomV); nomVEl.setAttribute('data-ne-pas-traduire','1'); }
-  var infoEl=document.getElementById('infoVendeur'); if(infoEl){ infoEl.textContent=villeV; infoEl.setAttribute('data-original', villeV); }
-  var av=document.getElementById('avatarVendeur');
-  if(av){ if(photoV){ av.innerHTML='<img src="'+photoV+'" alt="Vendeur" onerror="this.parentElement.textContent=\''+nomV.charAt(0)+'\'">'; } else { av.textContent = nomV.charAt(0); } }
-  return { nom: nomV, ville: villeV, photo: photoV };
-}
-async function chargerProduit(){
-  var nomEl = document.getElementById('nomProduit');
-  if(!produitId){ if(nomEl) nomEl.textContent = "Aucun produit sélectionné"; return; }
-  if(!supabaseClient){ if(nomEl) nomEl.textContent = "Erreur connexion - Réessaie"; return; }
-  var essais = [produitId];
-  if(produitId && !isNaN(Number(produitId))) essais.push(Number(produitId));
-  var p = null, derniereErreur = null;
-  for(var i=0;i<essais.length;i++){
-    try{
-      var res = await supabaseClient.from('produits').select('*').eq('id', essais[i]).maybeSingle();
-      console.log("Essai id=", essais[i], "erreur=", res.error, "data=", !!res.data);
-      if(res.data){ p = res.data; break; }
-      derniereErreur = res.error;
-    }catch(e){ derniereErreur = e; }
-  }
-  if(!p){
-    if(nomEl) nomEl.textContent = "Produit introuvable (id=" + produitId + ")";
-    var errEl = document.getElementById('msgErreur');
-    if(errEl){ errEl.style.display='block'; errEl.textContent = "Erreur Supabase : " + (derniereErreur ? (derniereErreur.message||JSON.stringify(derniereErreur)) : "produit vide") + " - Vérifie RLS SELECT sur produits."; }
-    console.log("ERREUR PRODUIT:", derniereErreur);
+
+async function chargerVendeur(){
+  var msgEl = document.getElementById('msg');
+  // Si pas connecté, on bloque
+  if(!localStorage.getItem("rocy_user")){
+    if(msgEl){ msgEl.className="msg err"; msgEl.textContent="Tu dois te connecter comme vendeur pour publier. Redirection..."; }
+    setTimeout(function(){ window.location.href="connexion.html"; }, 1200);
     return;
   }
-  nomProduitActuel = p.nom; prixProduit = Number(p.prix); vendeurId = p.vendeur_id || ""; telVendeur = p.telephone_vendeur || p.tel_vendeur || "";
-  var img = document.getElementById('photoProduit'); if(img) img.src = p.photo || p.image || "";
-  if(nomEl){ nomEl.textContent=p.nom; nomEl.setAttribute('data-original', p.nom); }
-  var elPrix = document.getElementById('prixProduit'); if(elPrix){ elPrix.setAttribute("data-prix", p.prix); elPrix.textContent = Number(p.prix).toLocaleString() + " F"; }
-  var v = document.getElementById('villeProduit'); if(v){ v.textContent=p.ville||""; v.setAttribute('data-original', p.ville||""); }
-  var descEl=document.getElementById('descProduit'); if(descEl){ descEl.textContent=p.description||""; descEl.setAttribute('data-original', p.description||""); }
-  var descPop=document.getElementById('descPopup'); if(descPop) descPop.textContent=p.description||"";
-  var stockEl=document.getElementById('stockProduit'); if(stockEl) stockEl.textContent = p.stock ? ("Stock: "+p.stock) : "En stock";
-  var vuesEl=document.getElementById('vuesProduit'); if(vuesEl) vuesEl.textContent = p.vues ? (p.vues+" vues") : "";
-  await chargerVendeurReel(p);
-  var b = document.getElementById('badgeBoost'); if(b && (p.boost || p.booster || p.est_booste)) b.style.display = 'inline-block';
-  const monEmail = localStorage.getItem('email_user') || ''; const monId = localStorage.getItem('user_id') || '';
-  cestMonProduit = (p.vendeur_id && p.vendeur_id === monId) || (p.email_vendeur && p.email_vendeur === monEmail) || (p.email && p.email === monEmail);
-  if(cestMonProduit){ var za = document.getElementById('zoneAcheteur'); if(za) za.style.display = 'none'; var zv = document.getElementById('zoneVendeur'); if(zv) zv.style.display = 'block'; var bc = document.getElementById('btnChat'); if(bc) bc.style.display = 'none'; }
-  mettreAJourPrix(); convertirPrix(); appliquerTraductionProduits();
-  if(!cestMonProduit) chargerMessages();
-}
-function calculerCommission(prix){ if(prix <= 500000) return prix * 0.085; if(prix <= 2000000) return prix * 0.075; return prix * 0.065; }
-function formaterPrix(prixFCFA){
-  var deviseEl=document.getElementById("devise"); var devise=deviseEl?deviseEl.value:"XOF";
-  var converti=Math.round(prixFCFA*(taux[devise]||1));
-  return converti.toLocaleString() + (symboles[devise]||" F");
-}
-function mettreAJourPrix(){
-  commission = calculerCommission(prixProduit); total = prixProduit;
-  var vendeurRecoit = prixProduit - commission;
-  var d = document.getElementById("detailPrix");
-  if(d) d.innerHTML = "Prix produit : <b>" + formaterPrix(prixProduit) + "</b><br>Livraison : <b>Non incluse - À discuter avec le vendeur dans le Chat</b><br><b>Total à payer : " + formaterPrix(total) + "</b> <small>(sans livraison)</small><br><small>Le vendeur recevra " + formaterPrix(vendeurRecoit) + " après ton clic COLIS REÇU.</small>";
-  var commEl = document.getElementById("txtCommission");
-  if(commEl) commEl.textContent = "Commission RocyInter : 8,5% jusqu'à " + formaterPrix(500000) + " - 7,5% jusqu'à " + formaterPrix(2000000) + " - 6,5% au-delà - Déduite au vendeur, pas à toi.";
-  var totEl = document.getElementById("totalAPayer");
-  if(totEl) totEl.textContent = formaterPrix(total);
-}
-function majTexteCommission(){ mettreAJourPrix(); }
-async function convertirPrix(){
-  try{
-    var rr = await fetch("https://open.er-api.com/v6/latest/XOF"); var jj = await rr.json();
-    if(jj && jj.rates){ taux.EUR=jj.rates.EUR; taux.USD=jj.rates.USD; taux.NGN=jj.rates.NGN; taux.GHS=jj.rates.GHS; taux.GBP=jj.rates.GBP; }
-  }catch(e){}
-  localStorage.setItem("rocy_devise", document.getElementById("devise") ? document.getElementById("devise").value : "XOF");
-  var prixEl = document.getElementById("prixProduit");
-  if(prixEl && prixProduit) prixEl.textContent = formaterPrix(prixProduit);
-  mettreAJourPrix();
-}
-function commander(){
-  if(!localStorage.getItem("rocy_user")){ window.location.href="connexion.html"; return; }
-  document.getElementById('choixPaiement').style.display='block';
-  mettreAJourPrix();
-}
-function fermerPaiement(){ document.getElementById('choixPaiement').style.display='none'; }
-function payerAvec(moyen){
-  alert("Paiement " + moyen + " : " + formaterPrix(total) + " - Le vendeur sera payé après COLIS REÇU.");
-  if(supabaseClient){
-    supabaseClient.from('commandes').insert([{produit_id: produitId, vendeur_id: vendeurId, prix: prixProduit, moyen_paiement: moyen, statut: 'en_attente', email_acheteur: localStorage.getItem("rocy_user")||""}]).then(function(r){ console.log("commande", r); });
+  var userId = localStorage.getItem("user_id") || "";
+  var email = localStorage.getItem("email_user") || localStorage.getItem("rocy_user") || "";
+  var nomLocal = localStorage.getItem("nom_user") || "";
+  var telLocal = localStorage.getItem("tel_user") || localStorage.getItem("telephone_user") || "";
+  var photoLocal = localStorage.getItem("photo_user") || "";
+
+  vendeurInfos = { id: userId, nom: nomLocal, email: email, telephone: telLocal, photo: photoLocal };
+
+  // On va chercher le vrai profil dans Supabase, c'est la source de vérité
+  if(supabaseClient && userId){
+    try{
+      var r = await supabaseClient.from('profils').select('*').eq('id', userId).maybeSingle();
+      if(r && r.data){
+        var p = r.data;
+        vendeurInfos.nom = p.nom_entreprise || p.nom_complet || p.nom || vendeurInfos.nom;
+        vendeurInfos.telephone = p.telephone || p.tel || vendeurInfos.telephone;
+        vendeurInfos.photo = p.photo_profil || p.photo || p.avatar || vendeurInfos.photo;
+        vendeurInfos.email = p.email || vendeurInfos.email;
+        // On met à jour localStorage pour la prochaine fois
+        if(vendeurInfos.nom) localStorage.setItem("nom_user", vendeurInfos.nom);
+        if(vendeurInfos.telephone) localStorage.setItem("tel_user", vendeurInfos.telephone);
+        if(vendeurInfos.photo) localStorage.setItem("photo_user", vendeurInfos.photo);
+      }
+    }catch(e){ console.log("profil vendeur", e); }
+  }
+  // Affichage
+  var nomEl = document.getElementById('nomVendeurAffiche');
+  if(nomEl) nomEl.textContent = vendeurInfos.nom || "Vendeur ROCYINTER";
+  var emailEl = document.getElementById('emailVendeurAffiche');
+  if(emailEl) emailEl.textContent = vendeurInfos.email || "";
+  var av = document.getElementById('avatarVendeur');
+  if(av){
+    if(vendeurInfos.photo && vendeurInfos.photo.length>5){ av.innerHTML='<img src="'+vendeurInfos.photo+'">'; }
+    else { av.textContent = (vendeurInfos.nom||"V").charAt(0); }
   }
 }
-async function chargerMessages(){
-  if(!supabaseClient || !produitId) return;
+
+function previewPhoto(input){
+  if(input.files && input.files[0]){
+    var reader = new FileReader();
+    reader.onload = function(e){ photoBase64 = e.target.result; var img=document.getElementById('previewImg'); img.src=photoBase64; img.style.display='block'; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+async function publier(){
+  var btn = document.getElementById('btnPublier');
+  var msgEl = document.getElementById('msg');
+  var nom = document.getElementById('nom').value.trim();
+  var prix = Number(document.getElementById('prix').value);
+  var ville = document.getElementById('ville').value.trim();
+  var stock = Number(document.getElementById('stock').value) || 1;
+  var categorie = document.getElementById('categorie').value;
+  var desc = document.getElementById('description').value.trim();
+  var photoUrl = document.getElementById('photoUrl').value.trim();
+  var photoFinale = photoUrl || photoBase64 || "";
+
+  if(!nom || !prix || !ville || !desc){ msgEl.className="msg err"; msgEl.textContent="Remplis : Nom, Prix, Ville et Description."; return; }
+  if(!photoFinale){ msgEl.className="msg err"; msgEl.textContent="Mets une photo du produit (fichier ou lien)."; return; }
+  if(!vendeurInfos.id){ msgEl.className="msg err"; msgEl.textContent="Erreur vendeur : reconnecte-toi et réessaie."; return; }
+  if(!vendeurInfos.nom || vendeurInfos.nom==="Vendeur" || vendeurInfos.nom==="V"){
+    msgEl.className="msg err"; msgEl.textContent="Ton profil n'a pas de nom. Va dans Mon Profil, mets ton vrai nom, puis reviens publier."; return;
+  }
+
+  btn.disabled = true; btn.textContent = "Publication...";
+  msgEl.className="msg"; msgEl.textContent="Publication en cours...";
+
   try{
-    var res = await supabaseClient.from('messages').select('*').eq('produit_id', produitId).order('created_at',{ascending:true}).limit(20);
-    var box = document.getElementById('messagesChat'); if(!box) return;
-    if(res.data && res.data.length){ box.innerHTML = res.data.map(function(m){ return "<div><b>"+(m.expediteur||"")+" :</b> "+(m.message||m.contenu||"")+"</div>"; }).join(""); }
-    else { box.innerHTML = "<small>Aucun message. Pose ta question logistique.</small>"; }
-  }catch(e){}
+    var aPublier = {
+      nom: nom,
+      prix: prix,
+      ville: ville,
+      stock: stock,
+      categorie: categorie,
+      description: desc,
+      photo: photoFinale,
+      image: photoFinale,
+      // ===== JAMAIS VIDE : infos vendeur obligatoires =====
+      vendeur_id: vendeurInfos.id,
+      nom_vendeur: vendeurInfos.nom,
+      email_vendeur: vendeurInfos.email,
+      telephone_vendeur: vendeurInfos.telephone,
+      photo_vendeur: vendeurInfos.photo,
+      statut: 'en_attente_paiement'
+    };
+    var res = await supabaseClient.from('produits').insert([aPublier]).select().single();
+    if(res.error) throw res.error;
+    msgEl.className="msg ok"; msgEl.textContent="✅ Publié ! Vendeur : "+vendeurInfos.nom+" - Redirection...";
+    setTimeout(function(){ window.location.href="article.html?id="+res.data.id; }, 1200);
+  }catch(e){
+    msgEl.className="msg err"; msgEl.textContent="Erreur : "+(e.message||JSON.stringify(e));
+    btn.disabled=false; btn.textContent="🚀 PUBLIER MON PRODUIT";
+  }
 }
-async function envoyerMsg(){
-  var inp = document.getElementById('msgChat'); var txt = (inp.value||"").trim(); if(!txt) return;
-  var box = document.getElementById('messagesChat');
-  if(box) box.innerHTML += "<div><b>Toi :</b> "+txt+"</div>";
-  inp.value="";
-  if(supabaseClient){
-    var r = await supabaseClient.from('messages').insert([{produit_id: produitId, vendeur_id: vendeurId, message: txt, contenu: txt, expediteur: localStorage.getItem("rocy_user")||"acheteur"}]);
-    if(r.error){ mettreEnAttente('messages', {produit_id: produitId, vendeur_id: vendeurId, message: txt, expediteur: localStorage.getItem("rocy_user")||"acheteur"}); }
-  } else { mettreEnAttente('messages', {produit_id: produitId, vendeur_id: vendeurId, message: txt}); }
-}
-function basculerWhatsApp(){
-  var tel = telVendeur ? telVendeur.replace(/\D/g,'') : "2290148270448";
-  var msg = encodeURIComponent("Bonjour, je suis sur ROCYINTER pour le produit : " + nomProduitActuel + " - " + window.location.href);
-  window.open("https://wa.me/"+tel+"?text="+msg, "_blank");
-  var t = document.getElementById('traceWhatsApp'); if(t) t.textContent = "Ouvert sur WhatsApp - La trace reste sur le site.";
-}
+
 document.addEventListener("DOMContentLoaded", function(){
-  var sel = document.getElementById("langue"); if(sel) sel.value = LANGUE_ACTUELLE;
-  var dev = document.getElementById("devise"); if(dev) dev.value = localStorage.getItem("rocy_devise")||"XOF";
-  chargerSupabase();
+  var sel=document.getElementById("langue"); if(sel) sel.value=LANGUE_ACTUELLE;
+  initSupabase(); chargerVendeur(); construireMenu();
 });
 </script>
 </body>
