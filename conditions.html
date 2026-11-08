@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conditions Générales - RocyInter</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0}
 header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;width:100%}
@@ -32,3 +39,50 @@ footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:
 #menuFermer{margin-top:auto;background:#000;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;width:100%}
 .notifDot{background:#ff3b30;color:#fff;border-radius:50%;min-width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 4px}
 </style>
+</head>
+<body>
+<header><a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="ouvrirNotif(event)">🔔 <span id="notifDot" class="notifDot">0</span></button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
+<div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
+<div id="menuOverlay" onclick="fermerMenu()"></div>
+<div id="menuBox"><div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour, Visiteur</div><a href="index.html">Accueil</a><a href="messages.html" data-auth="1">💬 Messages</a><a href="publier.html" data-acces="vendeur">Publier un produit</a><a href="vendeur.html" data-acces="vendeur">Tableau Vendeur</a><a href="acheteur.html" data-acces="acheteur">Tableau Acheteur</a><a href="admin.html" data-acces="admin">Tableau Admin</a><a href="profil.html" data-auth="1">Profil</a><a href="conditions.html">Conditions</a><a href="contact.html">Contact</a><a href="apropos.html">À Propos</a><a href="inscription.html" id="lienInscription">Inscription</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()">Connecter</button><button id="menuFermer" onclick="fermerMenu()">Fermer ✕</button></div>
+<div style="max-width:520px;margin:10px auto;padding:0 12px"><a href="index.html" style="color:#666;text-decoration:none;font-size:13px">← Retour</a></div>
+<div class="container">
+<div class="top"><h1>📜 Conditions Générales d'utilisation</h1><p>RocyInter - Cotonou, Bénin</p></div>
+<div class="card"><h2>1. C'est quoi RocyInter ?</h2><p><b>Acheter et vendre partout dans le monde, en toute confiance.</b></p><p>RocyInter est une plateforme béninoise qui permet aux vendeurs de publier leurs produits et aux acheteurs de les acheter en toute sécurité.</p><p>Le vendeur est responsable de la qualité de son produit. RocyInter ne fait que mettre en relation et sécuriser le paiement.</p><p>Paiement sécurisé - Escrow - Livraison vérifiée</p></div>
+<div class="card"><h2>2. Commission - Taux Dégressif</h2><p>Sur chaque vente réussie, RocyInter prend une commission dégressive. Plus tu vends cher, moins le % est élevé :</p><table><tr><td><b>Montant de la vente</b></td><td><b>Commission</b></td><td><b>Tu reçois</b></td></tr><tr><td>Jusqu'à 500 000 F</td><td><b>8,5%</b></td><td>91,5%</td></tr><tr><td>500 001 F à 2 000 000 F</td><td><b>7,5%</b></td><td>92,5%</td></tr><tr><td>Plus de 2 000 000 F</td><td><b>6,5%</b></td><td>93,5%</td></tr></table><p><b>Exemple :</b> Tu vends à 100 000 F → Commission 8,5% = 8 500 F → Tu reçois <b>91 500 F</b>.</p><p><b>Exemple :</b> Tu vends à 2 000 000 F → Commission 7,5% = 150 000 F → Tu reçois <b>1 850 000 F</b>.</p><p><b>Exemple :</b> Tu vends à 3 000 000 F → Commission 6,5% = 195 000 F → Tu reçois <b>2 805 000 F</b>.</p><p>La commission est déduite automatiquement avant le retrait.</p></div>
+<div class="card"><h2>2b. Publication - 2 000 F / 30 jours</h2><p>Pour publier un produit sur RocyInter, tu paies <b>2 000 F par produit</b>.</p><p>Ce paiement te donne <b>30 jours de visibilité à l'Accueil</b>.</p><p><b>Après 30 jours, sans reconduction :</b> ton produit ne s'affiche plus à l'Accueil. Il passe en "Expiré". Pour le réafficher, tu dois payer à nouveau 2 000 F pour 30 jours de plus.</p><p>Pas de reconduction automatique. C'est toi qui décides de renouveler ou pas.</p></div>
+<div class="card"><h2>⭐ BOOSTER mon produit <span class="badge-gratuit">20 premiers GRATUITS</span></h2><p>Être en haut pendant <b>3 jours</b>.</p><p><b>Les 20 premiers BOOSTERS sont GRATUITS</b>, après c'est <b>500 F</b>.</p><p>Quand c'est boosté, ton produit passe <b>à la Une</b> en haut de l'Accueil, avec un badge ⭐ À LA UNE, avant tous les autres produits.</p><p>Après 3 jours, le boost s'arrête tout seul, ton produit redevient normal (s'il est encore dans ses 30 jours). Pour re-booster, tu paies à nouveau 500 F.</p></div>
+<div class="card"><h2>3. Comment ça marche ? - Protection Escrow</h2><p><b>1. Tu commandes</b> → Ton argent est bloqué en sécurité (Escrow)</p><p><b>2. Le vendeur envoie</b> → Tu suis ton colis</p><p><b>3. Tu reçois</b> → Tu cliques sur <b>COLIS REÇU</b></p><p><b>4. Le vendeur est payé</b> → Seulement après ta confirmation</p><p>Problème ? Tu as <b>48h pour signaler un litige</b>.</p></div>
+<div class="card"><h2>4. Livraison - Avant de payer, tu vois tout</h2><p><b>Livraison :</b> Mondiale - DHL / Bus / STM - À discuter avec le vendeur</p><p><b>Délai :</b> Selon le pays / ville - Voir avec le vendeur</p><p><b>Protection :</b> Argent bloqué (Escrow) - Envoyé au vendeur seulement après "Colis reçu"</p></div>
+<div class="card"><h2>5. Compte VENDEUR</h2><p>Avec ton compte Vendeur, tu pourras : publier tes ventes (2 000 F / exposition), voir Mes ventes, les preuves, recevoir les commissions, envoyer les preuves.</p></div>
+<div class="card"><h2>6. Retraits & KYC</h2><p>Pour retirer ton argent, tu dois être vérifié KYC avec une pièce d'identité valide (CNI, Passeport, Permis).</p><p>Retrait minimum : <b>1 000 F</b>. Délai de validation par l'Admin : 24h à 48h.</p><p>Retrait frauduleux = compte bloqué définitivement.</p></div>
+<div class="card"><h2>7. Protection de tes données - APDP Bénin</h2><p>Conformément à la loi n°2017-20 du Bénin sur la protection des données personnelles (APDP) :</p><ul><li>Tes données (nom, téléphone, photo, pièce) ne sont utilisées que pour ton compte et tes retraits.</li><li>Nous ne vendons jamais tes données à quelqu'un d'autre.</li><li>Tu peux demander à tout moment la suppression de ton compte.</li><li>Tes photos de pièce d'identité ne sont visibles que par l'Admin pour la vérification.</li></ul><p>Responsable du traitement : RocyInter, Cotonou, Bénin.</p></div>
+<div class="card"><h2>8. Interdictions</h2><p>Il est interdit de vendre : produits volés, faux médicaments, armes, arnaques, contenus illégaux.</p><p>Tout compte qui ne respecte pas ces règles sera banni sans remboursement.</p></div>
+<div class="card accept-box"><label class="check"><input type="checkbox" id="checkConditions"><span>J'ai lu et j'accepte les Conditions Générales et la politique APDP de RocyInter</span></label><button id="btnAccepter">J'accepte et je continue ✅</button><p id="msgAccept"></p></div>
+<button onclick="window.location.href='index.html'" class="btn-retour">⬅ Retour Accueil</button>
+</div>
+<footer><div class="footIn"><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; <b>Rocyinter@2026</b></p><p><a href="index.html">Accueil</a> | <a href="messages.html">Messages</a> | <a href="publier.html">Vendre</a> | <a href="contact.html">Aide</a></p></div></footer>
+<script>
+var supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+var produitId = "conditions";
+function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");fermerMenu();b.style.display=(b.style.display==="block")?"none":"block"}
+function changerLangue(v){localStorage.setItem("rocy_lang",v);document.getElementById("langBox").style.display="none";var ll=document.getElementById("langLabel");if(ll)ll.innerText={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"}[v]||"Français";fermerMenu()}
+function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");var l=document.getElementById("langBox");if(l)l.style.display="none";if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";majMenu()}}
+function fermerMenu(){var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m)m.classList.remove("open");if(o)o.style.display="none"}
+function majMenu(){var role=localStorage.getItem("role_user")||"";var email=localStorage.getItem("email_user")||"";var nom=localStorage.getItem("nom_user")||(email?"Utilisateur":"Visiteur");var connecte=!!email;var bj=document.getElementById("menuBonjour");if(bj)bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"acheteur"):"visiteur")+")";var lienInsc=document.getElementById("lienInscription");if(lienInsc)lienInsc.style.display=connecte?"none":"block";document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){if(a.getAttribute("href")==="messages.html"){a.style.display=connecte?"block":"none";return}if(!connecte){a.classList.add("grise");a.onclick=function(ev){ev.preventDefault();localStorage.setItem("retour_apres_connexion","conditions.html");location.href="connexion.html";return false}}else{a.classList.remove("grise");a.onclick=null}});document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){var besoin=a.getAttribute("data-acces");var ok=(role==="admin")||(connecte&&role===besoin);if(ok){a.classList.remove("grise");a.onclick=null}else{a.classList.add("grise");a.onclick=function(ev){ev.preventDefault();if(!connecte){localStorage.setItem("retour_apres_connexion","conditions.html");location.href="connexion.html"}else if(besoin==="vendeur")alert("Accès réservé aux vendeurs");else if(besoin==="acheteur")alert("Accès réservé aux acheteurs");else alert("Accès réservé à l'admin");return false}}});var b=document.getElementById("btnAuth");if(b)b.innerText=connecte?"Déconnecter":"Connecter"}
+function gererAuth(){var email=localStorage.getItem("email_user");if(email){localStorage.removeItem("email_user");localStorage.removeItem("user_id");localStorage.removeItem("role_user");alert("Déconnecté");location.href="index.html"}else location.href="connexion.html"}
+function ouvrirNotif(e){if(e)e.stopPropagation();alert("Aucune notification")}
+document.getElementById('btnAccepter').addEventListener('click', async function(){
+  var coche = document.getElementById('checkConditions').checked;
+  if(!coche){ alert('Tu dois cocher la case pour accepter ❌'); return; }
+  var sess = await supabaseClient.auth.getSession();
+  if(!sess || !sess.data || !sess.data.session){ alert('Connecte-toi d\'abord'); localStorage.setItem('retour_apres_connexion','conditions.html'); window.location.href = 'connexion.html'; return; }
+  var res = await supabaseClient.from('profils').update({ conditions_acceptees: true }).eq('id', sess.data.session.user.id);
+  if(res.error) alert(res.error.message);
+  else { localStorage.setItem('conditions_acceptees','oui'); alert('Merci, conditions acceptées ✅'); window.location.href = 'index.html'; }
+});
+document.addEventListener("DOMContentLoaded",function(){majMenu()});
+</script>
+<script src="commun.js"></script>
+</body>
+</html>
