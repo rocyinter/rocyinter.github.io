@@ -145,59 +145,26 @@ async function fetchAvecTimeout(url, options, ms){
   try{ var r = await fetch(url, Object.assign({}, options, {signal: ctrl.signal})); clearTimeout(timer); return r; }
   catch(e){ clearTimeout(timer); throw e; }
 }
+// ===== PLUS DE TRADUCTION PRODUITS - AFFICHAGE DIRECT =====
 async function chargerProduits(force){
   var statut=document.getElementById('statut'); var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
   var zone=document.getElementById('zoneRetry'); if(zone) zone.style.display='none';
   if(!force && tousProduits.length===0) afficherCacheImmediat();
   if(statut && tousProduits.length===0) statut.textContent=d.chargement;
   try{
-    var res=await fetchAvecTimeout(SUPABASE_URL+"/rest/v1/produits?select=id,nom,prix,devise,taux_publication,photo,ville,nom_vendeur,description,categorie,boost,statut&statut=eq.en_ligne&order=created_at.desc&limit=20",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}}, 5000);
+    // On ne filtre PLUS sur statut=en_ligne, on prend tout, pour ne plus rater de produits
+    var res=await fetchAvecTimeout(SUPABASE_URL+"/rest/v1/produits?select=*&order=created_at.desc&limit=20",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}}, 8000);
     if(!res.ok) throw new Error("HTTP "+res.status);
     tousProduits=await res.json();
+    console.log("Produits reçus:", tousProduits.length, tousProduits);
     try{ localStorage.setItem("rocy_produits_cache", JSON.stringify(tousProduits)); }catch(e){}
     afficher(tousProduits);
   }catch(err){
+    console.log("Erreur Supabase:", err);
     if(tousProduits.length){ if(statut) statut.textContent=tousProduits.length+" "+d.produitsTrouves; return; }
-    if(statut) statut.textContent=d.erreurReseau;
+    if(statut) statut.textContent=d.erreurReseau+" ("+err.message+")";
     if(zone){ zone.style.display='block'; var txtE=document.getElementById('txtErreur'); if(txtE) txtE.textContent=d.erreurReseau+" - "; var btn=document.getElementById('btnRetry'); if(btn) btn.textContent=d.reessayer; }
   }
-}
-var cacheTraduction = {};
-async function traduireAuto(texte, langueCible){
-  if(!texte || !texte.trim()) return texte;
-  if(langueCible==='fr') return texte;
-  var cle = langueCible+'||'+texte;
-  if(cacheTraduction[cle]) return cacheTraduction[cle];
-  if(langueCible==='fon' || langueCible==='goun') return texte;
-  var langAPI = langueCible;
-  try{
-    var url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl="+langAPI+"&dt=t&q="+encodeURIComponent(texte);
-    var r = await fetch(url);
-    var j = await r.json();
-    var trad = "";
-    if(j && j[0]){ for(var i=0;i<j[0].length;i++){ trad += j[0][i][0]; } }
-    if(!trad) trad = texte;
-    trad = trad.replace(/Rocy Inter/gi,"ROCY INTER").replace(/Rocyinter/gi,"ROCY INTER");
-    cacheTraduction[cle]=trad;
-    return trad;
-  }catch(e){
-    try{
-      var r2 = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(texte)+"&langpair=fr|"+langAPI);
-      var j2 = await r2.json();
-      var t2 = (j2 && j2.responseData && j2.responseData.translatedText) ? j2.responseData.translatedText : texte;
-      cacheTraduction[cle]=t2; return t2;
-    }catch(e2){ return texte; }
-  }
-}
-function traduireProduitsAffiches(){
-  if(LANGUE_ACTUELLE==='fr'){
-    document.querySelectorAll('[data-original]').forEach(function(el){ el.textContent = el.getAttribute('data-original'); });
-    return;
-  }
-  var els = document.querySelectorAll('[data-original]');
-  els.forEach(function(el){
-    traduireAuto(el.getAttribute('data-original'), LANGUE_ACTUELLE).then(function(t){ el.textContent = t; });
-  });
 }
 function afficher(produits){
   var liste=document.getElementById('listeProduits'); var statut=document.getElementById('statut'); if(!liste) return;
@@ -208,15 +175,15 @@ function afficher(produits){
     var prixFCFA=Number(p.prix||0);
     if(p.devise && p.devise!=='XOF' && p.taux_publication){ prixFCFA=Math.round(Number(p.prix||0)*Number(p.taux_publication)); }
     else if(p.devise && p.devise!=='XOF'){ var tauxSecours={EUR:656,USD:590,NGN:0.39,GHS:47.6,GBP:760}; prixFCFA=Math.round(Number(p.prix||0)*(tauxSecours[p.devise]||1)); }
-    var nomSafe = (p.nom||'Sans nom').replace(/"/g,'');
-    var descSafe = (p.description||'').replace(/"/g,'');
+    var nomSafe = (p.nom||'Sans nom').replace(/"/g,'').replace(/</g,'');
+    var descSafe = (p.description||'').replace(/"/g,'').replace(/</g,'');
     var villeSafe = (p.ville||'').replace(/"/g,'');
     var vendeurSafe = (p.nom_vendeur||'').replace(/"/g,'');
     var catSafe = (p.categorie||'Autre').replace(/"/g,'');
     var imgUrl = p.photo||'';
-    if(imgUrl.indexOf('supabase')!==-1 && imgUrl.indexOf('?')===-1){ imgUrl = imgUrl + '?width=400&quality=60'; }
-    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img loading="lazy" decoding="async" src="'+imgUrl+'" alt="'+nomSafe+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:10px;display:inline-block;margin:6px 0 0 6px"><span data-original="'+d.booste+'">'+d.booste+'</span></div>':'')+'<div><b data-original="'+nomSafe+'">'+nomSafe+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small><span data-original="'+villeSafe+'">'+villeSafe+'</span> - <span data-original="'+vendeurSafe+'">'+vendeurSafe+'</span></small><br><small data-original="'+catSafe+' - '+descSafe.slice(0,60)+'">'+catSafe+' - '+descSafe.slice(0,60)+'</small></div></div>';
-  }).join(''); convertirPrix(); traduireProduitsAffiches();
+    // PAS DE TRADUCTION : on affiche tel que le vendeur a écrit, comme Jumia / Amazon
+    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img loading="lazy" decoding="async" src="'+imgUrl+'" alt="'+nomSafe+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:10px;display:inline-block;margin:6px 0 0 6px">'+d.booste+'</div>':'')+'<div><b>'+nomSafe+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small>'+villeSafe+' - '+vendeurSafe+'</small><br><small>'+catSafe+' - '+descSafe.slice(0,60)+'</small></div></div>';
+  }).join(''); convertirPrix();
 }
 function filtrerProduits(){ var input=document.getElementById('recherche'); if(!input) return; var mot=input.value.toLowerCase(); afficher(tousProduits.filter(function(p){ return ((p.nom||'').toLowerCase().indexOf(mot)!==-1)||((p.description||'').toLowerCase().indexOf(mot)!==-1)||((p.ville||'').toLowerCase().indexOf(mot)!==-1); })); }
 var TRADUCTIONS={
