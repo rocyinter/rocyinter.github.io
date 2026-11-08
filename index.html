@@ -15,7 +15,7 @@ header{background:#111;color:white;padding:10px 12px;display:flex;justify-conten
 header .logo{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;letter-spacing:.2px}
 header .logo span{color:#FFC107}
 .header-droite{display:flex;gap:6px;align-items:center}
-.header-droite select{font-family:'Inter',sans-serif;background:#fff;border:0;border-radius:8px;height:32px;padding:0 6px;font-size:11px;font-weight:600;color:#111;cursor:pointer;max-width:68px}
+.header-droite select{font-family:'Inter',sans-serif;background:#fff;border:0;border-radius:8px;height:32px;padding:0 6px;font-size:11px;font-weight:600;color:#111;cursor:pointer;max-width:95px}
 .btn-menu{background:#fff;color:#111;border:0;font-size:17px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer;font-weight:900}
 #overlayMenu{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
 #menuPanel{position:fixed;top:0;right:0;width:260px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:14px;overflow:auto;font-family:'Inter',sans-serif}
@@ -34,7 +34,6 @@ header .logo span{color:#FFC107}
 .barre-prix .compteur{color:#666;font-size:11px;font-weight:500}
 .convertisseur{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;border-radius:16px;padding:3px 5px 3px 8px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif}
 .convertisseur select{border:0;background:transparent;font-size:11px;font-weight:700;outline:none;cursor:pointer;font-family:'Inter',sans-serif;max-width:82px}
-/* TAUX TAILLE 6 */
 .txt-taux{text-align:center;font-size:6px;color:#999;margin:2px 0 0;font-weight:400;letter-spacing:.2px}
 .grid{padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .card{background:white;border-radius:10px;overflow:hidden;cursor:pointer}
@@ -64,8 +63,7 @@ footer p{margin:1px 0}
 <header>
   <div class="logo">ROCY<span>INTER</span></div>
   <div class="header-droite">
-    <!-- SANS SYMBOLE LANGUE, PLUS DE LANGUES -->
-    <select id="langue" onchange="changerLangue(this.value)"><option value="fr">FR ▼</option><option value="en">EN ▼</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option><option value="es">ES</option><option value="pt">PT</option><option value="de">DE</option><option value="ar">AR</option></select>
+    <select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option></select>
     <button class="btn-menu" onclick="ouvrirMenu()">☰</button>
   </div>
 </header>
@@ -75,16 +73,14 @@ footer p{margin:1px 0}
 <div class="hero">
   <h1 id="titreHero">Acheter et vendre partout dans le monde, en toute confiance.</h1>
   <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p><br>
-  <!-- PRIX 2000F MAINTENANT CONVERTIBLE -->
-  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:11px;border-radius:8px;font-weight:800">Publier mon produit pour <span class="prix-fixe" data-prix="2000">2000 F</span> - 30 jours</a>
-  <p id="txtBoost" style="font-size:11px;margin-top:8px">Boost : 20 premiers gratuits, après <span class="prix-fixe" data-prix="500">500 F</span> / 3 jours</p>
+  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:11px;border-radius:8px;font-weight:800"><span id="txtPublierDebut">Publier mon produit pour</span> <span class="prix-fixe" data-prix="2000">2000 F</span> <span id="txtPublierFin">- 30 jours</span></a>
+  <p id="txtBoost" style="font-size:11px;margin-top:8px"><span id="txtBoostDebut">Boost : 20 premiers gratuits, après</span> <span class="prix-fixe" data-prix="500">500 F</span> <span id="txtBoostFin">/ 3 jours</span></p>
   <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:9px;border:1px solid #ddd;border-radius:8px;margin-top:8px;font-family:'Inter',sans-serif;font-size:12px" oninput="filtrerProduits()">
   <button class="btn-comment" onclick="ouvrirComment()"><span id="titreComment">Comment ça marche ?</span></button>
 </div>
 
 <div class="barre-prix">
   <span class="compteur" id="statut">Chargement des produits...</span>
-  <!-- SANS SYMBOLE MONNAIE -->
   <label class="convertisseur"><select id="devise" onchange="convertirPrix()"><option value="XOF" selected>FCFA</option><option value="EUR">Euro</option><option value="USD">Dollar</option><option value="NGN">Naira</option><option value="GHS">Cedi</option><option value="GBP">Livre</option></select></label>
 </div>
 <div class="txt-taux" id="txtTaux">Taux à l'instant T - FCFA par défaut</div>
@@ -97,27 +93,29 @@ footer p{margin:1px 0}
     <div class="etape"><b>2.</b> <span id="etape2">Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)</span></div>
     <div class="etape"><b>3.</b> <span id="etape3">Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)</span></div>
     <p style="text-align:center;font-size:11px"><span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span></p>
-    <button class="btn-retour" onclick="fermerComment()">← Retour à l'accueil</button>
+    <button class="btn-retour" onclick="fermerComment()">← <span id="txtRetour">Retour à l'accueil</span></button>
   </div>
 </div>
 
-<footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
+<footer><p><span id="txtEmail">Email :</span> <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; <span id="txtTel">Tél :</span> <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; Rocyinter@2026</p></footer>
 
 <script>
+var LANGUE_ACTUELLE = localStorage.getItem("rocy_lang") || "fr";
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
 function ouvrirMenu(){ construireMenu(); document.getElementById('overlayMenu').style.display='block'; document.getElementById('menuPanel').style.display='block'; }
 function fermerMenu(){ document.getElementById('overlayMenu').style.display='none'; document.getElementById('menuPanel').style.display='none'; }
 function construireMenu(){
   var role=getRole(); var nom=localStorage.getItem('nom_user')||'';
-  document.getElementById('menuBonjour').textContent = nom ? 'Bonjour, '+nom+' ('+role+')' : 'Bienvenue - Visiteur';
-  var l=''; l+='<a href="index.html">Accueil</a>';
-  if(role==='vendeur') l+='<a href="vendeur.html">Tableau Vendeur</a>';
-  if(role==='acheteur') l+='<a href="acheteur.html">Tableau Acheteur</a>';
-  if(role==='admin') l+='<a href="admin.html">Tableau Admin</a>';
-  l+='<a href="publier.html">Publier</a>'; if(role!=='visiteur') l+='<a href="profil.html">Profil</a>';
-  l+='<a href="conditions.html">Conditions</a>'; l+='<a href="contact.html">Contact</a>'; l+='<a href="apropos.html">À Propos</a>';
-  if(role==='visiteur'){ l+='<a href="connexion.html">Connecter</a>'; l+='<a href="inscription.html">Inscription</a>'; }
-  else { l+='<a href="#" onclick="deconnexion();return false;" class="rouge">Déconnecter</a>'; }
+  var d = TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
+  document.getElementById('menuBonjour').textContent = nom ? d.bonjour+' '+nom+' ('+role+')' : d.bienvenue;
+  var l=''; l+='<a href="index.html">'+d.menuAccueil+'</a>';
+  if(role==='vendeur') l+='<a href="vendeur.html">'+d.menuVendeur+'</a>';
+  if(role==='acheteur') l+='<a href="acheteur.html">'+d.menuAcheteur+'</a>';
+  if(role==='admin') l+='<a href="admin.html">'+d.menuAdmin+'</a>';
+  l+='<a href="publier.html">'+d.menuPublier+'</a>'; if(role!=='visiteur') l+='<a href="profil.html">'+d.menuProfil+'</a>';
+  l+='<a href="conditions.html">'+d.menuConditions+'</a>'; l+='<a href="contact.html">'+d.menuContact+'</a>'; l+='<a href="apropos.html">'+d.menuApropos+'</a>';
+  if(role==='visiteur'){ l+='<a href="connexion.html">'+d.menuConnecter+'</a>'; l+='<a href="inscription.html">'+d.menuInscription+'</a>'; }
+  else { l+='<a href="#" onclick="deconnexion();return false;" class="rouge">'+d.menuDeconnecter+'</a>'; }
   document.getElementById('liensMenu').innerHTML=l;
 }
 function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
@@ -127,35 +125,98 @@ var SUPABASE_URL="https://ahoxxzmdjxqvvpphxeow.supabase.co";
 var SUPABASE_KEY="sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3";
 var tousProduits=[];
 function aVraiEmail(){ var e=localStorage.getItem('email_user')||''; if(!e) return false; if(e.indexOf('@rocyinter.bj')!==-1) return false; if(e.indexOf('@')===-1) return false; return true; }
-function allerPublier(){ if(aVraiEmail()){ window.location.href="publier.html"; return; } var v=confirm('Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits'); if(v){ localStorage.setItem('retour_apres_connexion','publier.html'); window.location.href="connexion.html"; } }
+function allerPublier(){ if(aVraiEmail()){ window.location.href="publier.html"; return; } var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr; var v=confirm(d.alerteEmail); if(v){ localStorage.setItem('retour_apres_connexion','publier.html'); window.location.href="connexion.html"; } }
 function voirProduit(id){ window.location.href="article.html?id="+id; }
 async function chargerProduits(){
-  var statut=document.getElementById('statut');
+  var statut=document.getElementById('statut'); var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
   try{
     var res=await fetch(SUPABASE_URL+"/rest/v1/produits?select=*&statut=eq.en_ligne&order=created_at.desc",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
-    if(!res.ok){ if(statut) statut.textContent="Erreur chargement : "+res.status; return; }
+    if(!res.ok){ if(statut) statut.textContent=d.erreurChargement+" : "+res.status; return; }
     tousProduits=await res.json();
     if(!tousProduits.length){ var res2=await fetch(SUPABASE_URL+"/rest/v1/produits?select=*&order=created_at.desc",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}}); if(res2.ok) tousProduits=await res2.json(); }
     afficher(tousProduits);
-  }catch(err){ if(statut) statut.textContent="Erreur réseau : "+err.message; }
+  }catch(err){ if(statut) statut.textContent=d.erreurReseau+" : "+err.message; }
+}
+var cacheTraduction = {};
+async function traduireAuto(texte, langueCible){
+  if(!texte) return texte;
+  if(langueCible==='fr') return texte;
+  var cle = langueCible+'||'+texte;
+  if(cacheTraduction[cle]) return cacheTraduction[cle];
+  try{
+    var langAPI = langueCible;
+    if(langAPI==='yo') langAPI='en';
+    if(langAPI==='fon' || langAPI==='goun') return texte;
+    var r = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(texte)+"&langpair=fr|"+langAPI);
+    var j = await r.json();
+    var trad = (j && j.responseData && j.responseData.translatedText) ? j.responseData.translatedText : texte;
+    trad = trad.replace(/Rocy Inter/gi,"ROCY INTER").replace(/Rocyinter/gi,"ROCY INTER");
+    cacheTraduction[cle]=trad;
+    return trad;
+  }catch(e){ return texte; }
+}
+async function traduireProduitsAffiches(){
+  if(LANGUE_ACTUELLE==='fr'){
+    document.querySelectorAll('[data-original]').forEach(function(el){ el.textContent = el.getAttribute('data-original'); });
+    return;
+  }
+  var els = document.querySelectorAll('[data-original]');
+  for(var i=0;i<els.length;i++){
+    var el = els[i];
+    var orig = el.getAttribute('data-original');
+    if(!orig) continue;
+    var trad = await traduireAuto(orig, LANGUE_ACTUELLE);
+    el.textContent = trad;
+  }
 }
 function afficher(produits){
   var liste=document.getElementById('listeProduits'); var statut=document.getElementById('statut'); if(!liste) return;
-  if(!produits.length){ if(statut) statut.textContent="Aucun produit pour le moment. Sois le premier à publier !"; liste.innerHTML=""; return; }
-  if(statut) statut.textContent=produits.length+" produit(s) trouvé(s)";
+  var d=TRADUCTIONS[LANGUE_ACTUELLE]||TRADUCTIONS.fr;
+  if(!produits.length){ if(statut) statut.textContent=d.aucunProduit; liste.innerHTML=""; return; }
+  if(statut) statut.textContent=produits.length+" "+d.produitsTrouves;
   liste.innerHTML=produits.map(function(p){
     var prixFCFA=Number(p.prix||0);
     if(p.devise && p.devise!=='XOF' && p.taux_publication){ prixFCFA=Math.round(Number(p.prix||0)*Number(p.taux_publication)); }
     else if(p.devise && p.devise!=='XOF'){ var tauxSecours={EUR:656,USD:590,NGN:0.39,GHS:47.6,GBP:760}; prixFCFA=Math.round(Number(p.prix||0)*(tauxSecours[p.devise]||1)); }
-    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img src="'+(p.photo||'')+'" alt="'+(p.nom||'Produit')+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:10px;display:inline-block;margin:6px 0 0 6px">BOOSTÉ</div>':'')+'<div><b>'+(p.nom||'Sans nom')+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small>'+(p.ville||'')+' - '+(p.nom_vendeur||'')+'</small><br><small>'+((p.description||'').slice(0,60))+'</small></div></div>';
-  }).join(''); convertirPrix();
+    var nomSafe = (p.nom||'Sans nom').replace(/"/g,'');
+    var descSafe = (p.description||'').replace(/"/g,'');
+    var villeSafe = (p.ville||'').replace(/"/g,'');
+    var vendeurSafe = (p.nom_vendeur||'').replace(/"/g,'');
+    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img src="'+(p.photo||'')+'" alt="'+nomSafe+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:10px;display:inline-block;margin:6px 0 0 6px">'+d.booste+'</div>':'')+'<div><b data-original="'+nomSafe+'">'+nomSafe+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small><span data-original="'+villeSafe+'">'+villeSafe+'</span> - <span data-original="'+vendeurSafe+'">'+vendeurSafe+'</span></small><br><small data-original="'+descSafe.slice(0,60)+'">'+descSafe.slice(0,60)+'</small></div></div>';
+  }).join(''); convertirPrix(); traduireProduitsAffiches();
 }
 function filtrerProduits(){ var input=document.getElementById('recherche'); if(!input) return; var mot=input.value.toLowerCase(); afficher(tousProduits.filter(function(p){ return ((p.nom||'').toLowerCase().indexOf(mot)!==-1)||((p.description||'').toLowerCase().indexOf(mot)!==-1)||((p.ville||'').toLowerCase().indexOf(mot)!==-1); })); }
 chargerProduits();
-var TRADUCTIONS={ fr:{titreHero:"Acheter et vendre partout dans le monde, en toute confiance.",sousHero:"Paiement sécurisé - Escrow - Livraison vérifiée",btnPublierHero:"Publier mon produit pour",txtBoost:"Boost : 20 premiers gratuits, après",titreComment:"Comment ça marche ?",titrePopupComment:"Comment ça marche ?",etape1:"Acheteur commande → Argent bloqué (Escrow)",etape2:"Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",etape3:"Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",txtLitige:"Problème ? Litige 48h, paiement bloqué.",recherche:"Rechercher : iPhone, chaise, robe..."}, en:{titreHero:"Buy and sell anywhere in the world, with total confidence.",sousHero:"Secure payment - Escrow - Verified delivery",btnPublierHero:"Publish my product for",txtBoost:"Boost: First 20 free, then",titreComment:"How does it work?",titrePopupComment:"How does it work?",etape1:"Buyer orders → Money blocked (Escrow)",etape2:"Seller ships + adds proof (photo / DHL / Bus / STM number)",etape3:"Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",txtLitige:"Problem? 48h dispute, payment blocked.",recherche:"Search: iPhone, chair, dress..."}, yo:{titreHero:"Ra ati ta ni gbogbo agbaye, pelu igbekele.",sousHero:"Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",btnPublierHero:"Fi oja mi sori fun",txtBoost:"Boost: 20 akoko ofe, lehin naa",titreComment:"Bawo ni o se n sise?",titrePopupComment:"Bawo ni o se n sise?",etape1:"Olura pase → Owo di didi (Escrow)",etape2:"Olutaja firanse + fi eri kun",etape3:"Olura te PACKAGE RECEIVED → Olutaja gba owo",txtLitige:"Isoro? Ariyanjiyan 48h, isanwo di didi.",recherche:"Wa: iPhone, aga, aso..."}, fon:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton",txtBoost:"Boost : 20 nukonton le vonu, ene gudo",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, goun:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton",txtBoost:"Boost : 20 nukonton le vonu, ene gudo",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, es:{titreHero:"Compra y vende en todo el mundo, con total confianza.",sousHero:"Pago seguro - Escrow - Entrega verificada",btnPublierHero:"Publicar mi producto por",txtBoost:"Boost: Primeros 20 gratis, luego",titreComment:"¿Cómo funciona?",titrePopupComment:"¿Cómo funciona?",etape1:"Comprador pide → Dinero bloqueado (Escrow)",etape2:"Vendedor envía + pone su prueba",etape3:"Comprador hace clic PAQUETE RECIBIDO → Vendedor pagado",txtLitige:"¿Problema? Disputa 48h, pago bloqueado.",recherche:"Buscar: iPhone, silla, vestido..."}, pt:{titreHero:"Compre e venda em todo o mundo, com total confiança.",sousHero:"Pagamento seguro - Escrow - Entrega verificada",btnPublierHero:"Publicar meu produto por",txtBoost:"Boost: Primeiros 20 grátis, depois",titreComment:"Como funciona?",titrePopupComment:"Como funciona?",etape1:"Comprador pede → Dinheiro bloqueado (Escrow)",etape2:"Vendedor envia + coloca sua prova",etape3:"Comprador clica PACOTE RECEBIDO → Vendedor pago",txtLitige:"Problema? Disputa 48h, pagamento bloqueado.",recherche:"Pesquisar: iPhone, cadeira, vestido..."}, de:{titreHero:"Kaufen und verkaufen auf der ganzen Welt, mit vollem Vertrauen.",sousHero:"Sichere Zahlung - Escrow - Verifizierte Lieferung",btnPublierHero:"Mein Produkt veröffentlichen für",txtBoost:"Boost: Erste 20 kostenlos, dann",titreComment:"Wie funktioniert es?",titrePopupComment:"Wie funktioniert es?",etape1:"Käufer bestellt → Geld blockiert (Escrow)",etape2:"Verkäufer sendet + fügt Nachweis hinzu",etape3:"Käufer klickt PAKET ERHALTEN → Verkäufer bezahlt",txtLitige:"Problem? 48h Streit, Zahlung blockiert.",recherche:"Suchen: iPhone, Stuhl, Kleid..."}, ar:{titreHero:"اشترِ وبِع في كل أنحاء العالم، بثقة تامة.",sousHero:"دفع آمن - ضمان - توصيل موثق",btnPublierHero:"انشر منتجي مقابل",txtBoost:"تعزيز: أول 20 مجانًا، ثم",titreComment:"كيف يعمل؟",titrePopupComment:"كيف يعمل؟",etape1:"المشتري يطلب → المال محجوز",etape2:"البائع يرسل + يضع إثباته",etape3:"المشتري ينقر تم الاستلام → البائع يُدفع",txtLitige:"مشكلة؟ نزاع 48 ساعة، الدفع محظور.",recherche:"بحث: آيفون، كرسي، فستان..."} };
-function changerLangue(lang){ localStorage.setItem("rocy_lang",lang); var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr; function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.textContent=val; } setTxt("titreHero",dict.titreHero); setTxt("sousHero",dict.sousHero); setTxt("titreComment",dict.titreComment); setTxt("titrePopupComment",dict.titrePopupComment); setTxt("etape1",dict.etape1); setTxt("etape2",dict.etape2); setTxt("etape3",dict.etape3); setTxt("txtLitige",dict.txtLitige); var rech=document.getElementById("recherche"); if(rech) rech.placeholder=dict.recherche; }
+var TRADUCTIONS={
+ fr:{titreHero:"Acheter et vendre partout dans le monde, en toute confiance.",sousHero:"Paiement sécurisé - Escrow - Livraison vérifiée",txtPublierDebut:"Publier mon produit pour",txtPublierFin:"- 30 jours",txtBoostDebut:"Boost : 20 premiers gratuits, après",txtBoostFin:"/ 3 jours",titreComment:"Comment ça marche ?",titrePopupComment:"Comment ça marche ?",etape1:"Acheteur commande → Argent bloqué (Escrow)",etape2:"Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",etape3:"Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",txtLitige:"Problème ? Litige 48h, paiement bloqué.",txtRetour:"Retour à l'accueil",recherche:"Rechercher : iPhone, chaise, robe...",produitsTrouves:"produit(s) trouvé(s)",aucunProduit:"Aucun produit pour le moment. Sois le premier à publier !",chargement:"Chargement des produits...",erreurChargement:"Erreur chargement",erreurReseau:"Erreur réseau",booste:"BOOSTÉ",bonjour:"Bonjour,",bienvenue:"Bienvenue - Visiteur",menuAccueil:"Accueil",menuVendeur:"Tableau Vendeur",menuAcheteur:"Tableau Acheteur",menuAdmin:"Tableau Admin",menuPublier:"Publier",menuProfil:"Profil",menuConditions:"Conditions",menuContact:"Contact",menuApropos:"À Propos",menuConnecter:"Connecter",menuInscription:"Inscription",menuDeconnecter:"Déconnecter",txtEmail:"Email :",txtTel:"Tél :",alerteEmail:"Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits"},
+ en:{titreHero:"Buy and sell anywhere in the world, with total confidence.",sousHero:"Secure payment - Escrow - Verified delivery",txtPublierDebut:"Publish my product for",txtPublierFin:"- 30 days",txtBoostDebut:"Boost: First 20 free, then",txtBoostFin:"/ 3 days",titreComment:"How does it work?",titrePopupComment:"How does it work?",etape1:"Buyer orders → Money blocked (Escrow)",etape2:"Seller ships + adds proof (photo / DHL / Bus / STM number)",etape3:"Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",txtLitige:"Problem? 48h dispute, payment blocked.",txtRetour:"Back to home",recherche:"Search: iPhone, chair, dress...",produitsTrouves:"product(s) found",aucunProduit:"No product yet. Be the first to publish!",chargement:"Loading products...",erreurChargement:"Loading error",erreurReseau:"Network error",booste:"BOOSTED",bonjour:"Hello,",bienvenue:"Welcome - Visitor",menuAccueil:"Home",menuVendeur:"Seller Dashboard",menuAcheteur:"Buyer Dashboard",menuAdmin:"Admin Dashboard",menuPublier:"Publish",menuProfil:"Profile",menuConditions:"Terms",menuContact:"Contact",menuApropos:"About",menuConnecter:"Login",menuInscription:"Sign up",menuDeconnecter:"Logout",txtEmail:"Email:",txtTel:"Tel:",alerteEmail:"To publish, add your real email first.\n\nOK = Go add my email\nCancel = Continue browsing"},
+ pt:{titreHero:"Compre e venda em todo o mundo, com total confiança.",sousHero:"Pagamento seguro - Escrow - Entrega verificada",txtPublierDebut:"Publicar meu produto por",txtPublierFin:"- 30 dias",txtBoostDebut:"Boost: Primeiros 20 grátis, depois",txtBoostFin:"/ 3 dias",titreComment:"Como funciona?",titrePopupComment:"Como funciona?",etape1:"Comprador pede → Dinheiro bloqueado (Escrow)",etape2:"Vendedor envia + coloca sua prova (foto / número DHL / Bus / STM)",etape3:"Comprador clica PACOTE RECEBIDO → Vendedor pago (Comissão já deduzida)",txtLitige:"Problema? Disputa 48h, pagamento bloqueado.",txtRetour:"Voltar para a página inicial",recherche:"Pesquisar: iPhone, cadeira, vestido...",produitsTrouves:"produto(s) encontrado(s)",aucunProduit:"Nenhum produto ainda. Seja o primeiro a publicar!",chargement:"Carregando produtos...",erreurChargement:"Erro de carregamento",erreurReseau:"Erro de rede",booste:"IMPULSIONADO",bonjour:"Olá,",bienvenue:"Bem-vindo - Visitante",menuAccueil:"Início",menuVendeur:"Painel do Vendedor",menuAcheteur:"Painel do Comprador",menuAdmin:"Painel do Admin",menuPublier:"Publicar",menuProfil:"Perfil",menuConditions:"Condições",menuContact:"Contato",menuApropos:"Sobre",menuConnecter:"Entrar",menuInscription:"Cadastro",menuDeconnecter:"Sair",txtEmail:"Email:",txtTel:"Tel:",alerteEmail:"Para publicar, adicione seu email real primeiro."},
+ es:{titreHero:"Compra y vende en todo el mundo, con total confianza.",sousHero:"Pago seguro - Escrow - Entrega verificada",txtPublierDebut:"Publicar mi producto por",txtPublierFin:"- 30 días",txtBoostDebut:"Boost: Primeros 20 gratis, luego",txtBoostFin:"/ 3 días",titreComment:"¿Cómo funciona?",titrePopupComment:"¿Cómo funciona?",etape1:"Comprador pide → Dinero bloqueado (Escrow)",etape2:"Vendedor envía + pone su prueba (foto / número DHL / Bus / STM)",etape3:"Comprador hace clic PAQUETE RECIBIDO → Vendedor pagado (Comisión ya deducida)",txtLitige:"¿Problema? Disputa 48h, pago bloqueado.",txtRetour:"Volver al inicio",recherche:"Buscar: iPhone, silla, vestido...",produitsTrouves:"producto(s) encontrado(s)",aucunProduit:"Ningún producto aún. ¡Sé el primero en publicar!",chargement:"Cargando productos...",erreurChargement:"Error de carga",erreurReseau:"Error de red",booste:"IMPULSADO",bonjour:"Hola,",bienvenue:"Bienvenido - Visitante",menuAccueil:"Inicio",menuVendeur:"Panel del Vendedor",menuAcheteur:"Panel del Comprador",menuAdmin:"Panel del Admin",menuPublier:"Publicar",menuProfil:"Perfil",menuConditions:"Condiciones",menuContact:"Contacto",menuApropos:"Acerca de",menuConnecter:"Iniciar sesión",menuInscription:"Registro",menuDeconnecter:"Cerrar sesión",txtEmail:"Email:",txtTel:"Tel:",alerteEmail:"Para publicar, añade tu email real primero."},
+ de:{titreHero:"Kaufen und verkaufen auf der ganzen Welt, mit vollem Vertrauen.",sousHero:"Sichere Zahlung - Escrow - Verifizierte Lieferung",txtPublierDebut:"Mein Produkt veröffentlichen für",txtPublierFin:"- 30 Tage",txtBoostDebut:"Boost: Erste 20 kostenlos, dann",txtBoostFin:"/ 3 Tage",titreComment:"Wie funktioniert es?",titrePopupComment:"Wie funktioniert es?",etape1:"Käufer bestellt → Geld blockiert (Escrow)",etape2:"Verkäufer sendet + fügt Nachweis hinzu (Foto / DHL / Bus / STM Nummer)",etape3:"Käufer klickt PAKET ERHALTEN → Verkäufer bezahlt (Provision bereits abgezogen)",txtLitige:"Problem? 48h Streit, Zahlung blockiert.",txtRetour:"Zurück zur Startseite",recherche:"Suchen: iPhone, Stuhl, Kleid...",produitsTrouves:"Produkt(e) gefunden",aucunProduit:"Noch kein Produkt. Sei der Erste, der veröffentlicht!",chargement:"Produkte werden geladen...",erreurChargement:"Ladefehler",erreurReseau:"Netzwerkfehler",booste:"GEBOOSTET",bonjour:"Hallo,",bienvenue:"Willkommen - Besucher",menuAccueil:"Startseite",menuVendeur:"Verkäufer-Dashboard",menuAcheteur:"Käufer-Dashboard",menuAdmin:"Admin-Dashboard",menuPublier:"Veröffentlichen",menuProfil:"Profil",menuConditions:"Bedingungen",menuContact:"Kontakt",menuApropos:"Über uns",menuConnecter:"Anmelden",menuInscription:"Registrieren",menuDeconnecter:"Abmelden",txtEmail:"E-Mail:",txtTel:"Tel:",alerteEmail:"Um zu veröffentlichen, füge zuerst deine echte E-Mail hinzu."},
+ ar:{titreHero:"اشترِ وبِع في كل أنحاء العالم، بثقة تامة.",sousHero:"دفع آمن - ضمان - توصيل موثق",txtPublierDebut:"انشر منتجي مقابل",txtPublierFin:"- 30 يومًا",txtBoostDebut:"تعزيز: أول 20 مجانًا، ثم",txtBoostFin:"/ 3 أيام",titreComment:"كيف يعمل؟",titrePopupComment:"كيف يعمل؟",etape1:"المشتري يطلب → المال محجوز",etape2:"البائع يرسل + يضع إثباته (صورة / رقم DHL / Bus / STM)",etape3:"المشتري ينقر تم الاستلام → البائع يُدفع (العمولة مخصومة)",txtLitige:"مشكلة؟ نزاع 48 ساعة، الدفع محظور.",txtRetour:"العودة إلى الرئيسية",recherche:"بحث: آيفون، كرسي، فستان...",produitsTrouves:"منتج(ات) تم العثور عليها",aucunProduit:"لا يوجد منتج بعد. كن أول من ينشر!",chargement:"جارٍ تحميل المنتجات...",erreurChargement:"خطأ في التحميل",erreurReseau:"خطأ في الشبكة",booste:"مُعزز",bonjour:"مرحبًا،",bienvenue:"مرحبًا - زائر",menuAccueil:"الرئيسية",menuVendeur:"لوحة البائع",menuAcheteur:"لوحة المشتري",menuAdmin:"لوحة المسؤول",menuPublier:"نشر",menuProfil:"الملف",menuConditions:"الشروط",menuContact:"اتصل",menuApropos:"حول",menuConnecter:"تسجيل الدخول",menuInscription:"التسجيل",menuDeconnecter:"تسجيل الخروج",txtEmail:"البريد:",txtTel:"هاتف:",alerteEmail:"للنشر، أضف بريدك الحقيقي أولاً."},
+ yo:{titreHero:"Ra ati ta ni gbogbo agbaye, pelu igbekele.",sousHero:"Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",txtPublierDebut:"Fi oja mi sori fun",txtPublierFin:"- ojo 30",txtBoostDebut:"Boost: 20 akoko ofe, lehin naa",txtBoostFin:"/ ojo 3",titreComment:"Bawo ni o se n sise?",titrePopupComment:"Bawo ni o se n sise?",etape1:"Olura pase → Owo di didi (Escrow)",etape2:"Olutaja firanse + fi eri kun (foto / nomba DHL / Bus / STM)",etape3:"Olura te PACKAGE RECEIVED → Olutaja gba owo (Commission ti yọ kuro)",txtLitige:"Isoro? Ariyanjiyan 48h, isanwo di didi.",txtRetour:"Pada si ile",recherche:"Wa: iPhone, aga, aso...",produitsTrouves:"oja ti a ri",aucunProduit:"Ko si oja sibẹsibẹ. Je akọkọ lati fi sori!",chargement:"Nfi oja wọle...",erreurChargement:"Aṣiṣe ikojọpọ",erreurReseau:"Aṣiṣe nẹtiwọki",booste:"BOOSTED",bonjour:"Ẹ n lẹ,",bienvenue:"Kaabo - Alejo",menuAccueil:"Ile",menuVendeur:"Tabili Olutaja",menuAcheteur:"Tabili Olura",menuAdmin:"Tabili Admin",menuPublier:"Fi sori",menuProfil:"Profaili",menuConditions:"Awọn ipo",menuContact:"Olubasọrọ",menuApropos:"Nipa",menuConnecter:"Wọle",menuInscription:"Forukọsilẹ",menuDeconnecter:"Jade",txtEmail:"Email:",txtTel:"Tẹli:",alerteEmail:"Lati fi sori, fi email tootọ rẹ kun ni akọkọ."},
+ fon:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",txtPublierDebut:"De nu e do wema ji ton",txtPublierFin:"- Azan 30",txtBoostDebut:"Boost : 20 nukonton le vonu, ene gudo",txtBoostFin:"/ Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton (foto / numero DHL / Bus / STM)",etape3:"Axolo ze COLIS RECU → Axoto mo akwe (Commission ko de vo)",txtLitige:"Tagba de a? Litige 48h, akwe do te.",txtRetour:"Lɛkɔ yi xwé",recherche:"Ba: iPhone, zinkpo, awu...",produitsTrouves:"nu e mɔ",aucunProduit:"Nu ɖe ma ɖo te a. Wɛ nyi nukonton to de nu e ji!",chargement:"Nu le do wema ji...",erreurChargement:"Tagba do wema ji",erreurReseau:"Tagba reseau",booste:"BOOSTÉ",bonjour:"Mido,",bienvenue:"Mido - Jonɔ",menuAccueil:"Xwé",menuVendeur:"Tabili Axoto",menuAcheteur:"Tabili Axolo",menuAdmin:"Tabili Admin",menuPublier:"De ji",menuProfil:"Profil",menuConditions:"Sewo",menuContact:"Kponon",menuApropos:"Ðo e",menuConnecter:"Biyo",menuInscription:"Kpon sin",menuDeconnecter:"Tɔn",txtEmail:"Email :",txtTel:"Tél :",alerteEmail:"Nu de do wema ji, de email towe jɔ ɖo nukon."},
+ goun:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",txtPublierDebut:"De nu e do wema ji ton",txtPublierFin:"- Azan 30",txtBoostDebut:"Boost : 20 nukonton le vonu, ene gudo",txtBoostFin:"/ Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton (foto / numero DHL / Bus / STM)",etape3:"Axolo ze COLIS RECU → Axoto mo akwe (Commission ko de vo)",txtLitige:"Tagba de a? Litige 48h, akwe do te.",txtRetour:"Lɛkɔ yi xwé",recherche:"Ba: iPhone, zinkpo, awu...",produitsTrouves:"nu e mɔ",aucunProduit:"Nu ɖe ma ɖo te a. Wɛ nyi nukonton to de nu e ji!",chargement:"Nu le do wema ji...",erreurChargement:"Tagba do wema ji",erreurReseau:"Tagba reseau",booste:"BOOSTÉ",bonjour:"Mido,",bienvenue:"Mido - Jonɔ",menuAccueil:"Xwé",menuVendeur:"Tabili Axoto",menuAcheteur:"Tabili Axolo",menuAdmin:"Tabili Admin",menuPublier:"De ji",menuProfil:"Profil",menuConditions:"Sewo",menuContact:"Kponon",menuApropos:"Ðo e",menuConnecter:"Biyo",menuInscription:"Kpon sin",menuDeconnecter:"Tɔn",txtEmail:"Email :",txtTel:"Tél :",alerteEmail:"Nu de do wema ji, de email towe jɔ ɖo nukon."}
+};
+function changerLangue(lang){
+  LANGUE_ACTUELLE = lang;
+  localStorage.setItem("rocy_lang",lang);
+  var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr;
+  function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.textContent=val; }
+  setTxt("titreHero",dict.titreHero); setTxt("sousHero",dict.sousHero);
+  setTxt("txtPublierDebut",dict.txtPublierDebut); setTxt("txtPublierFin",dict.txtPublierFin);
+  setTxt("txtBoostDebut",dict.txtBoostDebut); setTxt("txtBoostFin",dict.txtBoostFin);
+  setTxt("titreComment",dict.titreComment); setTxt("titrePopupComment",dict.titrePopupComment);
+  setTxt("etape1",dict.etape1); setTxt("etape2",dict.etape2); setTxt("etape3",dict.etape3);
+  setTxt("txtLitige",dict.txtLitige); setTxt("txtRetour",dict.txtRetour);
+  setTxt("txtEmail",dict.txtEmail); setTxt("txtTel",dict.txtTel);
+  var rech=document.getElementById("recherche"); if(rech) rech.placeholder=dict.recherche;
+  var st=document.getElementById("statut"); if(st && tousProduits.length) st.textContent = tousProduits.length+" "+dict.produitsTrouves;
+  construireMenu();
+  if(tousProduits.length) afficher(tousProduits);
+}
 window.changerLangue=changerLangue;
-document.addEventListener("DOMContentLoaded",function(){ var saved=localStorage.getItem("rocy_lang"); var sel=document.getElementById("langue"); if(saved&&sel){ sel.value=saved; changerLangue(saved); } var dev=localStorage.getItem("rocy_devise"); var selD=document.getElementById("devise"); if(dev&&selD){ selD.value=dev; } chargerTauxInstantT(); });
+document.addEventListener("DOMContentLoaded",function(){ var saved=localStorage.getItem("rocy_lang"); var sel=document.getElementById("langue"); if(saved&&sel){ sel.value=saved; LANGUE_ACTUELLE=saved; changerLangue(saved); } var dev=localStorage.getItem("rocy_devise"); var selD=document.getElementById("devise"); if(dev&&selD){ selD.value=dev; } chargerTauxInstantT(); });
 var taux={ XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
 var symboles={ XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
 async function chargerTauxInstantT(){
@@ -165,7 +226,6 @@ function convertirPrix(){
   var deviseEl=document.getElementById("devise"); if(!deviseEl) return;
   var devise=deviseEl.value; localStorage.setItem("rocy_devise",devise);
   document.querySelectorAll(".prix").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.innerText=converti.toLocaleString()+symboles[devise]; });
-  // PRIX FIXES EN HAUT : 2000F et 500F convertis aussi
   document.querySelectorAll(".prix-fixe").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.innerText=converti.toLocaleString()+symboles[devise]; });
 }
 window.convertirPrix=convertirPrix;
