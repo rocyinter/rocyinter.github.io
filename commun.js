@@ -1,3 +1,13 @@
+// ===== AUTO-CHARGEMENT ROCY DEVISE - NE TOUCHE À RIEN D'AUTRE =====
+// Ce fichier est déjà dans toutes les pages, donc il charge rocy_devise.js partout tout seul.
+(function(){
+  if(window.__ROCY_DEVISE_CHARGE) return;
+  window.__ROCY_DEVISE_CHARGE = true;
+  var s = document.createElement("script");
+  s.src = "rocy_devise.js";
+  s.defer = true;
+  document.head.appendChild(s);
+})();
 // ===== ROCYINTER - COMMUN.JS - V3 SECURISE =====
 // Compatible avec RLS Supabase Etapes 1-9
 // Regle : commun.js ne casse JAMAIS les autres pages.
