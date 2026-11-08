@@ -8,46 +8,52 @@
 <style>
 *{box-sizing:border-box}
 body{font-family:Arial,sans-serif;margin:0;background:#f6f6f6;color:#222}
-/* ===== EN-TETE BLEU ===== */
-header{background:#0B5ED7;color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header{background:#111;color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
 header .logo{font-size:19px;font-weight:900;letter-spacing:.5px}
 header .logo span{color:#FFC107}
 .header-droite{display:flex;gap:8px;align-items:center}
-.header-droite select{background:#fff;border:0;border-radius:8px;padding:7px 8px;font-size:13px;font-weight:bold;color:#0B5ED7;max-width:110px}
-.btn-menu{background:#fff;color:#0B5ED7;border:0;font-size:20px;line-height:1;width:38px;height:38px;border-radius:10px;cursor:pointer;font-weight:900}
-/* ===== MENU ===== */
+.header-droite select{background:#fff;border:0;border-radius:10px;height:38px;padding:0 8px;font-size:13px;font-weight:bold;color:#111;cursor:pointer}
+.btn-menu{background:#fff;color:#111;border:0;font-size:20px;line-height:1;width:38px;height:38px;border-radius:10px;cursor:pointer;font-weight:900}
 #overlayMenu{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
-#menuPanel{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:16px;overflow:auto;box-shadow:-4px 0 20px rgba(0,0,0,.2)}
-#menuPanel h3{margin:0 0 4px;color:#0B5ED7;font-size:18px}
+#menuPanel{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:16px;overflow:auto}
+#menuPanel h3{margin:0 0 4px;color:#111;font-size:18px}
+#menuPanel h3 span{color:#FFC107}
 #menuPanel p{margin:0 0 12px;color:#666;font-size:13px}
 #menuPanel a{display:block;padding:11px 10px;border-radius:10px;text-decoration:none;color:#222;font-weight:700;border-bottom:1px solid #f0f0f0}
-#menuPanel a:active{background:#EAF2FF}
 #menuPanel .rouge{color:#D32F2F}
-#menuPanel .fermer{background:#0B5ED7;color:#fff;text-align:center;border:0}
+#menuPanel .fermer{background:#111;color:#fff;text-align:center;border:0}
 .btn-jaune{background:#FFC107;color:black;padding:12px 18px;border-radius:10px;font-weight:bold;text-decoration:none;display:inline-block}
 .hero{background:white;padding:20px 14px;text-align:center}
 .hero h1{font-size:20px;margin:10px 0;line-height:1.35}
 .hero p{color:#666;font-size:14px;margin:6px 0}
+.btn-comment{margin-top:12px;background:none;border:0;color:#111;font-weight:900;font-size:14px;text-decoration:underline;cursor:pointer}
+.barre-prix{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 0;max-width:1100px;margin:auto}
+.barre-prix .compteur{color:#666;font-size:13px}
+.convertisseur{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;font-weight:700}
+.convertisseur select{border:0;background:transparent;font-size:12px;font-weight:800;outline:none;cursor:pointer}
 .grid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:white;border-radius:12px;overflow:hidden;cursor:pointer}
 .card img{width:100%;height:130px;object-fit:cover;background:#eee}
 .card div{padding:10px}
 .prix{color:#000;font-weight:bold}
-.card a{color:inherit;text-decoration:none;display:block}
-/* ===== PIED DE PAGE BLEU ===== */
-footer{background:#0B5ED7;color:#fff;padding:18px 14px;text-align:center;margin-top:10px}
-footer b{font-size:16px}
+/* ===== POPUP COMMENT CA MARCHE - SUPERPOSITION ===== */
+#overlayComment{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:16px}
+#popupComment{background:#fff;width:100%;max-width:420px;border-radius:16px;padding:20px;position:relative;text-align:left}
+#popupComment h3{margin:0 0 12px;text-align:center}
+#popupComment p{margin:10px 0;font-size:14px;line-height:1.5;color:#333}
+#popupComment .etape{background:#FFF8E1;border-radius:10px;padding:10px;margin:8px 0;font-size:13px}
+#popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:12px;border-radius:10px;font-weight:900;cursor:pointer;margin-top:10px}
+footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:13px;line-height:1.5}
+footer b{font-size:15px}
+footer b span{color:#FFC107}
 footer a{color:#FFC107;text-decoration:none;font-weight:bold}
-footer p{margin:6px 0;font-size:13px;line-height:1.5}
-/* ===== RESPONSIVE TELEPHONE ===== */
+footer p{margin:2px 0}
 @media(max-width:480px){
   header .logo{font-size:17px}
   .hero h1{font-size:18px}
-  .hero p{font-size:13px}
   .grid{grid-template-columns:1fr 1fr;gap:8px;padding:8px}
   .card img{height:110px}
   .card div{padding:8px;font-size:13px}
-  .card div b{font-size:13px}
   .btn-jaune{font-size:13px;padding:11px}
 }
 @media(min-width:768px){
@@ -58,238 +64,112 @@ footer p{margin:6px 0;font-size:13px;line-height:1.5}
 </style>
 </head>
 <body>
-
-<!-- EN-TETE -->
 <header>
   <div class="logo">ROCY<span>INTER</span></div>
   <div class="header-droite">
-    <select id="langue" onchange="changerLangue(this.value)" aria-label="Langue">
-      <option value="fr">🌐 FR ▼</option>
-      <option value="en">🌐 EN ▼</option>
-      <option value="yo">🌐 Yoruba</option>
-      <option value="fon">🌐 Fon</option>
-      <option value="goun">🌐 Goun</option>
-    </select>
+    <select id="langue" onchange="changerLangue(this.value)"><option value="fr">🌐 FR ▼</option><option value="en">🌐 EN ▼</option><option value="yo">🌐 Yoruba</option><option value="fon">🌐 Fon</option><option value="goun">🌐 Goun</option></select>
     <button class="btn-menu" onclick="ouvrirMenu()">☰</button>
   </div>
 </header>
-
-<!-- MENU LATERAL -->
 <div id="overlayMenu" onclick="fermerMenu()"></div>
-<div id="menuPanel" style="display:none">
-  <h3>ROCY INTER</h3>
-  <p id="menuBonjour">Bienvenue</p>
-  <div id="liensMenu"></div>
-  <br>
-  <a href="#" class="fermer" onclick="fermerMenu();return false;">Fermer ✕</a>
-</div>
+<div id="menuPanel" style="display:none"><h3>ROCY <span>INTER</span></h3><p id="menuBonjour">Bienvenue</p><div id="liensMenu"></div><br><a href="#" class="fermer" onclick="fermerMenu();return false;">Fermer ✕</a></div>
 
 <div class="hero">
   <h1 id="titreHero">Acheter et vendre partout dans le monde, en toute confiance.</h1>
-  <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p>
-  <br>
-  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;background:#FFC107;color:black;padding:13px;border-radius:8px;font-weight:900;text-decoration:none">Publier mon produit pour 2000F - 30 jours</a>
+  <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p><br>
+  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:13px;border-radius:8px;font-weight:900">Publier mon produit pour 2000F - 30 jours</a>
   <p id="txtBoost" style="font-size:12px;margin-top:10px">Boost : 20 premiers gratuits, après 500F / 3 jours</p>
+  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:10px" oninput="filtrerProduits()">
+  <!-- JUSTE LE MOT, JUSTE EN DESSOUS DE RECHERCHE -->
+  <button class="btn-comment" onclick="ouvrirComment()">❓ <span id="titreComment">Comment ça marche ?</span></button>
+</div>
 
-  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;box-sizing:border-box;margin-top:10px" oninput="filtrerProduits()">
+<div class="barre-prix">
+  <span class="compteur" id="statut">Chargement des produits...</span>
+  <label class="convertisseur">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF" selected>FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select></label>
+</div>
+<div style="text-align:center;font-size:11px;color:#999" id="txtTaux">Taux à l'instant T - FCFA par défaut</div>
+<div class="grid" id="listeProduits"></div>
 
-  <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px;font-size:13px">
-    <span>💰 Devise :</span>
-    <select id="devise" onchange="convertirPrix()" style="padding:7px;border-radius:8px;border:1px solid #ddd">
-      <option value="XOF">FCFA (Bénin)</option>
-      <option value="EUR">Euro €</option>
-      <option value="USD">Dollar $</option>
-      <option value="NGN">Naira ₦</option>
-      <option value="GHS">Cedi GH₵</option>
-      <option value="GBP">Livre £</option>
-    </select>
+<!-- POPUP COMMENT CA MARCHE EN SUPERPOSITION -->
+<div id="overlayComment" onclick="fermerComment()">
+  <div id="popupComment" onclick="event.stopPropagation()">
+    <h3 id="titrePopupComment">Comment ça marche ?</h3>
+    <div class="etape"><b>1.</b> <span id="etape1">Acheteur commande → Argent bloqué (Escrow)</span></div>
+    <div class="etape"><b>2.</b> <span id="etape2">Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)</span></div>
+    <div class="etape"><b>3.</b> <span id="etape3">Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)</span></div>
+    <p style="text-align:center;font-size:13px"><span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span></p>
+    <button class="btn-retour" onclick="fermerComment()">← Retour à l'accueil</button>
   </div>
 </div>
 
-<p id="statut" style="text-align:center;color:#666;font-size:13px">Chargement des produits...</p>
-<div class="grid" id="listeProduits"></div>
-
-<div style="text-align:center;padding:12px;background:#FFF8E1;border-radius:10px;margin:0 12px 12px;font-size:12px;color:#666">
-  <b id="titreComment">Comment ça marche ?</b><br>
-  <span id="etape1">1. Acheteur commande → Argent bloqué (Escrow)</span><br>
-  <span id="etape2">2. Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)</span><br>
-  <span id="etape3">3. Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)</span><br>
-  <span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span>
-</div>
-
-<!-- PIED DE PAGE -->
-<footer>
-  <b>ROCY INTER</b>
-  <p>Email : <a href="mailto:contact@rocyinter.bj">contact@rocyinter.bj</a><br>
-  Contact : +229 01 XX XX XX XX<br>
-  Paiement sécurisé - Escrow - Mondial</p>
-  <p style="margin-top:10px;opacity:.9">Rocyinter@2026</p>
-</footer>
+<footer><b>ROCY <span>INTER</span></b><p>Email : <a href="mailto:contact@rocyinter.bj">contact@rocyinter.bj</a> &nbsp;|&nbsp; Contact : +229 01 XX XX XX XX</p><p>Rocyinter@2026</p></footer>
 
 <script>
 function getRole(){ return localStorage.getItem("rocy_role") || "visiteur"; }
-function getUser(){ return localStorage.getItem("rocy_user") || null; }
-
-function ouvrirMenu(){
-  construireMenu();
-  document.getElementById('overlayMenu').style.display='block';
-  document.getElementById('menuPanel').style.display='block';
-}
-function fermerMenu(){
-  document.getElementById('overlayMenu').style.display='none';
-  document.getElementById('menuPanel').style.display='none';
-}
+function ouvrirMenu(){ construireMenu(); document.getElementById('overlayMenu').style.display='block'; document.getElementById('menuPanel').style.display='block'; }
+function fermerMenu(){ document.getElementById('overlayMenu').style.display='none'; document.getElementById('menuPanel').style.display='none'; }
 function construireMenu(){
-  var role = getRole();
-  var nom = localStorage.getItem('nom_user') || '';
+  var role=getRole(); var nom=localStorage.getItem('nom_user')||'';
   document.getElementById('menuBonjour').textContent = nom ? 'Bonjour, '+nom+' ('+role+')' : 'Bienvenue - Visiteur';
-  var liens = '';
-  liens += '<a href="index.html">🏠 Accueil</a>';
-  if(role==='vendeur') liens += '<a href="vendeur.html">🧑‍💼 Tableau Vendeur</a>';
-  if(role==='acheteur') liens += '<a href="acheteur.html">🛒 Tableau Acheteur</a>';
-  if(role==='admin') liens += '<a href="admin.html">🛡️ Tableau Admin</a>';
-  liens += '<a href="publier.html">📦 Publier</a>';
-  if(role!=='visiteur') liens += '<a href="profil.html">👤 Profil</a>';
-  liens += '<a href="conditions.html">📄 Conditions</a>';
-  liens += '<a href="contact.html">📞 Contact</a>';
-  liens += '<a href="apropos.html">ℹ️ À Propos</a>';
-  if(role==='visiteur'){
-    liens += '<a href="connexion.html">🔑 Connecter</a>';
-    liens += '<a href="inscription.html">📝 Inscription</a>';
-  } else {
-    liens += '<a href="#" onclick="deconnexion();return false;" class="rouge">🚪 Déconnecter</a>';
-  }
-  document.getElementById('liensMenu').innerHTML = liens;
+  var l=''; l+='<a href="index.html">🏠 Accueil</a>';
+  if(role==='vendeur') l+='<a href="vendeur.html">🧑‍💼 Tableau Vendeur</a>';
+  if(role==='acheteur') l+='<a href="acheteur.html">🛒 Tableau Acheteur</a>';
+  if(role==='admin') l+='<a href="admin.html">🛡️ Tableau Admin</a>';
+  l+='<a href="publier.html">📦 Publier</a>'; if(role!=='visiteur') l+='<a href="profil.html">👤 Profil</a>';
+  l+='<a href="conditions.html">📄 Conditions</a>'; l+='<a href="contact.html">📞 Contact</a>'; l+='<a href="apropos.html">ℹ️ À Propos</a>';
+  if(role==='visiteur'){ l+='<a href="connexion.html">🔑 Connecter</a>'; l+='<a href="inscription.html">📝 Inscription</a>'; }
+  else { l+='<a href="#" onclick="deconnexion();return false;" class="rouge">🚪 Déconnecter</a>'; }
+  document.getElementById('liensMenu').innerHTML=l;
 }
-function deconnexion(){
-  localStorage.removeItem("rocy_role");
-  localStorage.removeItem("rocy_user");
-  localStorage.removeItem("nom_user");
-  localStorage.removeItem("email_user");
-  window.location.href = "index.html";
-}
-function afficherSelonRole(){
-  // Plus de boutons tableau à l'accueil, tout passe par le menu
-}
-document.addEventListener("DOMContentLoaded", afficherSelonRole);
-
-var MODE_TEST = window.location.hostname.indexOf('codepen') !== -1 || window.location.hostname.indexOf('cdpn') !== -1 || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
-var SUPABASE_URL = "https://ahoxxzmdjxqvvpphxeow.supabase.co";
-var SUPABASE_KEY = "sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3";
-var tousProduits = [];
-
-function aVraiEmail(){
-  var email = localStorage.getItem('email_user') || '';
-  if(!email) return false;
-  if(email.indexOf('@rocyinter.bj') !== -1) return false;
-  if(email.indexOf('@') === -1) return false;
-  return true;
-}
-function allerPublier(){
-  if(aVraiEmail()){
-    window.location.href = "publier.html";
-    return;
-  }
-  var veutAjouter = confirm('Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits');
-  if(veutAjouter){
-    localStorage.setItem('retour_apres_connexion', 'publier.html');
-    window.location.href = "connexion.html";
-  }
-}
-// CORRECTION PROBLEME 1 : clic produit = aller DIRECT au Détail, sans demander email, sans popup
-function voirProduit(produitId){
-  window.location.href = "article.html?id=" + produitId;
-}
-
+function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
+// ===== COMMENT CA MARCHE EN SUPERPOSITION =====
+function ouvrirComment(){ document.getElementById('overlayComment').style.display='flex'; }
+function fermerComment(){ document.getElementById('overlayComment').style.display='none'; }
+var SUPABASE_URL="https://ahoxxzmdjxqvvpphxeow.supabase.co";
+var SUPABASE_KEY="sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3";
+var tousProduits=[];
+function aVraiEmail(){ var e=localStorage.getItem('email_user')||''; if(!e) return false; if(e.indexOf('@rocyinter.bj')!==-1) return false; if(e.indexOf('@')===-1) return false; return true; }
+function allerPublier(){ if(aVraiEmail()){ window.location.href="publier.html"; return; } var v=confirm('Pour publier, ajoute ton vrai email avant.\n\nOK = Aller ajouter mon email\nAnnuler = Continuer à voir les produits'); if(v){ localStorage.setItem('retour_apres_connexion','publier.html'); window.location.href="connexion.html"; } }
+function voirProduit(id){ window.location.href="article.html?id="+id; }
 async function chargerProduits(){
-  var statut = document.getElementById('statut');
+  var statut=document.getElementById('statut');
   try{
-    var res = await fetch(SUPABASE_URL + "/rest/v1/produits?select=*&statut=eq.en_ligne&order=created_at.desc", {
-      headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-    });
-    if(!res.ok){ if(statut) statut.textContent = "Erreur chargement : " + res.status; return; }
-    tousProduits = await res.json();
-    if(!tousProduits.length){
-      var res2 = await fetch(SUPABASE_URL + "/rest/v1/produits?select=*&order=created_at.desc", {
-        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-      });
-      if(res2.ok) tousProduits = await res2.json();
-    }
+    var res=await fetch(SUPABASE_URL+"/rest/v1/produits?select=*&statut=eq.en_ligne&order=created_at.desc",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+    if(!res.ok){ if(statut) statut.textContent="Erreur chargement : "+res.status; return; }
+    tousProduits=await res.json();
+    if(!tousProduits.length){ var res2=await fetch(SUPABASE_URL+"/rest/v1/produits?select=*&order=created_at.desc",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}}); if(res2.ok) tousProduits=await res2.json(); }
     afficher(tousProduits);
-  } catch(err){ if(statut) statut.textContent = "Erreur réseau : " + err.message; }
+  }catch(err){ if(statut) statut.textContent="Erreur réseau : "+err.message; }
 }
 function afficher(produits){
-  var liste = document.getElementById('listeProduits');
-  var statut = document.getElementById('statut');
-  if(!liste) return;
-  if(!produits.length){ if(statut) statut.textContent = "Aucun produit pour le moment. Sois le premier à publier !"; liste.innerHTML=""; return; }
-  if(statut) statut.textContent = produits.length + " produit(s) trouvé(s)";
-  liste.innerHTML = produits.map(function(p){
-    return '<div class="card" onclick="voirProduit(\'' + p.id + '\')">'
-      + '<img src="' + (p.photo || '') + '" alt="' + (p.nom || 'Produit') + '" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'
-      + (p.boost ? '<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:11px;display:inline-block;margin:8px 0 0 8px">⭐ BOOSTÉ</div>' : '')
-      + '<div><b>' + (p.nom || 'Sans nom') + '</b><br><span class="prix" data-prix="' + Number(p.prix||0) + '">' + Number(p.prix||0).toLocaleString() + ' F</span><br><small>' + (p.ville || '') + ' - ' + (p.nom_vendeur || '') + '</small><br><small>' + ((p.description || '').slice(0,60)) + '</small></div>'
-      + '</div>';
-  }).join('');
-  convertirPrix();
+  var liste=document.getElementById('listeProduits'); var statut=document.getElementById('statut'); if(!liste) return;
+  if(!produits.length){ if(statut) statut.textContent="Aucun produit pour le moment. Sois le premier à publier !"; liste.innerHTML=""; return; }
+  if(statut) statut.textContent=produits.length+" produit(s) trouvé(s)";
+  liste.innerHTML=produits.map(function(p){
+    var prixFCFA=Number(p.prix||0);
+    if(p.devise && p.devise!=='XOF' && p.taux_publication){ prixFCFA=Math.round(Number(p.prix||0)*Number(p.taux_publication)); }
+    else if(p.devise && p.devise!=='XOF'){ var tauxSecours={EUR:656,USD:590,NGN:0.39,GHS:47.6,GBP:760}; prixFCFA=Math.round(Number(p.prix||0)*(tauxSecours[p.devise]||1)); }
+    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img src="'+(p.photo||'')+'" alt="'+(p.nom||'Produit')+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:11px;display:inline-block;margin:8px 0 0 8px">⭐ BOOSTÉ</div>':'')+'<div><b>'+(p.nom||'Sans nom')+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small>'+(p.ville||'')+' - '+(p.nom_vendeur||'')+'</small><br><small>'+((p.description||'').slice(0,60))+'</small></div></div>';
+  }).join(''); convertirPrix();
 }
-function filtrerProduits(){
-  var input = document.getElementById('recherche');
-  if(!input) return;
-  var mot = input.value.toLowerCase();
-  afficher(tousProduits.filter(function(p){
-    return ((p.nom||'').toLowerCase().indexOf(mot) !== -1) || ((p.description||'').toLowerCase().indexOf(mot) !== -1) || ((p.ville||'').toLowerCase().indexOf(mot) !== -1);
-  }));
-}
+function filtrerProduits(){ var input=document.getElementById('recherche'); if(!input) return; var mot=input.value.toLowerCase(); afficher(tousProduits.filter(function(p){ return ((p.nom||'').toLowerCase().indexOf(mot)!==-1)||((p.description||'').toLowerCase().indexOf(mot)!==-1)||((p.ville||'').toLowerCase().indexOf(mot)!==-1); })); }
 chargerProduits();
-window.allerPublier = allerPublier;
-window.voirProduit = voirProduit;
-window.filtrerProduits = filtrerProduits;
-
-var TRADUCTIONS = {
-  fr: { titreHero: "Acheter et vendre partout dans le monde, en toute confiance.", sousHero: "Paiement sécurisé - Escrow - Livraison vérifiée", btnPublierHero: "Publier mon produit pour 2000F - 30 jours", txtBoost: "Boost : 20 premiers gratuits, après 500F / 3 jours", titreComment: "Comment ça marche ?", etape1: "1. Acheteur commande → Argent bloqué (Escrow)", etape2: "2. Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)", etape3: "3. Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)", txtLitige: "Problème ? Litige 48h, paiement bloqué.", recherche: "Rechercher : iPhone, chaise, robe..." },
-  en: { titreHero: "Buy and sell anywhere in the world, with total confidence.", sousHero: "Secure payment - Escrow - Verified delivery", btnPublierHero: "Publish my product for 2000F - 30 days", txtBoost: "Boost: First 20 free, then 500F / 3 days", titreComment: "How does it work?", etape1: "1. Buyer orders → Money blocked (Escrow)", etape2: "2. Seller ships + adds proof (photo / DHL / Bus / STM number)", etape3: "3. Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)", txtLitige: "Problem? 48h dispute, payment blocked.", recherche: "Search: iPhone, chair, dress..." },
-  yo: { titreHero: "Ra ati ta ni gbogbo agbaye, pelu igbekele.", sousHero: "Isanwo to ni aabo - Escrow - Ifijise ti a jerisi", btnPublierHero: "Fi oja mi sori fun 2000F - ojo 30", txtBoost: "Boost: 20 akoko ofe, lehin naa 500F / ojo 3", titreComment: "Bawo ni o se n sise?", etape1: "1. Olura pase → Owo di didi (Escrow)", etape2: "2. Olutaja firanse + fi eri kun", etape3: "3. Olura te PACKAGE RECEIVED → Olutaja gba owo", txtLitige: "Isoro? Ariyanjiyan 48h, isanwo di didi.", recherche: "Wa: iPhone, aga, aso..." },
-  fon: { titreHero: "Xo do ayihongbe le bi me, do medesuno me.", sousHero: "Akwe xoxo - Escrow - Sedo dedeji", btnPublierHero: "De nu e do wema ji ton 2000F - Azan 30", txtBoost: "Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3", titreComment: "E no wazo gbon?", etape1: "1. Axolo de gbe → Akwe do te (Escrow)", etape2: "2. Axoto se do + de kponon ton", etape3: "3. Axolo ze COLIS RECU → Axoto mo akwe", txtLitige: "Tagba de a? Litige 48h, akwe do te.", recherche: "Ba: iPhone, zinkpo, awu..." },
-  goun: { titreHero: "Xo do ayihongbe le bi me, do medesuno me.", sousHero: "Akwe xoxo - Escrow - Sedo dedeji", btnPublierHero: "De nu e do wema ji ton 2000F - Azan 30", txtBoost: "Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3", titreComment: "E no wazo gbon?", etape1: "1. Axolo de gbe → Akwe do te (Escrow)", etape2: "2. Axoto se do + de kponon ton", etape3: "3. Axolo ze COLIS RECU → Axoto mo akwe", txtLitige: "Tagba de a? Litige 48h, akwe do te.", recherche: "Ba: iPhone, zinkpo, awu..." }
-};
-function changerLangue(lang){
-  localStorage.setItem("rocy_lang", lang);
-  var dict = TRADUCTIONS[lang] || TRADUCTIONS.fr;
-  function setTxt(id, val){ var el = document.getElementById(id); if(el && val) el.textContent = val; }
-  setTxt("titreHero", dict.titreHero);
-  setTxt("sousHero", dict.sousHero);
-  setTxt("btnPublierHero", dict.btnPublierHero);
-  setTxt("txtBoost", dict.txtBoost);
-  setTxt("titreComment", dict.titreComment);
-  setTxt("etape1", dict.etape1);
-  setTxt("etape2", dict.etape2);
-  setTxt("etape3", dict.etape3);
-  setTxt("txtLitige", dict.txtLitige);
-  var rech = document.getElementById("recherche");
-  if(rech) rech.placeholder = dict.recherche;
+var TRADUCTIONS={ fr:{titreHero:"Acheter et vendre partout dans le monde, en toute confiance.",sousHero:"Paiement sécurisé - Escrow - Livraison vérifiée",btnPublierHero:"Publier mon produit pour 2000F - 30 jours",txtBoost:"Boost : 20 premiers gratuits, après 500F / 3 jours",titreComment:"Comment ça marche ?",titrePopupComment:"Comment ça marche ?",etape1:"Acheteur commande → Argent bloqué (Escrow)",etape2:"Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",etape3:"Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",txtLitige:"Problème ? Litige 48h, paiement bloqué.",recherche:"Rechercher : iPhone, chaise, robe..."}, en:{titreHero:"Buy and sell anywhere in the world, with total confidence.",sousHero:"Secure payment - Escrow - Verified delivery",btnPublierHero:"Publish my product for 2000F - 30 days",txtBoost:"Boost: First 20 free, then 500F / 3 days",titreComment:"How does it work?",titrePopupComment:"How does it work?",etape1:"Buyer orders → Money blocked (Escrow)",etape2:"Seller ships + adds proof (photo / DHL / Bus / STM number)",etape3:"Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",txtLitige:"Problem? 48h dispute, payment blocked.",recherche:"Search: iPhone, chair, dress..."}, yo:{titreHero:"Ra ati ta ni gbogbo agbaye, pelu igbekele.",sousHero:"Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",btnPublierHero:"Fi oja mi sori fun 2000F - ojo 30",txtBoost:"Boost: 20 akoko ofe, lehin naa 500F / ojo 3",titreComment:"Bawo ni o se n sise?",titrePopupComment:"Bawo ni o se n sise?",etape1:"Olura pase → Owo di didi (Escrow)",etape2:"Olutaja firanse + fi eri kun",etape3:"Olura te PACKAGE RECEIVED → Olutaja gba owo",txtLitige:"Isoro? Ariyanjiyan 48h, isanwo di didi.",recherche:"Wa: iPhone, aga, aso..."}, fon:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton 2000F - Azan 30",txtBoost:"Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, goun:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton 2000F - Azan 30",txtBoost:"Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."} };
+function changerLangue(lang){ localStorage.setItem("rocy_lang",lang); var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr; function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.textContent=val; } setTxt("titreHero",dict.titreHero); setTxt("sousHero",dict.sousHero); setTxt("btnPublierHero",dict.btnPublierHero); setTxt("txtBoost",dict.txtBoost); setTxt("titreComment",dict.titreComment); setTxt("titrePopupComment",dict.titrePopupComment); setTxt("etape1",dict.etape1); setTxt("etape2",dict.etape2); setTxt("etape3",dict.etape3); setTxt("txtLitige",dict.txtLitige); var rech=document.getElementById("recherche"); if(rech) rech.placeholder=dict.recherche; }
+window.changerLangue=changerLangue;
+document.addEventListener("DOMContentLoaded",function(){ var saved=localStorage.getItem("rocy_lang"); var sel=document.getElementById("langue"); if(saved&&sel){ sel.value=saved; changerLangue(saved); } var dev=localStorage.getItem("rocy_devise"); var selD=document.getElementById("devise"); if(dev&&selD){ selD.value=dev; } chargerTauxInstantT(); });
+var taux={ XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
+var symboles={ XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
+async function chargerTauxInstantT(){
+  try{ var r=await fetch("https://open.er-api.com/v6/latest/XOF"); var j=await r.json(); if(j && j.rates){ taux.XOF=1; taux.EUR=j.rates.EUR; taux.USD=j.rates.USD; taux.NGN=j.rates.NGN; taux.GHS=j.rates.GHS; taux.GBP=j.rates.GBP; var txt=document.getElementById('txtTaux'); if(txt) txt.textContent="Taux à l'instant T - 1 FCFA = "+(taux.EUR||'').toString().slice(0,6)+" € - Mis à jour à l'instant"; convertirPrix(); } }catch(e){}
 }
-window.changerLangue = changerLangue;
-document.addEventListener("DOMContentLoaded", function(){
-  var saved = localStorage.getItem("rocy_lang");
-  var sel = document.getElementById("langue");
-  if(saved && sel){ sel.value = saved; changerLangue(saved); }
-});
-var taux = { XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
-var symboles = { XOF:" F", EUR:" €", USD:" $", NGN:" ₦", GHS:" GH₵", GBP:" £" };
 function convertirPrix(){
-  var deviseEl = document.getElementById("devise");
-  if(!deviseEl) return;
-  var devise = deviseEl.value;
-  localStorage.setItem("rocy_devise", devise);
-  document.querySelectorAll(".prix").forEach(function(el){
-    var prixFCFA = parseFloat(el.getAttribute("data-prix"));
-    if(isNaN(prixFCFA)) return;
-    var converti = Math.round(prixFCFA * taux[devise]);
-    el.innerText = converti.toLocaleString() + symboles[devise];
-  });
+  var deviseEl=document.getElementById("devise"); if(!deviseEl) return;
+  var devise=deviseEl.value; localStorage.setItem("rocy_devise",devise);
+  document.querySelectorAll(".prix").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.innerText=converti.toLocaleString()+symboles[devise]; });
 }
-window.convertirPrix = convertirPrix;
+window.convertirPrix=convertirPrix;
 </script>
 <script src="commun.js"></script>
 </body>
