@@ -11,60 +11,52 @@
 <style>
 *{box-sizing:border-box}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;margin:0;background:#f6f6f6;color:#1a1a1a;-webkit-font-smoothing:antialiased;letter-spacing:-0.1px}
-header{background:#111;color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-header .logo{font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;letter-spacing:.3px}
+header{background:#111;color:white;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header .logo{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;letter-spacing:.2px}
 header .logo span{color:#FFC107}
-.header-droite{display:flex;gap:8px;align-items:center}
-.header-droite select{font-family:'Inter',sans-serif;background:#fff;border:0;border-radius:10px;height:38px;padding:0 8px;font-size:13px;font-weight:600;color:#111;cursor:pointer}
-.btn-menu{background:#fff;color:#111;border:0;font-size:20px;line-height:1;width:38px;height:38px;border-radius:10px;cursor:pointer;font-weight:900}
+.header-droite{display:flex;gap:6px;align-items:center}
+.header-droite select{font-family:'Inter',sans-serif;background:#fff;border:0;border-radius:8px;height:32px;padding:0 6px;font-size:11px;font-weight:600;color:#111;cursor:pointer;max-width:68px}
+.btn-menu{background:#fff;color:#111;border:0;font-size:17px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer;font-weight:900}
 #overlayMenu{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200}
-#menuPanel{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:16px;overflow:auto;font-family:'Inter',sans-serif}
-#menuPanel h3{font-family:'Poppins',sans-serif;margin:0 0 4px;color:#111;font-size:20px;font-weight:800;letter-spacing:.2px}
+#menuPanel{position:fixed;top:0;right:0;width:260px;max-width:85vw;height:100%;background:#fff;z-index:201;padding:14px;overflow:auto;font-family:'Inter',sans-serif}
+#menuPanel h3{font-family:'Poppins',sans-serif;margin:0 0 3px;color:#111;font-size:17px;font-weight:800}
 #menuPanel h3 span{color:#FFC107}
-#menuPanel p{margin:0 0 12px;color:#666;font-size:13px;font-weight:500}
-#menuPanel a{display:block;padding:12px 10px;border-radius:10px;text-decoration:none;color:#1a1a1a;font-weight:600;font-size:15px;border-bottom:1px solid #f0f0f0;letter-spacing:-0.1px}
+#menuPanel p{margin:0 0 10px;color:#666;font-size:11px;font-weight:500}
+#menuPanel a{display:block;padding:10px 8px;border-radius:8px;text-decoration:none;color:#1a1a1a;font-weight:600;font-size:13px;border-bottom:1px solid #f0f0f0}
 #menuPanel .rouge{color:#D32F2F}
 #menuPanel .fermer{background:#111;color:#fff;text-align:center;border:0;font-weight:700}
-.btn-jaune{font-family:'Inter',sans-serif;background:#FFC107;color:black;padding:12px 18px;border-radius:10px;font-weight:800;text-decoration:none;display:inline-block;letter-spacing:-0.1px}
-.hero{background:white;padding:20px 14px;text-align:center}
-.hero h1{font-family:'Inter',sans-serif;font-size:21px;font-weight:800;margin:10px 0;line-height:1.3;letter-spacing:-0.4px;color:#111}
-.hero p{color:#666;font-size:14px;margin:6px 0;font-weight:400;line-height:1.5}
-.btn-comment{margin-top:12px;background:none;border:0;color:#0B5ED7;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif}
-.barre-prix{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 0;max-width:1100px;margin:auto}
-.barre-prix .compteur{color:#666;font-size:13px;font-weight:500}
-.convertisseur{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:20px;padding:4px 6px 4px 10px;font-size:12px;font-weight:700;font-family:'Inter',sans-serif}
-.convertisseur select{border:0;background:transparent;font-size:12px;font-weight:700;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
-.txt-taux{text-align:center;font-size:10px;color:#999;margin:2px 0 0;font-weight:400}
-.grid{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.card{background:white;border-radius:12px;overflow:hidden;cursor:pointer}
-.card img{width:100%;height:130px;object-fit:cover;background:#eee}
-.card div{padding:10px}
-.card b{font-weight:700;font-size:14px;letter-spacing:-0.2px;line-height:1.3;display:block}
-.card small{font-size:12px;color:#666;font-weight:400;line-height:1.4}
-.prix{color:#000;font-weight:800;font-size:15px;letter-spacing:-0.2px}
-#overlayComment{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:16px}
-#popupComment{background:#fff;width:100%;max-width:420px;border-radius:16px;padding:20px;position:relative;text-align:left;font-family:'Inter',sans-serif}
-#popupComment h3{margin:0 0 12px;text-align:center;font-weight:800;font-size:18px;letter-spacing:-0.3px}
-#popupComment p{margin:10px 0;font-size:14px;line-height:1.5;color:#333}
-#popupComment .etape{background:#FFF8E1;border-radius:10px;padding:10px;margin:8px 0;font-size:13px;line-height:1.5;font-weight:500}
-#popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Inter',sans-serif}
-footer{background:#111;color:#fff;padding:12px 14px;text-align:center;margin-top:10px;font-size:11px;line-height:1.4;font-family:'Inter',sans-serif;font-weight:500}
+.btn-jaune{font-family:'Inter',sans-serif;background:#FFC107;color:black;padding:10px 14px;border-radius:8px;font-weight:800;text-decoration:none;display:inline-block;font-size:12px}
+.hero{background:white;padding:16px 12px;text-align:center}
+.hero h1{font-family:'Inter',sans-serif;font-size:18px;font-weight:800;margin:8px 0;line-height:1.3;letter-spacing:-0.3px;color:#111}
+.hero p{color:#666;font-size:12px;margin:5px 0;font-weight:400;line-height:1.5}
+.btn-comment{margin-top:10px;background:none;border:0;color:#0B5ED7;font-weight:700;font-size:12px;text-decoration:none;cursor:pointer;font-family:'Inter',sans-serif}
+.barre-prix{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px 0;max-width:1100px;margin:auto}
+.barre-prix .compteur{color:#666;font-size:11px;font-weight:500}
+.convertisseur{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid #ddd;border-radius:16px;padding:3px 5px 3px 8px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif}
+.convertisseur select{border:0;background:transparent;font-size:11px;font-weight:700;outline:none;cursor:pointer;font-family:'Inter',sans-serif;max-width:82px}
+/* TAUX TAILLE 6 */
+.txt-taux{text-align:center;font-size:6px;color:#999;margin:2px 0 0;font-weight:400;letter-spacing:.2px}
+.grid{padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{background:white;border-radius:10px;overflow:hidden;cursor:pointer}
+.card img{width:100%;height:110px;object-fit:cover;background:#eee}
+.card div{padding:8px}
+.card b{font-weight:700;font-size:12px;letter-spacing:-0.1px;line-height:1.3;display:block}
+.card small{font-size:10px;color:#666;font-weight:400;line-height:1.4}
+.prix{color:#000;font-weight:800;font-size:13px;letter-spacing:-0.1px}
+#overlayComment{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;justify-content:center;align-items:center;padding:14px}
+#popupComment{background:#fff;width:100%;max-width:380px;border-radius:14px;padding:16px;position:relative;text-align:left;font-family:'Inter',sans-serif}
+#popupComment h3{margin:0 0 10px;text-align:center;font-weight:800;font-size:15px}
+#popupComment p{margin:8px 0;font-size:12px;line-height:1.5;color:#333}
+#popupComment .etape{background:#FFF8E1;border-radius:8px;padding:8px;margin:6px 0;font-size:11px;line-height:1.5;font-weight:500}
+#popupComment .btn-retour{width:100%;background:#111;color:#fff;border:0;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:8px;font-family:'Inter',sans-serif;font-size:12px}
+footer{background:#111;color:#fff;padding:10px 12px;text-align:center;margin-top:8px;font-size:9px;line-height:1.4;font-family:'Inter',sans-serif;font-weight:500}
 footer a{color:#FFC107;text-decoration:none;font-weight:700}
 footer p{margin:1px 0}
-@media(max-width:480px){
-  header .logo{font-size:18px}
-  .hero h1{font-size:19px}
-  .grid{grid-template-columns:1fr 1fr;gap:8px;padding:8px}
-  .card img{height:110px}
-  .card div{padding:8px}
-  .card b{font-size:13px}
-  .btn-jaune{font-size:13px;padding:11px}
-  footer{font-size:10.5px;padding:10px 8px}
-}
 @media(min-width:768px){
   .grid{grid-template-columns:1fr 1fr 1fr 1fr;max-width:1100px;margin:auto}
-  .hero{max-width:900px;margin:14px auto;border-radius:14px}
-  .hero h1{font-size:26px}
+  .hero{max-width:900px;margin:12px auto;border-radius:12px}
+  .hero h1{font-size:22px}
+  header .logo{font-size:19px}
 }
 </style>
 </head>
@@ -72,7 +64,8 @@ footer p{margin:1px 0}
 <header>
   <div class="logo">ROCY<span>INTER</span></div>
   <div class="header-droite">
-    <select id="langue" onchange="changerLangue(this.value)"><option value="fr">🌐 FR ▼</option><option value="en">🌐 EN ▼</option><option value="yo">🌐 Yoruba</option><option value="fon">🌐 Fon</option><option value="goun">🌐 Goun</option></select>
+    <!-- SANS SYMBOLE LANGUE, PLUS DE LANGUES -->
+    <select id="langue" onchange="changerLangue(this.value)"><option value="fr">FR ▼</option><option value="en">EN ▼</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option><option value="es">ES</option><option value="pt">PT</option><option value="de">DE</option><option value="ar">AR</option></select>
     <button class="btn-menu" onclick="ouvrirMenu()">☰</button>
   </div>
 </header>
@@ -82,15 +75,17 @@ footer p{margin:1px 0}
 <div class="hero">
   <h1 id="titreHero">Acheter et vendre partout dans le monde, en toute confiance.</h1>
   <p id="sousHero">Paiement sécurisé - Escrow - Livraison vérifiée</p><br>
-  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:13px;border-radius:8px;font-weight:800">Publier mon produit pour 2000F - 30 jours</a>
-  <p id="txtBoost" style="font-size:12px;margin-top:10px">Boost : 20 premiers gratuits, après 500F / 3 jours</p>
-  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:10px;font-family:'Inter',sans-serif;font-size:14px" oninput="filtrerProduits()">
+  <!-- PRIX 2000F MAINTENANT CONVERTIBLE -->
+  <a id="btnPublierHero" class="btn-jaune" href="#" onclick="allerPublier(); return false;" style="display:block;text-align:center;padding:11px;border-radius:8px;font-weight:800">Publier mon produit pour <span class="prix-fixe" data-prix="2000">2000 F</span> - 30 jours</a>
+  <p id="txtBoost" style="font-size:11px;margin-top:8px">Boost : 20 premiers gratuits, après <span class="prix-fixe" data-prix="500">500 F</span> / 3 jours</p>
+  <input type="text" id="recherche" placeholder="Rechercher : iPhone, chaise, robe..." style="width:100%;padding:9px;border:1px solid #ddd;border-radius:8px;margin-top:8px;font-family:'Inter',sans-serif;font-size:12px" oninput="filtrerProduits()">
   <button class="btn-comment" onclick="ouvrirComment()"><span id="titreComment">Comment ça marche ?</span></button>
 </div>
 
 <div class="barre-prix">
   <span class="compteur" id="statut">Chargement des produits...</span>
-  <label class="convertisseur">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF" selected>FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select></label>
+  <!-- SANS SYMBOLE MONNAIE -->
+  <label class="convertisseur"><select id="devise" onchange="convertirPrix()"><option value="XOF" selected>FCFA</option><option value="EUR">Euro</option><option value="USD">Dollar</option><option value="NGN">Naira</option><option value="GHS">Cedi</option><option value="GBP">Livre</option></select></label>
 </div>
 <div class="txt-taux" id="txtTaux">Taux à l'instant T - FCFA par défaut</div>
 <div class="grid" id="listeProduits"></div>
@@ -101,7 +96,7 @@ footer p{margin:1px 0}
     <div class="etape"><b>1.</b> <span id="etape1">Acheteur commande → Argent bloqué (Escrow)</span></div>
     <div class="etape"><b>2.</b> <span id="etape2">Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)</span></div>
     <div class="etape"><b>3.</b> <span id="etape3">Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)</span></div>
-    <p style="text-align:center;font-size:13px"><span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span></p>
+    <p style="text-align:center;font-size:11px"><span id="txtLitige">Problème ? Litige 48h, paiement bloqué.</span></p>
     <button class="btn-retour" onclick="fermerComment()">← Retour à l'accueil</button>
   </div>
 </div>
@@ -115,14 +110,14 @@ function fermerMenu(){ document.getElementById('overlayMenu').style.display='non
 function construireMenu(){
   var role=getRole(); var nom=localStorage.getItem('nom_user')||'';
   document.getElementById('menuBonjour').textContent = nom ? 'Bonjour, '+nom+' ('+role+')' : 'Bienvenue - Visiteur';
-  var l=''; l+='<a href="index.html">🏠 Accueil</a>';
-  if(role==='vendeur') l+='<a href="vendeur.html">🧑‍💼 Tableau Vendeur</a>';
-  if(role==='acheteur') l+='<a href="acheteur.html">🛒 Tableau Acheteur</a>';
-  if(role==='admin') l+='<a href="admin.html">🛡️ Tableau Admin</a>';
-  l+='<a href="publier.html">📦 Publier</a>'; if(role!=='visiteur') l+='<a href="profil.html">👤 Profil</a>';
-  l+='<a href="conditions.html">📄 Conditions</a>'; l+='<a href="contact.html">📞 Contact</a>'; l+='<a href="apropos.html">ℹ️ À Propos</a>';
-  if(role==='visiteur'){ l+='<a href="connexion.html">🔑 Connecter</a>'; l+='<a href="inscription.html">📝 Inscription</a>'; }
-  else { l+='<a href="#" onclick="deconnexion();return false;" class="rouge">🚪 Déconnecter</a>'; }
+  var l=''; l+='<a href="index.html">Accueil</a>';
+  if(role==='vendeur') l+='<a href="vendeur.html">Tableau Vendeur</a>';
+  if(role==='acheteur') l+='<a href="acheteur.html">Tableau Acheteur</a>';
+  if(role==='admin') l+='<a href="admin.html">Tableau Admin</a>';
+  l+='<a href="publier.html">Publier</a>'; if(role!=='visiteur') l+='<a href="profil.html">Profil</a>';
+  l+='<a href="conditions.html">Conditions</a>'; l+='<a href="contact.html">Contact</a>'; l+='<a href="apropos.html">À Propos</a>';
+  if(role==='visiteur'){ l+='<a href="connexion.html">Connecter</a>'; l+='<a href="inscription.html">Inscription</a>'; }
+  else { l+='<a href="#" onclick="deconnexion();return false;" class="rouge">Déconnecter</a>'; }
   document.getElementById('liensMenu').innerHTML=l;
 }
 function deconnexion(){ localStorage.removeItem("rocy_role"); localStorage.removeItem("rocy_user"); localStorage.removeItem("nom_user"); localStorage.removeItem("email_user"); window.location.href="index.html"; }
@@ -152,13 +147,13 @@ function afficher(produits){
     var prixFCFA=Number(p.prix||0);
     if(p.devise && p.devise!=='XOF' && p.taux_publication){ prixFCFA=Math.round(Number(p.prix||0)*Number(p.taux_publication)); }
     else if(p.devise && p.devise!=='XOF'){ var tauxSecours={EUR:656,USD:590,NGN:0.39,GHS:47.6,GBP:760}; prixFCFA=Math.round(Number(p.prix||0)*(tauxSecours[p.devise]||1)); }
-    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img src="'+(p.photo||'')+'" alt="'+(p.nom||'Produit')+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:11px;display:inline-block;margin:8px 0 0 8px">⭐ BOOSTÉ</div>':'')+'<div><b>'+(p.nom||'Sans nom')+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small>'+(p.ville||'')+' - '+(p.nom_vendeur||'')+'</small><br><small>'+((p.description||'').slice(0,60))+'</small></div></div>';
+    return '<div class="card" onclick="voirProduit(\''+p.id+'\')"><img src="'+(p.photo||'')+'" alt="'+(p.nom||'Produit')+'" onerror="this.src=\'https://via.placeholder.com/400x300?text=Produit\'">'+(p.boost?'<div style="background:#FFD700;color:#000;padding:3px 8px;border-radius:10px;font-weight:bold;font-size:10px;display:inline-block;margin:6px 0 0 6px">BOOSTÉ</div>':'')+'<div><b>'+(p.nom||'Sans nom')+'</b><br><span class="prix" data-prix="'+prixFCFA+'">'+prixFCFA.toLocaleString()+' F</span><br><small>'+(p.ville||'')+' - '+(p.nom_vendeur||'')+'</small><br><small>'+((p.description||'').slice(0,60))+'</small></div></div>';
   }).join(''); convertirPrix();
 }
 function filtrerProduits(){ var input=document.getElementById('recherche'); if(!input) return; var mot=input.value.toLowerCase(); afficher(tousProduits.filter(function(p){ return ((p.nom||'').toLowerCase().indexOf(mot)!==-1)||((p.description||'').toLowerCase().indexOf(mot)!==-1)||((p.ville||'').toLowerCase().indexOf(mot)!==-1); })); }
 chargerProduits();
-var TRADUCTIONS={ fr:{titreHero:"Acheter et vendre partout dans le monde, en toute confiance.",sousHero:"Paiement sécurisé - Escrow - Livraison vérifiée",btnPublierHero:"Publier mon produit pour 2000F - 30 jours",txtBoost:"Boost : 20 premiers gratuits, après 500F / 3 jours",titreComment:"Comment ça marche ?",titrePopupComment:"Comment ça marche ?",etape1:"Acheteur commande → Argent bloqué (Escrow)",etape2:"Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",etape3:"Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",txtLitige:"Problème ? Litige 48h, paiement bloqué.",recherche:"Rechercher : iPhone, chaise, robe..."}, en:{titreHero:"Buy and sell anywhere in the world, with total confidence.",sousHero:"Secure payment - Escrow - Verified delivery",btnPublierHero:"Publish my product for 2000F - 30 days",txtBoost:"Boost: First 20 free, then 500F / 3 days",titreComment:"How does it work?",titrePopupComment:"How does it work?",etape1:"Buyer orders → Money blocked (Escrow)",etape2:"Seller ships + adds proof (photo / DHL / Bus / STM number)",etape3:"Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",txtLitige:"Problem? 48h dispute, payment blocked.",recherche:"Search: iPhone, chair, dress..."}, yo:{titreHero:"Ra ati ta ni gbogbo agbaye, pelu igbekele.",sousHero:"Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",btnPublierHero:"Fi oja mi sori fun 2000F - ojo 30",txtBoost:"Boost: 20 akoko ofe, lehin naa 500F / ojo 3",titreComment:"Bawo ni o se n sise?",titrePopupComment:"Bawo ni o se n sise?",etape1:"Olura pase → Owo di didi (Escrow)",etape2:"Olutaja firanse + fi eri kun",etape3:"Olura te PACKAGE RECEIVED → Olutaja gba owo",txtLitige:"Isoro? Ariyanjiyan 48h, isanwo di didi.",recherche:"Wa: iPhone, aga, aso..."}, fon:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton 2000F - Azan 30",txtBoost:"Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, goun:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton 2000F - Azan 30",txtBoost:"Boost : 20 nukonton le vonu, ene gudo 500F / Azan 3",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."} };
-function changerLangue(lang){ localStorage.setItem("rocy_lang",lang); var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr; function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.textContent=val; } setTxt("titreHero",dict.titreHero); setTxt("sousHero",dict.sousHero); setTxt("btnPublierHero",dict.btnPublierHero); setTxt("txtBoost",dict.txtBoost); setTxt("titreComment",dict.titreComment); setTxt("titrePopupComment",dict.titrePopupComment); setTxt("etape1",dict.etape1); setTxt("etape2",dict.etape2); setTxt("etape3",dict.etape3); setTxt("txtLitige",dict.txtLitige); var rech=document.getElementById("recherche"); if(rech) rech.placeholder=dict.recherche; }
+var TRADUCTIONS={ fr:{titreHero:"Acheter et vendre partout dans le monde, en toute confiance.",sousHero:"Paiement sécurisé - Escrow - Livraison vérifiée",btnPublierHero:"Publier mon produit pour",txtBoost:"Boost : 20 premiers gratuits, après",titreComment:"Comment ça marche ?",titrePopupComment:"Comment ça marche ?",etape1:"Acheteur commande → Argent bloqué (Escrow)",etape2:"Vendeur envoie + met sa preuve (photo / numéro DHL / Bus / STM)",etape3:"Acheteur clique COLIS REÇU → Vendeur payé (Commission déjà déduite)",txtLitige:"Problème ? Litige 48h, paiement bloqué.",recherche:"Rechercher : iPhone, chaise, robe..."}, en:{titreHero:"Buy and sell anywhere in the world, with total confidence.",sousHero:"Secure payment - Escrow - Verified delivery",btnPublierHero:"Publish my product for",txtBoost:"Boost: First 20 free, then",titreComment:"How does it work?",titrePopupComment:"How does it work?",etape1:"Buyer orders → Money blocked (Escrow)",etape2:"Seller ships + adds proof (photo / DHL / Bus / STM number)",etape3:"Buyer clicks PACKAGE RECEIVED → Seller paid (Commission already deducted)",txtLitige:"Problem? 48h dispute, payment blocked.",recherche:"Search: iPhone, chair, dress..."}, yo:{titreHero:"Ra ati ta ni gbogbo agbaye, pelu igbekele.",sousHero:"Isanwo to ni aabo - Escrow - Ifijise ti a jerisi",btnPublierHero:"Fi oja mi sori fun",txtBoost:"Boost: 20 akoko ofe, lehin naa",titreComment:"Bawo ni o se n sise?",titrePopupComment:"Bawo ni o se n sise?",etape1:"Olura pase → Owo di didi (Escrow)",etape2:"Olutaja firanse + fi eri kun",etape3:"Olura te PACKAGE RECEIVED → Olutaja gba owo",txtLitige:"Isoro? Ariyanjiyan 48h, isanwo di didi.",recherche:"Wa: iPhone, aga, aso..."}, fon:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton",txtBoost:"Boost : 20 nukonton le vonu, ene gudo",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, goun:{titreHero:"Xo do ayihongbe le bi me, do medesuno me.",sousHero:"Akwe xoxo - Escrow - Sedo dedeji",btnPublierHero:"De nu e do wema ji ton",txtBoost:"Boost : 20 nukonton le vonu, ene gudo",titreComment:"E no wazo gbon?",titrePopupComment:"E no wazo gbon?",etape1:"Axolo de gbe → Akwe do te (Escrow)",etape2:"Axoto se do + de kponon ton",etape3:"Axolo ze COLIS RECU → Axoto mo akwe",txtLitige:"Tagba de a? Litige 48h, akwe do te.",recherche:"Ba: iPhone, zinkpo, awu..."}, es:{titreHero:"Compra y vende en todo el mundo, con total confianza.",sousHero:"Pago seguro - Escrow - Entrega verificada",btnPublierHero:"Publicar mi producto por",txtBoost:"Boost: Primeros 20 gratis, luego",titreComment:"¿Cómo funciona?",titrePopupComment:"¿Cómo funciona?",etape1:"Comprador pide → Dinero bloqueado (Escrow)",etape2:"Vendedor envía + pone su prueba",etape3:"Comprador hace clic PAQUETE RECIBIDO → Vendedor pagado",txtLitige:"¿Problema? Disputa 48h, pago bloqueado.",recherche:"Buscar: iPhone, silla, vestido..."}, pt:{titreHero:"Compre e venda em todo o mundo, com total confiança.",sousHero:"Pagamento seguro - Escrow - Entrega verificada",btnPublierHero:"Publicar meu produto por",txtBoost:"Boost: Primeiros 20 grátis, depois",titreComment:"Como funciona?",titrePopupComment:"Como funciona?",etape1:"Comprador pede → Dinheiro bloqueado (Escrow)",etape2:"Vendedor envia + coloca sua prova",etape3:"Comprador clica PACOTE RECEBIDO → Vendedor pago",txtLitige:"Problema? Disputa 48h, pagamento bloqueado.",recherche:"Pesquisar: iPhone, cadeira, vestido..."}, de:{titreHero:"Kaufen und verkaufen auf der ganzen Welt, mit vollem Vertrauen.",sousHero:"Sichere Zahlung - Escrow - Verifizierte Lieferung",btnPublierHero:"Mein Produkt veröffentlichen für",txtBoost:"Boost: Erste 20 kostenlos, dann",titreComment:"Wie funktioniert es?",titrePopupComment:"Wie funktioniert es?",etape1:"Käufer bestellt → Geld blockiert (Escrow)",etape2:"Verkäufer sendet + fügt Nachweis hinzu",etape3:"Käufer klickt PAKET ERHALTEN → Verkäufer bezahlt",txtLitige:"Problem? 48h Streit, Zahlung blockiert.",recherche:"Suchen: iPhone, Stuhl, Kleid..."}, ar:{titreHero:"اشترِ وبِع في كل أنحاء العالم، بثقة تامة.",sousHero:"دفع آمن - ضمان - توصيل موثق",btnPublierHero:"انشر منتجي مقابل",txtBoost:"تعزيز: أول 20 مجانًا، ثم",titreComment:"كيف يعمل؟",titrePopupComment:"كيف يعمل؟",etape1:"المشتري يطلب → المال محجوز",etape2:"البائع يرسل + يضع إثباته",etape3:"المشتري ينقر تم الاستلام → البائع يُدفع",txtLitige:"مشكلة؟ نزاع 48 ساعة، الدفع محظور.",recherche:"بحث: آيفون، كرسي، فستان..."} };
+function changerLangue(lang){ localStorage.setItem("rocy_lang",lang); var dict=TRADUCTIONS[lang]||TRADUCTIONS.fr; function setTxt(id,val){ var el=document.getElementById(id); if(el&&val) el.textContent=val; } setTxt("titreHero",dict.titreHero); setTxt("sousHero",dict.sousHero); setTxt("titreComment",dict.titreComment); setTxt("titrePopupComment",dict.titrePopupComment); setTxt("etape1",dict.etape1); setTxt("etape2",dict.etape2); setTxt("etape3",dict.etape3); setTxt("txtLitige",dict.txtLitige); var rech=document.getElementById("recherche"); if(rech) rech.placeholder=dict.recherche; }
 window.changerLangue=changerLangue;
 document.addEventListener("DOMContentLoaded",function(){ var saved=localStorage.getItem("rocy_lang"); var sel=document.getElementById("langue"); if(saved&&sel){ sel.value=saved; changerLangue(saved); } var dev=localStorage.getItem("rocy_devise"); var selD=document.getElementById("devise"); if(dev&&selD){ selD.value=dev; } chargerTauxInstantT(); });
 var taux={ XOF:1, EUR:0.0015, USD:0.0017, NGN:2.55, GHS:0.021, GBP:0.0013 };
@@ -170,6 +165,8 @@ function convertirPrix(){
   var deviseEl=document.getElementById("devise"); if(!deviseEl) return;
   var devise=deviseEl.value; localStorage.setItem("rocy_devise",devise);
   document.querySelectorAll(".prix").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.innerText=converti.toLocaleString()+symboles[devise]; });
+  // PRIX FIXES EN HAUT : 2000F et 500F convertis aussi
+  document.querySelectorAll(".prix-fixe").forEach(function(el){ var prixFCFA=parseFloat(el.getAttribute("data-prix")); if(isNaN(prixFCFA)) return; var converti=Math.round(prixFCFA*taux[devise]); el.innerText=converti.toLocaleString()+symboles[devise]; });
 }
 window.convertirPrix=convertirPrix;
 </script>
