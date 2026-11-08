@@ -272,29 +272,38 @@ document.addEventListener('click', function(e){
 document.addEventListener('DOMContentLoaded', verifierEmailAuRetrait);
 setTimeout(verifierEmailAuRetrait, 1000);
 setTimeout(verifierEmailAuRetrait, 3000);
-// ===== SUPPRIMER DOUBLON DEVISE DU BAS - SANS TRAVAIL EN ARRIÈRE-PLAN =====
+// ===== SUPPRIMER LE DOUBLON DEVISE DU BAS - VERSION FORTE - PAR CONTENU =====
 (function(){
-  var dejaFait = false;
-  function supprimerDeviseBas(){
-    if(dejaFait) return; // On ne le fait qu'une fois, puis on s'arrête
-    var trouves = document.querySelectorAll('select#devise, #devise');
-    if(trouves.length === 0 && !document.getElementById('tauxInfo')) return;
+  function supprimerDoublon(){
+    // 1. Tous les <select> qui ne sont PAS dans le header
+    document.querySelectorAll('select').forEach(function(sel){
+      if(sel.closest('header')) return; // On ne touche jamais au haut
+      if(sel.closest('.header-right')) return;
+      var html = (sel.innerHTML || '').toLowerCase();
+      // S'il contient Euro + Naira / Dollar / FCFA = c'est le doublon devise
+      if(html.includes('eur') && html.includes('ngn') || html.includes('euro') && html.includes('naira')){
+        sel.remove();
+        return;
+      }
+      // Si son id contient "devise" ou "currency" et qu'il n'est pas en haut
+      var id = (sel.id || '').toLowerCase();
+      var cls = (sel.className || '').toLowerCase();
+      if(id.includes('devise') || id.includes('currency') || cls.includes('devise')){
+        sel.remove();
+      }
+    });
 
-    trouves.forEach(function(sel){
-      if(sel.closest('header') || sel.closest('.header-right')) return; // Jamais le haut
-      var prev = sel.previousElementSibling;
-      if(prev && prev.tagName === 'LABEL') prev.remove();
-      sel.remove(); // On enlève, on ne cache pas, donc plus aucun événement
+    // 2. La ligne "Taux à l'instant T..." du bas - on la cherche par son texte, pas par son id
+    document.querySelectorAll('p, div, span, small').forEach(function(el){
+      if(el.closest('header')) return;
+      var txt = (el.textContent || '');
+      if(txt.includes('Taux à l\'instant') || txt.includes('Taux a l\'instant') || txt.includes('FCFA par défaut')){
+        el.remove();
+      }
     });
-    document.querySelectorAll('#tauxInfo').forEach(function(el){
-      if(!el.closest('header')) el.remove();
-    });
-    // Une fois supprimé, on ne revient plus
-    dejaFait = true;
   }
-  document.addEventListener('DOMContentLoaded', supprimerDeviseBas);
-  setTimeout(supprimerDeviseBas, 500);
-  setTimeout(supprimerDeviseBas, 1500);
-  // Après 3 secondes, on arrête tout. Plus rien ne tourne en arrière-plan.
-  setTimeout(function(){ dejaFait = true; }, 3000);
+  document.addEventListener('DOMContentLoaded', supprimerDoublon);
+  setTimeout(supprimerDoublon, 300);
+  setTimeout(supprimerDoublon, 1000);
+  setTimeout(supprimerDoublon, 2500);
 })();
