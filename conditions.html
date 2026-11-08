@@ -6,39 +6,48 @@
 <title>Conditions Générales - RocyInter</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:16px;max-width:500px;margin:0 auto}
-*{box-sizing:border-box}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0}
+header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;width:100%}
+header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px;font-family:Poppins,Arial,sans-serif}header a .inter{color:#FFC107}
+.hr{display:flex;gap:6px;align-items:center}
+.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.menuBtn{width:32px;padding:0;justify-content:center;font-size:17px;font-weight:900}
+.container{max-width:520px;margin:14px auto;padding:0 12px}@media(min-width:768px){.container{max-width:680px}header a{font-size:19px}}@media(min-width:1024px){.container{max-width:820px}}
 .top{background:#111827;color:#fff;padding:20px;border-radius:16px;text-align:center}
+.top h1{font-size:20px;margin:0 0 6px}.top p{margin:0;font-size:13px;color:#ddd}
 .card{background:#fff;padding:18px;border-radius:16px;margin:14px 0;box-shadow:0 2px 10px rgba(0,0,0,.06);line-height:1.6}
 .card h2{margin-top:0;font-size:17px}
 button{width:100%;padding:14px;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:bold;margin-top:14px;cursor:pointer}
 .btn-retour{background:#fff;color:#111827;border:1px solid #ddd}
 .accept-box{border:2px solid #f59e0b}
-.check{display:flex;gap:10px;align-items:flex-start;font-weight:bold;font-size:14px}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:bold;font-size:14px;text-align:left}
 .check input{width:22px;height:22px;margin:0;flex-shrink:0}
 table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
 table td{border:1px solid #eee;padding:8px}
 .badge-gratuit{background:#25D366;color:#fff;padding:3px 10px;border-radius:20px;font-size:12px}
-.header{background:#0a1a2f;color:white;padding:15px;text-align:center}
-.header a{color:white;text-decoration:none;font-weight:bold;font-size:20px}
-.footer{text-align:center;padding:20px;color:#888;font-size:13px}
+footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px;font-family:Inter,Arial,sans-serif;font-weight:500}footer b{color:#FFC107}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer .footIn{max-width:520px;margin:0 auto}footer p{margin:1px 0}
+.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;color:#111;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
+.popMenu a,.popMenu button{display:block;width:100%;text-align:left;padding:11px 10px;border:none;background:none;cursor:pointer;font-size:15px;color:#111;text-decoration:none;border-radius:8px}.popMenu a:hover,.popMenu button:hover{background:#f1f1f1}
+#menuOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000}
+#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;color:#111;z-index:1001;flex-direction:column;padding:18px 16px 14px;overflow:auto}
+#menuBox.open{display:flex}
+.menuHead b{font-size:22px;font-weight:900}#menuBox .inter{color:#FFC107}.menuBonjour{color:#666;font-size:14px;margin:6px 0 14px}
+#menuBox a,#menuBox .menuLink{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;cursor:pointer}#menuBox .rouge{color:#E40000;font-weight:700;border-bottom:none}
+#menuBox a.grise,#menuBox .menuLink.grise{color:#aaa;cursor:not-allowed;background:#f9f9f9}
+#menuBox a.grise::after{content:" 🔒";font-size:12px}
+#menuFermer{margin-top:auto;background:#000;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;width:100%}
+.notifDot{background:#ff3b30;color:#fff;border-radius:50%;min-width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 4px}
 </style>
 </head>
 <body>
-<div style="background:#111;color:#fff;padding:8px;display:flex;justify-content:center">
-  🌍 Langue :
-  <select id="langue" onchange="changerLangue(this.value)" style="margin-left:8px">
-    <option value="fr">Français</option>
-    <option value="en">English</option>
-    <option value="yo">Yoruba</option>
-    <option value="fon">Fon</option>
-    <option value="goun">Goun</option>
-    <option value="autre">Autre langue... (Google)</option>
-  </select>
-</div>
-<div id="google_translate_element" style="display:none"></div>
-<div class="header"><a href="index.html">ROCY<span style="color:#ffc107">INTER</span></a></div>
+<header><a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="ouvrirNotif(event)">🔔 <span id="notifDot" class="notifDot">0</span></button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
+<div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
+<div id="menuOverlay" onclick="fermerMenu()"></div>
+<div id="menuBox"><div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour, Visiteur</div><a href="index.html" data-i18n="accueil">Accueil</a><a href="messages.html" data-i18n="messages" data-auth="1">💬 Messages</a><a href="publier.html" data-i18n="publier" data-acces="vendeur">Publier un produit</a><a href="vendeur.html" data-i18n="tabVendeur" data-acces="vendeur">Tableau Vendeur</a><a href="acheteur.html" data-i18n="tabAcheteur" data-acces="acheteur">Tableau Acheteur</a><a href="admin.html" data-i18n="tabAdmin" data-acces="admin">Tableau Admin</a><a href="profil.html" data-i18n="profil" data-auth="1">Profil</a><a href="conditions.html" data-i18n="conditions">Conditions</a><a href="contact.html" data-i18n="contact">Contact</a><a href="apropos.html" data-i18n="apropos">À Propos</a><a href="inscription.html" id="lienInscription" data-i18n="inscription">Inscription</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()" data-i18n="connecter">Connecter</button><button id="menuFermer" onclick="fermerMenu()">Fermer ✕</button></div>
 
+<div style="max-width:520px;margin:10px auto;padding:0 12px"><a href="index.html" style="color:#666;text-decoration:none;font-size:13px" data-i18n="retour">← Retour</a></div>
+
+<div class="container">
 <div class="top">
   <h1>📜 Conditions Générales d'utilisation</h1>
   <p>RocyInter - Cotonou, Bénin</p>
@@ -139,60 +148,26 @@ table td{border:1px solid #eee;padding:8px}
 </div>
 
 <button onclick="window.location.href='index.html'" class="btn-retour">⬅ Retour Accueil</button>
-<div style="text-align:center;margin-top:15px;font-size:13px">
-  <a href="index.html">Accueil</a> • <a href="contact.html">Contact / Aide</a> • <a href="profil.html">Mon Profil</a>
 </div>
-<div class="footer">© 2026 Rocyinter - Le monde achète ici</div>
+
+<footer><div class="footIn"><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; <b>Rocyinter@2026</b></p><p><a href="index.html">Accueil</a> | <a href="messages.html">Messages</a> | <a href="publier.html">Vendre</a> | <a href="contact.html">Aide</a></p></div></footer>
 
 <script>
-const MODE_TEST = window.location.hostname.includes('codepen') || window.location.hostname.includes('cdpn') || window.location.hostname === '' || window.location.search.indexOf('test=1') !== -1;
-const supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
+var supabaseClient = window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co', 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
 document.getElementById('btnAccepter').addEventListener('click', async function(){
-  const coche = document.getElementById('checkConditions').checked;
-  if(!coche){
-    alert('Tu dois cocher la case pour accepter ❌');
-    return;
-  }
-  if(MODE_TEST){
-    document.getElementById('msgAccept').innerText = 'MODE TEST : Conditions acceptées ✅';
-    alert('MODE TEST : Conditions acceptées, tu peux continuer');
-    localStorage.setItem('conditions_acceptees', 'oui');
-    window.location.href = 'index.html';
-    return;
-  }
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if(!session){ alert('Connecte-toi d\'abord'); window.location.href = 'connexion.html'; return; }
-  const { error } = await supabaseClient.from('profils').update({ conditions_acceptees: true }).eq('id', session.user.id);
-  if(error) alert(error.message);
+  var coche = document.getElementById('checkConditions').checked;
+  if(!coche){ alert('Tu dois cocher la case pour accepter ❌'); return; }
+  var sess = await supabaseClient.auth.getSession();
+  if(!sess || !sess.data || !sess.data.session){ alert('Connecte-toi d\'abord'); localStorage.setItem('retour_apres_connexion','conditions.html'); window.location.href = 'connexion.html'; return; }
+  var userId = sess.data.session.user.id;
+  var res = await supabaseClient.from('profils').update({ conditions_acceptees: true }).eq('id', userId);
+  if(res.error) alert(res.error.message);
   else {
+    localStorage.setItem('conditions_acceptees','oui');
     alert('Merci, conditions acceptées ✅');
     window.location.href = 'index.html';
   }
 });
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({pageLanguage:'fr'}, 'google_translate_element');
-}
-function changerLangue(lang){
-  if(lang === "autre"){
-    document.getElementById("google_translate_element").style.display = "block";
-    alert("Choisis ta langue dans le menu Google");
-    return;
-  }
-  if(lang === "fon" || lang === "goun"){
-    alert("Fon / Goun : On traduit les gros boutons pour toi. Version complète bientôt.");
-    return;
-  }
-  let selectGoogle = document.querySelector(".goog-te-combo");
-  if(selectGoogle){
-    selectGoogle.value = lang;
-    selectGoogle.dispatchEvent(new Event("change"));
-  }
-}
-window.changerLangue = changerLangue;
-window.googleTranslateElementInit = googleTranslateElementInit;
-let s = document.createElement("script");
-s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-document.head.appendChild(s);
 </script>
 <script src="commun.js"></script>
 </body>
