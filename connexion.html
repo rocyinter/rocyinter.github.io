@@ -7,14 +7,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}html,body{height:100%}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0;display:flex;flex-direction:column;min-height:100vh}
-header{background:#111;color:#fff;padding:10px 12px;text-align:center;width:100%}
+/* ENTETE SPECIALE §9 - TRADUCTEUR PETIT COIN DROIT */
+header{background:#111;color:#fff;padding:10px 12px;width:100%;display:flex;align-items:center;justify-content:space-between}
+header .spacer{width:90px;flex-shrink:0}
 header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px;font-family:Poppins,Arial,sans-serif}header a span{color:#FFC107}
+#langue{width:90px;height:28px;background:#fff;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:600;padding:0 6px;cursor:pointer;flex-shrink:0}
 footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:auto;font-family:Inter,Arial,sans-serif;font-weight:500}footer b{color:#FFC107}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer .footIn{max-width:520px;margin:0 auto}footer p{margin:1px 0}
 .container{max-width:440px;width:calc(100% - 24px);margin:20px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);flex:1 0 auto}
 h2{text-align:center;color:#0a1a2f;margin-bottom:5px;font-size:20px}
 p.sub{text-align:center;color:#666;font-size:14px;margin-top:0}
-.langWrap{text-align:center;margin:10px 0 4px}
-.langWrap select{padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;background:#fff;cursor:pointer;max-width:220px}
 label{display:block;margin-top:14px;font-weight:bold;font-size:14px}
 input[type="text"],input[type="password"],input[type="email"]{width:100%;padding:12px;margin-top:5px;border:1px solid #ddd;border-radius:8px;font-size:15px;box-sizing:border-box}
 .btn{width:100%;background:#ff6b00;color:#fff;border:none;padding:15px;border-radius:10px;font-size:16px;font-weight:bold;margin-top:20px;cursor:pointer}
@@ -27,11 +28,10 @@ input[type="text"],input[type="password"],input[type="email"]{width:100%;padding
 </style>
 </head>
 <body>
-<header><a href="index.html">ROCY<span>INTER</span></a></header>
+<header><span class="spacer"></span><a href="index.html">ROCY<span>INTER</span></a><select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option></select></header>
 <div class="container">
 <h2 data-i18n="titre">Connecte-toi</h2>
 <p class="sub" data-i18n="sousTitre">Bienvenue sur RocyInter</p>
-<div class="langWrap"><select id="langue" onchange="changerLangue(this.value)"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ar">العربية</option><option value="yo">Yoruba</option><option value="fon">Fon</option><option value="goun">Goun</option></select></div>
 <p id="msgErreur" style="display:none;background:#FFE0E0;color:#C00;padding:10px;border-radius:8px;font-size:13px;text-align:center"></p>
 <form onsubmit="connecter(event)">
 <label data-i18n="lblLogin">Email ou Téléphone *</label>
