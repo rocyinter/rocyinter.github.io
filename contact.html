@@ -6,538 +6,76 @@
 <title>Contact / Aide - RocyInter</title>
 <style>
 *{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0;color:#111}
-/* === §4 ENTETE === */
-header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;width:100%}
-header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px;font-family:Poppins,Arial,sans-serif}header a .inter{color:#FFC107}
-.hr{display:flex;gap:6px;align-items:center;flex-shrink:0}
-.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0}
-.langBtn{max-width:110px}.notifBtn{width:32px;height:32px;padding:0}.menuBtn{width:32px;height:32px;padding:0;font-size:17px;font-weight:900}
-header button{width:auto!important;flex-shrink:0}
+header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px}header a span{color:#FFC107}
+.hr{display:flex;gap:6px;align-items:center}
+.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer}
+.menuBtn,.notifBtn{width:32px;padding:0;font-size:17px}
 .retour{display:block;max-width:520px;margin:10px auto 0;padding:0 12px;color:#111;text-decoration:none;font-size:13px;font-weight:700}
-/* === §7 PIED === */
-footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px;font-family:Inter,Arial,sans-serif;font-weight:500}footer b{color:#FFC107}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer .footIn{max-width:520px;margin:0 auto}footer p{margin:1px 0}
-/* === §6 MENU === */
-.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;color:#111;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
-.popMenu button{display:block;width:100%;text-align:left;padding:11px 10px;border:none;background:none;cursor:pointer;font-size:15px;color:#111;border-radius:8px}.popMenu button:hover{background:#f1f1f1}
+footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px}footer b,footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer p{margin:1px 0}
+.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
+.popMenu button{display:block;width:100%;text-align:left;padding:11px;border:none;background:none;font-size:15px;cursor:pointer}
 #menuOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000}
-#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;color:#111;z-index:1001;flex-direction:column;padding:18px 16px 14px;overflow:auto}
+#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;z-index:1001;flex-direction:column;padding:18px 16px;overflow:auto}
 #menuBox.open{display:flex}
-.menuHead b{font-size:22px;font-weight:900}#menuBox .inter{color:#FFC107}.menuBonjour{color:#666;font-size:14px;margin:6px 0 14px}
-#menuBox a,#menuBox .menuLink{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;cursor:pointer}#menuBox .rouge{color:#E40000;font-weight:700;border-bottom:none}
-#menuBox a.grise,#menuBox .menuLink.grise{color:#aaa;cursor:not-allowed;background:#f9f9f9}
-#menuBox a.grise::after{content:" 🔒";font-size:12px}
-#menuFermer{margin-top:auto;background:#000;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;width:100%}
-.notifDot{background:#ff3b30;color:#fff;border-radius:50%;min-width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 4px}
-/* === §10 CONTENU === */
-.container{max-width:520px;margin:14px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-@media(min-width:768px){.container{max-width:680px}.retour{max-width:680px}header a{font-size:19px}}@media(min-width:1024px){.container{max-width:820px}.retour{max-width:820px}}
-h1{font-size:22px;margin:0 0 8px;color:#0a1a2f}.subtitle{color:#666;margin-bottom:20px;line-height:1.5;font-size:14px}
+#menuBox a,#menuBox button{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border:none;width:100%;text-align:left;cursor:pointer}
+#menuBox .rouge{color:#E40000;font-weight:700}
+#menuFermer{margin-top:auto!important;background:#000!important;color:#fff!important;border-radius:10px!important;text-align:center!important}
+.container{max-width:520px;margin:14px auto;background:#fff;padding:20px;border-radius:12px}
+h1{font-size:22px;margin:0 0 8px}.subtitle{color:#666;font-size:14px;line-height:1.5}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.card{background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px}
-.card h3{color:#111;margin:0 0 6px;font-size:15px}.card p{color:#666;font-size:13px;line-height:1.5;margin:0}
-.card button{margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}
+.card{background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px}.card p{color:#666;font-size:13px}
+.card button{margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;font-weight:800;cursor:pointer}
 .btn-whatsapp{background:#25D366;color:#fff}.btn-mail{background:#FFC107;color:#111}
-.section-title{font-size:17px;margin:20px 0 12px;color:#0a1a2f}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.tabs button{padding:9px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;color:#111;cursor:pointer;font-size:13px}
-.tabs button.active{background:#FFC107;color:#111;font-weight:800;border-color:#FFC107}
-.faq-item{background:#f9f9f9;border:1px solid #eee;border-radius:12px;margin-bottom:8px;overflow:hidden}
-.faq-q{padding:14px;cursor:pointer;font-weight:700;display:flex;justify-content:space-between;font-size:14px}
-.faq-a{display:none;padding:0 14px 14px;color:#666;font-size:13px;line-height:1.6}
-.faq-item.open .faq-a{display:block}
-.form{background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px;margin-top:20px}
-.form h2{margin:0 0 6px;font-size:17px}.form p{color:#666;font-size:13px;margin:0}
-label{font-size:13px;color:#666;display:block;margin:12px 0 5px;font-weight:700}
-input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#111;outline:none;font-size:14px;font-family:Arial,sans-serif;box-sizing:border-box}
-textarea{min-height:110px;resize:vertical}
-.btn-send{margin-top:16px;width:100%;padding:14px;background:#FFC107;border:none;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;color:#111}
-.success{display:none;background:#e8f5e9;border:1px solid #25D366;padding:12px;border-radius:10px;margin-top:12px;color:#2e7d32;text-align:center;font-size:13px}
-@media(max-width:600px){.cards{grid-template-columns:1fr}h1{font-size:20px}}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{padding:9px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer}.tabs button.active{background:#FFC107;font-weight:800}
+.faq-item{background:#f9f9f9;border:1px solid #eee;border-radius:12px;margin-bottom:8px}.faq-q{padding:14px;cursor:pointer;font-weight:700;display:flex;justify-content:space-between}.faq-a{display:none;padding:0 14px 14px;color:#666;font-size:13px}.faq-item.open .faq-a{display:block}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:8px 0;font-size:14px;box-sizing:border-box}
+.btn-send{width:100%;padding:14px;background:#FFC107;border:none;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;margin-top:10px}
+.success{display:none;background:#e8f5e9;border:1px solid #25D366;padding:12px;border-radius:10px;margin-top:12px;color:#2e7d32;text-align:center}
+@media(max-width:600px){.cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="ouvrirNotif(event)">🔔 <span id="notifDot" class="notifDot">0</span></button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
+<header><a href="index.html">ROCY<span>INTER</span></a><div class="hr"><button class="notifBtn" onclick="alert('Aucune notification')">🔔</button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
 <div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
 <div id="menuOverlay" onclick="fermerMenu()"></div>
-<div id="menuBox"><div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour, Visiteur</div><a href="index.html" data-i18n="mAccueil">Accueil</a><a href="messages.html" data-auth="1">💬 <span data-i18n="mMessages">Messages</span></a><a href="publier.html" data-acces="vendeur" data-i18n="mPublier">Publier un produit</a><a href="vendeur.html" data-acces="vendeur" data-i18n="mVendeur">Tableau Vendeur</a><a href="acheteur.html" data-acces="acheteur" data-i18n="mAcheteur">Tableau Acheteur</a><a href="admin.html" data-acces="admin" data-i18n="mAdmin">Tableau Admin</a><a href="profil.html" data-auth="1" data-i18n="mProfil">Profil</a><a href="conditions.html" data-i18n="mConditions">Conditions</a><a href="contact.html" data-i18n="mContact">Contact</a><a href="apropos.html" data-i18n="mApropos">À Propos</a><a href="inscription.html" id="lienInscription" data-i18n="mInscription">Inscription</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()" data-i18n="mConnecter">Connecter</button><button id="menuFermer" onclick="fermerMenu()" data-i18n="mFermer">Fermer ✕</button></div>
-<a class="retour" href="javascript:history.back()" data-i18n="retour">← Retour</a>
-
+<div id="menuBox"><b style="font-size:22px">ROCY <span style="color:#FFC107">INTER</span></b><div id="menuBonjour" style="color:#666;margin:6px 0 14px">Bonjour, Visiteur</div><a href="index.html">Accueil</a><a href="messages.html" id="lienMessages">💬 Messages</a><a href="publier.html">Publier un produit</a><a href="vendeur.html">Tableau Vendeur</a><a href="acheteur.html">Tableau Acheteur</a><a href="admin.html">Tableau Admin</a><a href="profil.html">Profil</a><a href="conditions.html">Conditions</a><a href="contact.html">Contact</a><a href="apropos.html">À Propos</a><a href="inscription.html" id="lienInscription">Inscription</a><button class="rouge" id="btnAuth" onclick="gererAuth()">Connecter</button><button id="menuFermer" onclick="fermerMenu()">Fermer ✕</button></div>
+<a class="retour" href="javascript:history.back()">← Retour</a>
 <div class="container">
-<h1 data-i18n="titre">Contact / Aide 🤝</h1>
-<p class="subtitle" data-i18n="sousTitre">Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.</p>
-
+<h1 id="titre">Contact / Aide 🤝</h1>
+<p class="subtitle" id="sousTitre">Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.</p>
 <div class="cards">
-<div class="card">
-<h3 data-i18n="cardWa">💬 WhatsApp - Rapide</h3>
-<p data-i18n="cardWaDesc">Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.</p>
-<button class="btn-whatsapp" onclick="ouvrirWhatsApp()" data-i18n="btnWa">Ouvrir WhatsApp</button>
+<div class="card"><h3>💬 WhatsApp - Rapide</h3><p>Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.</p><button class="btn-whatsapp" onclick="ouvrirWhatsApp()">Ouvrir WhatsApp</button></div>
+<div class="card"><h3>📧 Email - Officiel</h3><p>Pour plainte, remboursement, KYC, problème de compte.</p><p style="color:#FFC107;font-weight:700">rocyinter@gmail.com</p><button class="btn-mail" onclick="ouvrirMail()">Envoyer un Email</button></div>
 </div>
-<div class="card">
-<h3 data-i18n="cardMail">📧 Email - Officiel</h3>
-<p data-i18n="cardMailDesc">Pour plainte, remboursement, KYC, problème de compte.</p>
-<p style="margin-top:8px;color:#FFC107;font-weight:700">rocyinter@gmail.com</p>
-<button class="btn-mail" onclick="ouvrirMail()" data-i18n="btnMail">Envoyer un Email</button>
-</div>
-</div>
-
-<h2 class="section-title" data-i18n="faqTitre">❓ Questions fréquentes</h2>
-<div class="tabs">
-<button class="active" id="tab-tout" onclick="filtrerFaq('tout',this)" data-i18n="tabTout">Tout</button>
-<button onclick="filtrerFaq('acheteur',this)" data-i18n="tabAcheteur">Acheteur</button>
-<button onclick="filtrerFaq('vendeur',this)" data-i18n="tabVendeur">Vendeur</button>
-<button onclick="filtrerFaq('paiement',this)" data-i18n="tabPaiement">Paiement / Retrait</button>
-</div>
+<h2>❓ Questions fréquentes</h2>
+<div class="tabs"><button class="active" onclick="filtrerFaq('tout',this)">Tout</button><button onclick="filtrerFaq('acheteur',this)">Acheteur</button><button onclick="filtrerFaq('vendeur',this)">Vendeur</button><button onclick="filtrerFaq('paiement',this)">Paiement / Retrait</button></div>
 <div id="faqList"></div>
-
-<div class="form">
-<h2 data-i18n="formTitre">✉️ Nous écrire</h2>
-<p data-i18n="formDesc">Décris ton problème, on te répond vite.</p>
-<label data-i18n="lblNom">Ton nom *</label>
-<input id="nom" type="text" data-i18n-ph="phNom" placeholder="Ex: Jean K.">
-<label data-i18n="lblContact">Ton WhatsApp / Email *</label>
-<input id="contact" type="text" data-i18n-ph="phContact" placeholder="Ex: 96 00 00 00 ou ton email">
-<label data-i18n="lblSujet">Sujet *</label>
-<select id="sujet">
-<option value="Commande / Livraison" data-i18n="sujetCommande">Commande / Livraison</option>
-<option value="Paiement" data-i18n="sujetPaiement">Paiement</option>
-<option value="Retrait vendeur" data-i18n="sujetRetrait">Retrait vendeur</option>
-<option value="Compte / KYC" data-i18n="sujetKyc">Compte / KYC</option>
-<option value="Signaler une arnaque" data-i18n="sujetArnaque">Signaler une arnaque</option>
-<option value="Autre" data-i18n="sujetAutre">Autre</option>
-</select>
-<label data-i18n="lblMessage">Ton message *</label>
-<textarea id="message" data-i18n-ph="phMessage" placeholder="Explique ce qui s'est passé... N° de commande si tu l'as, nom du produit, date..."></textarea>
-<button class="btn-send" onclick="envoyerMessage()" data-i18n="btnEnvoyer">Envoyer →</button>
-<div id="success" class="success" data-i18n="success">✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.</div>
+<div style="background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px;margin-top:20px">
+<h2>✉️ Nous écrire</h2>
+<label>Ton nom *</label><input id="nom" placeholder="Ex: Jean K.">
+<label>Ton WhatsApp / Email *</label><input id="contact" placeholder="Ex: 96 00 00 00 ou ton email">
+<label>Sujet *</label><select id="sujet"><option>Commande / Livraison</option><option>Paiement</option><option>Retrait vendeur</option><option>Compte / KYC</option><option>Signaler une arnaque</option><option>Autre</option></select>
+<label>Ton message *</label><textarea id="message" placeholder="Explique ce qui s'est passé..."></textarea>
+<button class="btn-send" onclick="envoyerMessage()">Envoyer →</button>
+<div id="success" class="success">✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.</div>
 </div>
 </div>
-
-<footer><div class="footIn"><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; <b>Rocyinter@2026</b></p></div></footer>
-
+<footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> | Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> | <b>Rocyinter@2026</b></p></footer>
 <script>
-var DICT = {
-fr:{mAccueil:"Accueil",mMessages:"Messages",mPublier:"Publier un produit",mVendeur:"Tableau Vendeur",mAcheteur:"Tableau Acheteur",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Conditions",mContact:"Contact",mApropos:"À Propos",mInscription:"Inscription",mConnecter:"Connecter",mDeconnecter:"Déconnecter",mFermer:"Fermer ✕",retour:"← Retour",titre:"Contact / Aide 🤝",sousTitre:"Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.",cardWa:"💬 WhatsApp - Rapide",cardWaDesc:"Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.",btnWa:"Ouvrir WhatsApp",cardMail:"📧 Email - Officiel",cardMailDesc:"Pour plainte, remboursement, KYC, problème de compte.",btnMail:"Envoyer un Email",faqTitre:"❓ Questions fréquentes",tabTout:"Tout",tabAcheteur:"Acheteur",tabVendeur:"Vendeur",tabPaiement:"Paiement / Retrait",formTitre:"✉️ Nous écrire",formDesc:"Décris ton problème, on te répond vite.",lblNom:"Ton nom *",phNom:"Ex: Jean K.",lblContact:"Ton WhatsApp / Email *",phContact:"Ex: 96 00 00 00 ou ton email",lblSujet:"Sujet *",sujetCommande:"Commande / Livraison",sujetPaiement:"Paiement",sujetRetrait:"Retrait vendeur",sujetKyc:"Compte / KYC",sujetArnaque:"Signaler une arnaque",sujetAutre:"Autre",lblMessage:"Ton message *",phMessage:"Explique ce qui s'est passé... N° de commande si tu l'as, nom du produit, date...",btnEnvoyer:"Envoyer →",success:"✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.",errRemplis:"Remplis ton nom, ton contact et ton message.",reserveVendeur:"Accès réservé aux vendeurs",reserveAcheteur:"Accès réservé aux acheteurs",reserveAdmin:"Accès réservé à l'admin",
-faq1q:"Comment acheter en sécurité ?",faq1a:"Tu paies sur RocyInter. L'argent est bloqué (Escrow). Le vendeur livre. Tu confirmes que tu as bien reçu. Ensuite seulement le vendeur est payé. Ne paie JAMAIS en dehors de RocyInter.",
-faq2q:"J'ai payé mais je n'ai pas reçu ?",faq2a:"1. Vérifie ton Tableau Acheteur > Ma commande. 2. Contacte le vendeur dans le chat. 3. Si pas de réponse en 24h, écris-nous ici en choisissant 'Commande / Livraison'. On bloque le paiement et on te rembourse.",
-faq3q:"Comment publier un article ?",faq3a:"Va sur Publier > Mets photos, titre, prix, description > Paie 2000F pour 30 jours. Les 20 premiers vendeurs ont le Booster gratuit, après c'est 500F.",
-faq4q:"Combien je gagne sur une vente ?",faq4a:"Commission dégressive : 8,5% jusqu'à 500 000F, 7,5% jusqu'à 2 000 000F, 6,5% au-delà. Exemple : vente à 100 000F = 91 500F pour toi.",
-faq5q:"Quand je reçois mon argent ?",faq5a:"Après que l'acheteur a confirmé la réception. Ton solde apparaît dans Tableau Vendeur. Tu cliques sur 'Retirer mon argent' et tu choisis MTN MoMo, Moov Money ou Wave.",
-faq6q:"Pourquoi on me demande le KYC ?",faq6a:"KYC = vérification d'identité avec ta pièce d'identité. C'est obligatoire avant le 1er retrait, pour éviter les arnaques et protéger ton argent. Sans KYC = pas de retrait.",
-faq7q:"Comment signaler une arnaque ?",faq7a:"Ne paie jamais en dehors de RocyInter. Si quelqu'un te demande de payer par WhatsApp direct, signale-le ici en choisissant 'Signaler une arnaque' + envoie son nom et captures."},
-en:{mAccueil:"Home",mMessages:"Messages",mPublier:"Publish a product",mVendeur:"Seller Dashboard",mAcheteur:"Buyer Dashboard",mAdmin:"Admin Dashboard",mProfil:"Profile",mConditions:"Terms",mContact:"Contact",mApropos:"About",mInscription:"Sign up",mConnecter:"Log in",mDeconnecter:"Log out",mFermer:"Close ✕",retour:"← Back",titre:"Contact / Help 🤝",sousTitre:"Problem with a purchase, sale, payment or withdrawal? We help you. Fast reply, 7 days a week.",cardWa:"💬 WhatsApp - Fast",cardWaDesc:"Fastest for urgent problem: blocked order, payment, delivery.",btnWa:"Open WhatsApp",cardMail:"📧 Email - Official",cardMailDesc:"For complaint, refund, KYC, account problem.",btnMail:"Send an Email",faqTitre:"❓ Frequently asked questions",tabTout:"All",tabAcheteur:"Buyer",tabVendeur:"Seller",tabPaiement:"Payment / Withdrawal",formTitre:"✉️ Write to us",formDesc:"Describe your problem, we reply fast.",lblNom:"Your name *",phNom:"Ex: Jean K.",lblContact:"Your WhatsApp / Email *",phContact:"Ex: 96 00 00 00 or your email",lblSujet:"Subject *",sujetCommande:"Order / Delivery",sujetPaiement:"Payment",sujetRetrait:"Seller withdrawal",sujetKyc:"Account / KYC",sujetArnaque:"Report a scam",sujetAutre:"Other",lblMessage:"Your message *",phMessage:"Explain what happened... Order number if you have it, product name, date...",btnEnvoyer:"Send →",success:"✅ Message sent! We reply very fast on WhatsApp / Email.",errRemplis:"Fill your name, contact and message.",reserveVendeur:"Sellers only",reserveAcheteur:"Buyers only",reserveAdmin:"Admin only",
-faq1q:"How to buy safely?",faq1a:"You pay on RocyInter. Money is blocked (Escrow). Seller ships. You confirm you received. Only then seller is paid. NEVER pay outside RocyInter.",
-faq2q:"I paid but did not receive?",faq2a:"1. Check Buyer Dashboard > My order. 2. Contact seller in chat. 3. If no reply in 24h, write here choosing 'Order / Delivery'. We block payment and refund you.",
-faq3q:"How to publish an item?",faq3a:"Go to Publish > Add photos, title, price, description > Pay 2000F for 30 days. First 20 sellers have free Booster, after 500F.",
-faq4q:"How much do I earn on a sale?",faq4a:"Degressive commission: 8.5% up to 500,000F, 7.5% up to 2,000,000F, 6.5% above. Example: sale at 100,000F = 91,500F for you.",
-faq5q:"When do I receive my money?",faq5a:"After buyer confirms receipt. Balance appears in Seller Dashboard. Click 'Withdraw my money' and choose MTN MoMo, Moov Money or Wave.",
-faq6q:"Why do you ask for KYC?",faq6a:"KYC = identity check with your ID. Mandatory before 1st withdrawal, to avoid scams and protect your money. No KYC = no withdrawal.",
-faq7q:"How to report a scam?",faq7a:"Never pay outside RocyInter. If someone asks you to pay via WhatsApp direct, report here choosing 'Report a scam' + send his name and screenshots."},
-es:{mAccueil:"Inicio",mMessages:"Mensajes",mPublier:"Publicar un producto",mVendeur:"Panel Vendedor",mAcheteur:"Panel Comprador",mAdmin:"Panel Admin",mProfil:"Perfil",mConditions:"Condiciones",mContact:"Contacto",mApropos:"Acerca de",mInscription:"Registrarse",mConnecter:"Iniciar sesión",mDeconnecter:"Cerrar sesión",mFermer:"Cerrar ✕",retour:"← Volver",titre:"Contacto / Ayuda 🤝",sousTitre:"¿Problema con compra, venta, pago o retiro? Te ayudamos. Respuesta rápida, 7 días.",cardWa:"💬 WhatsApp - Rápido",cardWaDesc:"Lo más rápido para problema urgente: pedido bloqueado, pago, entrega.",btnWa:"Abrir WhatsApp",cardMail:"📧 Email - Oficial",cardMailDesc:"Para queja, reembolso, KYC, problema de cuenta.",btnMail:"Enviar un Email",faqTitre:"❓ Preguntas frecuentes",tabTout:"Todo",tabAcheteur:"Comprador",tabVendeur:"Vendedor",tabPaiement:"Pago / Retiro",formTitre:"✉️ Escríbenos",formDesc:"Describe tu problema, te respondemos rápido.",lblNom:"Tu nombre *",phNom:"Ej: Jean K.",lblContact:"Tu WhatsApp / Email *",phContact:"Ej: 96 00 00 00 o tu email",lblSujet:"Asunto *",sujetCommande:"Pedido / Entrega",sujetPaiement:"Pago",sujetRetrait:"Retiro vendedor",sujetKyc:"Cuenta / KYC",sujetArnaque:"Denunciar estafa",sujetAutre:"Otro",lblMessage:"Tu mensaje *",phMessage:"Explica qué pasó... N° de pedido, nombre del producto, fecha...",btnEnvoyer:"Enviar →",success:"✅ ¡Mensaje enviado! Te respondemos muy rápido por WhatsApp / Email.",errRemplis:"Rellena tu nombre, contacto y mensaje.",reserveVendeur:"Solo vendedores",reserveAcheteur:"Solo compradores",reserveAdmin:"Solo admin",
-faq1q:"¿Cómo comprar con seguridad?",faq1a:"Pagas en RocyInter. El dinero se bloquea (Escrow). El vendedor envía. Confirmas que recibiste. Solo entonces se paga al vendedor. NUNCA pagues fuera de RocyInter.",
-faq2q:"¿Pagué pero no recibí?",faq2a:"1. Revisa Panel Comprador > Mi pedido. 2. Contacta al vendedor en el chat. 3. Si no responde en 24h, escríbenos aquí eligiendo 'Pedido / Entrega'. Bloqueamos el pago y te reembolsamos.",
-faq3q:"¿Cómo publicar un artículo?",faq3a:"Ve a Publicar > Pon fotos, título, precio, descripción > Paga 2000F por 30 días. Los 20 primeros vendedores tienen Booster gratis, después 500F.",
-faq4q:"¿Cuánto gano en una venta?",faq4a:"Comisión decreciente: 8,5% hasta 500.000F, 7,5% hasta 2.000.000F, 6,5% más allá. Ejemplo: venta a 100.000F = 91.500F para ti.",
-faq5q:"¿Cuándo recibo mi dinero?",faq5a:"Después de que el comprador confirme la recepción. Tu saldo aparece en Panel Vendedor. Haz clic en 'Retirar mi dinero' y elige MTN MoMo, Moov Money o Wave.",
-faq6q:"¿Por qué piden KYC?",faq6a:"KYC = verificación de identidad con tu documento. Obligatorio antes del 1er retiro, para evitar estafas y proteger tu dinero. Sin KYC = sin retiro.",
-faq7q:"¿Cómo denunciar una estafa?",faq7a:"Nunca pagues fuera de RocyInter. Si alguien te pide pagar por WhatsApp directo, denúncialo aquí eligiendo 'Denunciar estafa' + envía su nombre y capturas."},
-pt:{mAccueil:"Início",mMessages:"Mensagens",mPublier:"Publicar um produto",mVendeur:"Painel Vendedor",mAcheteur:"Painel Comprador",mAdmin:"Painel Admin",mProfil:"Perfil",mConditions:"Condições",mContact:"Contato",mApropos:"Sobre",mInscription:"Inscrever-se",mConnecter:"Entrar",mDeconnecter:"Sair",mFermer:"Fechar ✕",retour:"← Voltar",titre:"Contato / Ajuda 🤝",sousTitre:"Problema com compra, venda, pagamento ou saque? Ajudamos você. Resposta rápida, 7 dias.",cardWa:"💬 WhatsApp - Rápido",cardWaDesc:"O mais rápido para problema urgente: pedido bloqueado, pagamento, entrega.",btnWa:"Abrir WhatsApp",cardMail:"📧 E-mail - Oficial",cardMailDesc:"Para reclamação, reembolso, KYC, problema de conta.",btnMail:"Enviar um E-mail",faqTitre:"❓ Perguntas frequentes",tabTout:"Tudo",tabAcheteur:"Comprador",tabVendeur:"Vendedor",tabPaiement:"Pagamento / Saque",formTitre:"✉️ Escreva para nós",formDesc:"Descreva seu problema, respondemos rápido.",lblNom:"Seu nome *",phNom:"Ex: Jean K.",lblContact:"Seu WhatsApp / E-mail *",phContact:"Ex: 96 00 00 00 ou seu e-mail",lblSujet:"Assunto *",sujetCommande:"Pedido / Entrega",sujetPaiement:"Pagamento",sujetRetrait:"Saque vendedor",sujetKyc:"Conta / KYC",sujetArnaque:"Denunciar golpe",sujetAutre:"Outro",lblMessage:"Sua mensagem *",phMessage:"Explique o que aconteceu... N° do pedido, nome do produto, data...",btnEnvoyer:"Enviar →",success:"✅ Mensagem enviada! Respondemos muito rápido no WhatsApp / E-mail.",errRemplis:"Preencha seu nome, contato e mensagem.",reserveVendeur:"Só vendedores",reserveAcheteur:"Só compradores",reserveAdmin:"Só admin",
-faq1q:"Como comprar com segurança?",faq1a:"Você paga na RocyInter. O dinheiro fica bloqueado (Escrow). O vendedor envia. Você confirma que recebeu. Só então o vendedor é pago. NUNCA pague fora da RocyInter.",
-faq2q:"Paguei mas não recebi?",faq2a:"1. Verifique Painel Comprador > Meu pedido. 2. Contate o vendedor no chat. 3. Se não responder em 24h, escreva aqui escolhendo 'Pedido / Entrega'. Bloqueamos o pagamento e reembolsamos você.",
-faq3q:"Como publicar um artigo?",faq3a:"Vá em Publicar > Coloque fotos, título, preço, descrição > Pague 2000F por 30 dias. Os 20 primeiros vendedores têm Booster grátis, depois 500F.",
-faq4q:"Quanto ganho em uma venda?",faq4a:"Comissão decrescente: 8,5% até 500.000F, 7,5% até 2.000.000F, 6,5% acima. Exemplo: venda a 100.000F = 91.500F para você.",
-faq5q:"Quando recebo meu dinheiro?",faq5a:"Depois que o comprador confirmar o recebimento. Seu saldo aparece no Painel Vendedor. Clique em 'Retirar meu dinheiro' e escolha MTN MoMo, Moov Money ou Wave.",
-faq6q:"Por que pedem KYC?",faq6a:"KYC = verificação de identidade com seu documento. Obrigatório antes do 1º saque, para evitar golpes e proteger seu dinheiro. Sem KYC = sem saque.",
-faq7q:"Como denunciar um golpe?",faq7a:"Nunca pague fora da RocyInter. Se alguém pedir para pagar por WhatsApp direto, denuncie aqui escolhendo 'Denunciar golpe' + envie o nome e capturas."},
-de:{mAccueil:"Start",mMessages:"Nachrichten",mPublier:"Produkt veröffentlichen",mVendeur:"Verkäufer-Dashboard",mAcheteur:"Käufer-Dashboard",mAdmin:"Admin-Dashboard",mProfil:"Profil",mConditions:"Bedingungen",mContact:"Kontakt",mApropos:"Über uns",mInscription:"Registrieren",mConnecter:"Anmelden",mDeconnecter:"Abmelden",mFermer:"Schließen ✕",retour:"← Zurück",titre:"Kontakt / Hilfe 🤝",sousTitre:"Problem mit Kauf, Verkauf, Zahlung oder Auszahlung? Wir helfen. Schnelle Antwort, 7 Tage.",cardWa:"💬 WhatsApp - Schnell",cardWaDesc:"Am schnellsten bei dringendem Problem: blockierte Bestellung, Zahlung, Lieferung.",btnWa:"WhatsApp öffnen",cardMail:"📧 E-Mail - Offiziell",cardMailDesc:"Für Beschwerde, Erstattung, KYC, Kontoproblem.",btnMail:"E-Mail senden",faqTitre:"❓ Häufige Fragen",tabTout:"Alle",tabAcheteur:"Käufer",tabVendeur:"Verkäufer",tabPaiement:"Zahlung / Auszahlung",formTitre:"✉️ Schreib uns",formDesc:"Beschreibe dein Problem, wir antworten schnell.",lblNom:"Dein Name *",phNom:"Z.B.: Jean K.",lblContact:"Dein WhatsApp / E-Mail *",phContact:"Z.B.: 96 00 00 00 oder deine E-Mail",lblSujet:"Betreff *",sujetCommande:"Bestellung / Lieferung",sujetPaiement:"Zahlung",sujetRetrait:"Verkäufer-Auszahlung",sujetKyc:"Konto / KYC",sujetArnaque:"Betrug melden",sujetAutre:"Andere",lblMessage:"Deine Nachricht *",phMessage:"Erkläre was passiert ist... Bestellnummer, Produktname, Datum...",btnEnvoyer:"Senden →",success:"✅ Nachricht gesendet! Wir antworten sehr schnell auf WhatsApp / E-Mail.",errRemplis:"Fülle Name, Kontakt und Nachricht aus.",reserveVendeur:"Nur Verkäufer",reserveAcheteur:"Nur Käufer",reserveAdmin:"Nur Admin",
-faq1q:"Wie kaufe ich sicher?",faq1a:"Du zahlst auf RocyInter. Geld wird blockiert (Escrow). Verkäufer sendet. Du bestätigst Erhalt. Erst dann wird Verkäufer bezahlt. NIEMALS außerhalb von RocyInter zahlen.",
-faq2q:"Ich habe bezahlt, aber nichts erhalten?",faq2a:"1. Prüfe Käufer-Dashboard > Meine Bestellung. 2. Kontaktiere Verkäufer im Chat. 3. Keine Antwort in 24h, schreib hier mit 'Bestellung / Lieferung'. Wir blockieren Zahlung und erstatten.",
-faq3q:"Wie veröffentliche ich einen Artikel?",faq3a:"Gehe zu Veröffentlichen > Fotos, Titel, Preis, Beschreibung > Zahle 2000F für 30 Tage. Erste 20 Verkäufer haben kostenlosen Booster, danach 500F.",
-faq4q:"Wie viel verdiene ich bei einem Verkauf?",faq4a:"Degressive Provision: 8,5% bis 500.000F, 7,5% bis 2.000.000F, 6,5% darüber. Beispiel: Verkauf zu 100.000F = 91.500F für dich.",
-faq5q:"Wann erhalte ich mein Geld?",faq5a:"Nachdem Käufer Erhalt bestätigt hat. Guthaben erscheint im Verkäufer-Dashboard. Klicke 'Mein Geld abheben' und wähle MTN MoMo, Moov Money oder Wave.",
-faq6q:"Warum KYC?",faq6a:"KYC = Identitätsprüfung mit Ausweis. Pflicht vor 1. Auszahlung, um Betrug zu vermeiden und Geld zu schützen. Ohne KYC = keine Auszahlung.",
-faq7q:"Wie melde ich Betrug?",faq7a:"Niemals außerhalb von RocyInter zahlen. Wenn jemand dich bittet direkt per WhatsApp zu zahlen, melde hier mit 'Betrug melden' + Name und Screenshots."},
-ar:{mAccueil:"الرئيسية",mMessages:"الرسائل",mPublier:"نشر منتج",mVendeur:"لوحة البائع",mAcheteur:"لوحة المشتري",mAdmin:"لوحة المدير",mProfil:"الملف",mConditions:"الشروط",mContact:"اتصل",mApropos:"من نحن",mInscription:"التسجيل",mConnecter:"دخول",mDeconnecter:"خروج",mFermer:"إغلاق ✕",retour:"← رجوع",titre:"اتصل / مساعدة 🤝",sousTitre:"مشكلة في شراء أو بيع أو دفع أو سحب؟ نساعدك. رد سريع، 7 أيام.",cardWa:"💬 واتساب - سريع",cardWaDesc:"الأسرع لمشكلة عاجلة: طلب محجوز، دفع، توصيل.",btnWa:"فتح واتساب",cardMail:"📧 بريد - رسمي",cardMailDesc:"للشكوى، استرداد، KYC، مشكلة حساب.",btnMail:"إرسال بريد",faqTitre:"❓ أسئلة شائعة",tabTout:"الكل",tabAcheteur:"مشتري",tabVendeur:"بائع",tabPaiement:"دفع / سحب",formTitre:"✉️ اكتب لنا",formDesc:"صف مشكلتك، نرد بسرعة.",lblNom:"اسمك *",phNom:"مثال: Jean K.",lblContact:"واتساب / بريدك *",phContact:"مثال: 96 00 00 00 أو بريدك",lblSujet:"الموضوع *",sujetCommande:"طلب / توصيل",sujetPaiement:"دفع",sujetRetrait:"سحب بائع",sujetKyc:"حساب / KYC",sujetArnaque:"الإبلاغ عن احتيال",sujetAutre:"أخرى",lblMessage:"رسالتك *",phMessage:"اشرح ما حدث... رقم الطلب، اسم المنتج، التاريخ...",btnEnvoyer:"إرسال →",success:"✅ تم إرسال الرسالة! نرد بسرعة على واتساب / بريد.",errRemplis:"املأ اسمك وجهة اتصالك ورسالتك.",reserveVendeur:"البائعون فقط",reserveAcheteur:"المشترون فقط",reserveAdmin:"المدير فقط",
-faq1q:"كيف أشتري بأمان؟",faq1a:"تدفع على RocyInter. المال محجوز (Escrow). البائع يرسل. تؤكد الاستلام. عندها فقط يدفع للبائع. لا تدفع أبدا خارج RocyInter.",
-faq2q:"دفعت ولم أستلم؟",faq2a:"1. تحقق لوحة المشتري > طلبي. 2. اتصل بالبائع في الدردشة. 3. إذا لم يرد خلال 24 ساعة، اكتب هنا واختر 'طلب / توصيل'. نحجز الدفع ونسترد لك.",
-faq3q:"كيف أنشر مقالا؟",faq3a:"اذهب إلى نشر > ضع صورا وعنوانا وسعرا ووصفا > ادفع 2000F لمدة 30 يوما. أول 20 بائعا لديهم Booster مجاني، بعدها 500F.",
-faq4q:"كم أربح من بيع؟",faq4a:"عمولة تنازلية: 8,5% حتى 500.000F، 7,5% حتى 2.000.000F، 6,5% فوق ذلك. مثال: بيع بـ 100.000F = 91.500F لك.",
-faq5q:"متى أستلم أموالي؟",faq5a:"بعد أن يؤكد المشتري الاستلام. يظهر رصيدك في لوحة البائع. انقر 'سحب أموالي' واختر MTN MoMo أو Moov Money أو Wave.",
-faq6q:"لماذا يطلبون KYC؟",faq6a:"KYC = التحقق من الهوية بوثيقتك. إلزامي قبل أول سحب، لتجنب الاحتيال وحماية أموالك. بدون KYC = بدون سحب.",
-faq7q:"كيف أبلغ عن احتيال؟",faq7a:"لا تدفع أبدا خارج RocyInter. إذا طلب منك شخص الدفع عبر واتساب مباشرة، أبلغ هنا واختر 'الإبلاغ عن احتيال' + أرسل اسمه ولقطات."},
-yo:{mAccueil:"Ile",mMessages:"Awọn ifiranṣẹ",mPublier:"Fi ọja ranṣẹ",mVendeur:"Dashboard Oluta",mAcheteur:"Dashboard Olura",mAdmin:"Dashboard Admin",mProfil:"Profaili",mConditions:"Awọn ofin",mContact:"Olubasọrọ",mApropos:"Nipa wa",mInscription:"Forukọsilẹ",mConnecter:"Wọle",mDeconnecter:"Jade",mFermer:"Pa ✕",retour:"← Pada",titre:"Olubasọrọ / Iranlọwọ 🤝",sousTitre:"Iṣoro pẹlu rira, tita, isanwo tabi yiyọkuro? A ran ọ lọwọ. Idahun yara, ọjọ 7.",cardWa:"💬 WhatsApp - Yara",cardWaDesc:"Yara julọ fun iṣoro pajawiri: aṣẹ ti a pa mọ, isanwo, ifijiṣẹ.",btnWa:"Ṣi WhatsApp",cardMail:"📧 Imeeli - Osise",cardMailDesc:"Fun ẹdun, agbapada, KYC, iṣoro akọọlẹ.",btnMail:"Fi Imeeli ranṣẹ",faqTitre:"❓ Awọn ibeere ti o wọpọ",tabTout:"Gbogbo",tabAcheteur:"Olura",tabVendeur:"Oluta",tabPaiement:"Isanwo / Yiyọkuro",formTitre:"✉️ Kọ si wa",formDesc:"Ṣapejuwe iṣoro rẹ, a dahun yara.",lblNom:"Orukọ rẹ *",phNom:"Apẹẹrẹ: Jean K.",lblContact:"WhatsApp / Imeeli rẹ *",phContact:"Apẹẹrẹ: 96 00 00 00 tabi imeeli rẹ",lblSujet:"Koko-ọrọ *",sujetCommande:"Aṣẹ / Ifijiṣẹ",sujetPaiement:"Isanwo",sujetRetrait:"Yiyọkuro oluta",sujetKyc:"Akọọlẹ / KYC",sujetArnaque:"Jabo itanjẹ",sujetAutre:"Miiran",lblMessage:"Ifiranṣẹ rẹ *",phMessage:"Ṣalaye ohun ti o ṣẹlẹ... Nọmba aṣẹ, orukọ ọja, ọjọ...",btnEnvoyer:"Firanṣẹ →",success:"✅ Ifiranṣẹ ti firanṣẹ! A dahun ni kiakia lori WhatsApp / Imeeli.",errRemplis:"Kun orukọ rẹ, olubasọrọ ati ifiranṣẹ rẹ.",reserveVendeur:"Awọn oluta nikan",reserveAcheteur:"Awọn olura nikan",reserveAdmin:"Admin nikan",
-faq1q:"Bawo ni mo ṣe le ra lailewu?",faq1a:"O san lori RocyInter. Owo ti wa ni titiipa (Escrow). Oluta firanṣẹ. O jẹrisi pe o gba. Nigbana ni a san oluta. MAA ṢE san ni ita RocyInter.",
-faq2q:"Mo sanwo ṣugbọn ko gba?",faq2a:"1. Ṣayẹwo Dashboard Olura > Aṣẹ mi. 2. Kan si oluta ni iwiregbe. 3. Ti ko ba dahun ni wakati 24, kọ si wa nibi yan 'Aṣẹ / Ifijiṣẹ'. A pa isanwo mọ a si san ọ pada.",
-faq3q:"Bawo ni mo ṣe le fi nkan ranṣẹ?",faq3a:"Lọ si Fi ranṣẹ > Fi awọn fọto, akọle, iye, apejuwe > San 2000F fun ọjọ 30. Awọn oluta 20 akọkọ ni Booster ọfẹ, lẹhin 500F.",
-faq4q:"Elo ni mo n jo'gun lori tita?",faq4a:"Igbese idinku: 8,5% titi 500.000F, 7,5% titi 2.000.000F, 6,5% loke. Apẹẹrẹ: tita ni 100.000F = 91.500F fun ọ.",
-faq5q:"Nigbawo ni mo gba owo mi?",faq5a:"Lẹhin ti olura ti jẹrisi gbigba. Iwontunwonsi rẹ han ni Dashboard Oluta. Tẹ 'Yo owo mi kuro' ki o yan MTN MoMo, Moov Money tabi Wave.",
-faq6q:"Kini idi ti wọn fi n beere KYC?",faq6a:"KYC = ijẹrisi idanimọ pẹlu ID rẹ. Dandan ṣaaju yiyọkuro akọkọ, lati yago fun itanjẹ ati daabobo owo rẹ. Laisi KYC = ko si yiyọkuro.",
-faq7q:"Bawo ni mo ṣe le jabo itanjẹ?",faq7a:"Maa ṣe san ni ita RocyInter. Ti ẹnikan ba beere lọwọ rẹ lati san nipasẹ WhatsApp taara, jabo nibi yan 'Jabo itanjẹ' + fi orukọ rẹ ati awọn sikirinisọọti ranṣẹ."},
-fon:{mAccueil:"Xwé",mMessages:"Wɛn lɛ",mPublier:"Zɛ nǔ ɖokpo",mVendeur:"Tableau Sàtɔ́",mAcheteur:"Tableau Xɔ́tɔ́",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Sɛ́n lɛ",mContact:"Kpɔn mi",mApropos:"Mǐnɔ wɛ",mInscription:"Wlǎn ɖo",mConnecter:"Biyɔ",mDeconnecter:"Tɔ́n",mFermer:"Sú ✕",retour:"← Lɛkɔ",titre:"Kpɔn mi / Alɔgɔ 🤝",sousTitre:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we. Mǐ na yí wɛn ɖo hwenu kplé, azǎn 7.",cardWa:"💬 WhatsApp - Bla",cardWaDesc:"E bla húgǎn nú tagba e ɖo hudo hwenu: commande e è sɔ́ ɖo te, sú, sɛɖo.",btnWa:"Hùn WhatsApp",cardMail:"📧 Email - Sɛ́n",cardMailDesc:"Nú xó e a ɖo, akwɛ lɛkɔ, KYC, tagba compte.",btnMail:"Sɛ Email ɖo",faqTitre:"❓ Nǔkanbyɔ e è nɔ kan hwɛhwɛ lɛ",tabTout:"Bǐ",tabAcheteur:"Xɔ́tɔ́",tabVendeur:"Sàtɔ́",tabPaiement:"Sú / Ɖe akwɛ",formTitre:"✉️ Wlǎn nú mǐ",formDesc:"Ðɔ tagba towe, mǐ na yí we ɖo bla.",lblNom:"Nyǐkɔ towe *",phNom:"Kpɔndé: Jean K.",lblContact:"WhatsApp / Email towe *",phContact:"Kpɔndé: 96 00 00 00 alo email towe",lblSujet:"Xó *",sujetCommande:"Commande / Sɛɖo",sujetPaiement:"Sú",sujetRetrait:"Ɖe akwɛ sàtɔ́",sujetKyc:"Compte / KYC",sujetArnaque:"Ðɔ afɔɖiɖe",sujetAutre:"Ɖevo",lblMessage:"Wɛn towe *",phMessage:"Ðɔ nǔ e jɛ... Numéro commande, nyǐkɔ nǔ ɔ, azǎn...",btnEnvoyer:"Sɛ ɖo →",success:"✅ Wɛn ɔ sɛɖo! Mǐ na yí we ɖo bla ɖo WhatsApp / Email.",errRemplis:"Sɔ́ nyǐkɔ towe, kpɔn we kpo wɛn towe kpo.",reserveVendeur:"Sàtɔ́ lɛ kɛɖɛ",reserveAcheteur:"Xɔ́tɔ́ lɛ kɛɖɛ",reserveAdmin:"Admin kɛɖɛ",
-faq1q:"Nɛ mi ka sixu xɔ ɖo hwlɛn mɛ gbɔn?",faq1a:"A sú ɖo RocyInter. Akwɛ ɔ sɔ́ ɖo te (Escrow). Sàtɔ́ ɔ sɛ ɖo. A sɔ́ ɖɔ a yí. Enɛ gudo kɛɖɛ è na sú sàtɔ́ ɔ. MA SÚ ɖo RocyInter godo gbeɖe.",
-faq2q:"Un sú có ma yí ǎ?",faq2a:"1. Kpɔn Tableau Xɔ́tɔ́ > Commande ce. 2. Ðɔ xá sàtɔ́ ɔ ɖo wɛn mɛ. 3. E ma yí we ɖo ganxixo 24 mɛ ǎ ɔ, wlǎn nú mǐ ɖo fi bo sɔ́ 'Commande / Sɛɖo'. Mǐ na sɔ́ sú ɔ ɖo te bo na lɛkɔ akwɛ towe.",
-faq3q:"Nɛ mi ka sixu zɛ nǔ gbɔn?",faq3a:"Yi Zɛ > Sɔ́ fɔto, nyǐkɔ, axɔ́, ɖiɖe > Sú 2000F nú azǎn 30. Sàtɔ́ 20 nukɔntɔn lɛ ɖo Booster vɔnú, enɛ gudo 500F.",
-faq4q:"Akwɛ nabí wɛ un na mɔ ɖo sa ɖokpo mɛ?",faq4a:"Commission e nɔ hwe: 8,5% kaka 500 000F, 7,5% kaka 2 000 000F, 6,5% hú mɔ. Kpɔndé: sa ɖo 100 000F = 91 500F nú we.",
-faq5q:"Hwenu tɛ wɛ un na mɔ akwɛ ce?",faq5a:"Hwenu e xɔ́tɔ́ ɔ sɔ́ ɖɔ e yí gudo. Akwɛ towe na lɛn ɖo Tableau Sàtɔ́ mɛ. Zɛn 'Ɖe akwɛ ce' bo sɔ́ MTN MoMo, Moov Money alo Wave.",
-faq6q:"Ɖetɛwú è nɔ byɔ KYC?",faq6a:"KYC = kpɔn hwiɖe towe kpo wema towe kpo. E ɖo na wà jɛnukɔn ɖe akwɛ nukɔntɔn, nú afɔɖiɖe ma jɛ ǎ bo hwlɛn akwɛ towe. KYC mavo = ɖe akwɛ mavo.",
-faq7q:"Nɛ mi ka sixu ɖɔ afɔɖiɖe gbɔn?",faq7a:"Ma sú ɖo RocyInter godo gbeɖe. Enyí mɛɖe byɔ we ɖɔ a sú gbɔn WhatsApp tite ɔ, ɖɔ e ɖo fi bo sɔ́ 'Ðɔ afɔɖiɖe' + sɛ nyǐkɔ tɔn kpo fɔto lɛ kpo ɖo."},
-goun:{mAccueil:"Xwé",mMessages:"Wɛn lɛ",mPublier:"Zɛ nǔ ɖokpo",mVendeur:"Tableau Sàtɔ́",mAcheteur:"Tableau Xɔ́tɔ́",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Sɛ́n lɛ",mContact:"Kpɔn mi",mApropos:"Mǐnɔ wɛ",mInscription:"Wlǎn ɖo",mConnecter:"Biyɔ",mDeconnecter:"Tɔ́n",mFermer:"Sú ✕",retour:"← Lɛkɔ",titre:"Kpɔn mi / Alɔgɔ 🤝",sousTitre:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we. Mǐ na yí wɛn ɖo hwenu kplé, azǎn 7.",cardWa:"💬 WhatsApp - Bla",cardWaDesc:"E bla húgǎn nú tagba e ɖo hudo hwenu: commande e è sɔ́ ɖo te, sú, sɛɖo.",btnWa:"Hùn WhatsApp",cardMail:"📧 Email - Sɛ́n",cardMailDesc:"Nú xó e a ɖo, akwɛ lɛkɔ, KYC, tagba compte.",btnMail:"Sɛ Email ɖo",faqTitre:"❓ Nǔkanbyɔ e è nɔ kan hwɛhwɛ lɛ",tabTout:"Bǐ",tabAcheteur:"Xɔ́tɔ́",tabVendeur:"Sàtɔ́",tabPaiement:"Sú / Ɖe akwɛ",formTitre:"✉️ Wlǎn nú mǐ",formDesc:"Ðɔ tagba towe, mǐ na yí we ɖo bla.",lblNom:"Nyǐkɔ towe *",phNom:"Kpɔndé: Jean K.",lblContact:"WhatsApp / Email towe *",phContact:"Kpɔndé: 96 00 00 00 alo email towe",lblSujet:"Xó *",sujetCommande:"Commande / Sɛɖo",sujetPaiement:"Sú",sujetRetrait:"Ɖe akwɛ sàtɔ́",sujetKyc:"Compte / KYC",sujetArnaque:"Ðɔ afɔɖiɖe",sujetAutre:"Ɖevo",lblMessage:"Wɛn towe *",phMessage:"Ðɔ nǔ e jɛ... Numéro commande, nyǐkɔ nǔ ɔ, azǎn...",btnEnvoyer:"Sɛ ɖo →",success:"✅ Wɛn ɔ sɛɖo! Mǐ na y
-"✅ Wɛn ɔ sɛɖo! Mǐ na yí we ɖo bla ɖo WhatsApp / Email.",errRemplis:"Sɔ́ nyǐkɔ towe, kpɔn we kpo wɛn towe kpo.",reserveVendeur:"Sàtɔ́ lɛ kɛɖɛ",reserveAcheteur:"Xɔ́tɔ́ lɛ kɛɖɛ",reserveAdmin:"Admin kɛɖɛ",
-faq1q:"Nɛ mi ka sixu xɔ ɖo hwlɛn mɛ gbɔn?",faq1a:"A sú ɖo RocyInter. Akwɛ ɔ sɔ́ ɖo te (Escrow). Sàtɔ́ ɔ sɛ ɖo. A sɔ́ ɖɔ a yí. Enɛ gudo kɛɖɛ è na sú sàtɔ́ ɔ. MA SÚ ɖo RocyInter godo gbeɖe.",
-faq2q:"Un sú có ma yí ǎ?",faq2a:"1. Kpɔn Tableau Xɔ́tɔ́ > Commande ce. 2. Ðɔ xá sàtɔ́ ɔ ɖo wɛn mɛ. 3. E ma yí we ɖo ganxixo 24 mɛ ǎ ɔ, wlǎn nú mǐ ɖo fi bo sɔ́ 'Commande / Sɛɖo'. Mǐ na sɔ́ sú ɔ ɖo te bo na lɛkɔ akwɛ towe.",
-faq3q:"Nɛ mi ka sixu zɛ nǔ gbɔn?",faq3a:"Yi Zɛ > Sɔ́ fɔto, nyǐkɔ, axɔ́, ɖiɖe > Sú 2000F nú azǎn 30. Sàtɔ́ 20 nukɔntɔn lɛ ɖo Booster vɔnú, enɛ gudo 500F.",
-faq4q:"Akwɛ nabí wɛ un na mɔ ɖo sa ɖokpo mɛ?",faq4a:"Commission e nɔ hwe: 8,5% kaka 500 000F, 7,5% kaka 2 000 000F, 6,5% hú mɔ. Kpɔndé: sa ɖo 100 000F = 91 500F nú we.",
-faq5q:"Hwenu tɛ wɛ un na mɔ akwɛ ce?",faq5a:"Hwenu e xɔ́tɔ́ ɔ sɔ́ ɖɔ e yí gudo. Akwɛ towe na lɛn ɖo Tableau Sàtɔ́ mɛ. Zɛn 'Ɖe akwɛ ce' bo sɔ́ MTN MoMo, Moov Money alo Wave.",
-faq6q:"Ɖetɛwú è nɔ byɔ KYC?",faq6a:"KYC = kpɔn hwiɖe towe kpo wema towe kpo. E ɖo na wà jɛnukɔn ɖe akwɛ nukɔntɔn, nú afɔɖiɖe ma jɛ ǎ bo hwlɛn akwɛ towe. KYC mavo = ɖe akwɛ mavo.",
-faq7q:"Nɛ mi ka sixu ɖɔ afɔɖiɖe gbɔn?",faq7a:"Ma sú ɖo RocyInter godo gbeɖe. Enyí mɛɖe byɔ we ɖɔ a sú gbɔn WhatsApp tite ɔ, ɖɔ e ɖo fi bo sɔ́ 'Ðɔ afɔɖiɖe' + sɛ nyǐkɔ tɔn kpo fɔto lɛ kpo ɖo."}
-};
-function t(k){ var lang=localStorage.getItem("rocy_lang")||"fr"; return (DICT[lang]||DICT.fr)[k]||DICT.fr[k]||k; }
-function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");fermerMenu();b.style.display=(b.style.display==="block")?"none":"block"}
-function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");var l=document.getElementById("langBox");if(l)l.style.display="none";if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";majMenu()}}
-function fermerMenu(){var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m)m.classList.remove("open");if(o)o.style.display="none"}
-function majMenu(){
-  var role=localStorage.getItem("role_user")||localStorage.getItem("rocy_role")||""; var email=localStorage.getItem("email_user")||""; var nom=localStorage.getItem("nom_user")||(email?"Utilisateur":"Visiteur"); var connecte=!!email;
-  var bj=document.getElementById("menuBonjour"); if(bj) bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"acheteur"):"visiteur")+")";
-  var lienInsc=document.getElementById("lienInscription"); if(lienInsc) lienInsc.style.display=connecte?"none":"block";
-  document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){
-    if(a.getAttribute("href")==="messages.html"){ a.style.display=connecte?"block":"none"; return; }
-    if(!connecte){ a.classList.add("grise"); a.onclick=function(ev){ev.preventDefault();localStorage.setItem("retour_apres_connexion","contact.html");location.href="connexion.html";return false} } else { a.classList.remove("grise"); a.onclick=null; }
-  });
-  document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){
-    var besoin=a.getAttribute("data-acces"); var ok=(role==="admin")||(connecte&&role===besoin);
-    if(ok){ a.classList.remove("grise"); a.onclick=null; }
-    else { a.classList.add("grise"); a.onclick=function(ev){ev.preventDefault(); if(!connecte){localStorage.setItem("retour_apres_connexion","contact.html");location.href="connexion.html"} else if(besoin==="vendeur") alert(t("reserveVendeur")); else if(besoin==="acheteur") alert(t("reserveAcheteur")); else alert(t("reserveAdmin")); return false} }
-  });
-  var b=document.getElementById("btnAuth"); if(b) b.innerText=connecte?t("mDeconnecter"):t("mConnecter");
-}
-function gererAuth(){ var email=localStorage.getItem("email_user"); if(email){ ["email_user","user_id","role_user","rocy_role","rocy_user","nom_user"].forEach(function(k){localStorage.removeItem(k)}); alert("Déconnecté"); location.href="index.html"; } else location.href="connexion.html"; }
-function ouvrirNotif(e){ if(e)e.stopPropagation(); alert("Aucune notification"); }
-function changerLangue(lang){
-  localStorage.setItem("rocy_lang", lang);
-  var ll=document.getElementById("langLabel"); if(ll) ll.innerText={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"}[lang]||"Français";
-  var lb=document.getElementById("langBox"); if(lb) lb.style.display="none"; fermerMenu();
-  document.querySelectorAll("[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); if(t(k)) el.textContent=t(k); });
-  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ var k=el.getAttribute("data-i18n-ph"); if(t(k)) el.placeholder=t(k); });
-  document.querySelectorAll("option[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); if(t(k)) el.textContent=t(k); });
-  if(lang==="ar") document.body.style.direction="rtl"; else document.body.style.direction="ltr";
-  afficherFaq(window._filtreFaq||"tout");
-  majMenu();
-}
-window.changerLangue=changerLangue;
-// ===== FAQ - TRADUITE =====
-var faqs=[
-{q:"faq1q",a:"faq1a",c:"acheteur"},
-{q:"faq2q",a:"faq2a",c:"acheteur"},
-{q:"faq3q",a:"faq3a",c:"vendeur"},
-{q:"faq4q",a:"faq4a",c:"vendeur"},
-{q:"faq5q",a:"faq5a",c:"paiement"},
-{q:"faq6q",a:"faq6a",c:"paiement"},
-{q:"faq7q",a:"faq7a",c:"acheteur"}
-];
-function afficherFaq(filtre){
-  filtre=filtre||"tout"; window._filtreFaq=filtre;
-  var list=document.getElementById("faqList"); if(!list) return;
-  list.innerHTML="";
-  faqs.filter(function(f){ return filtre==="tout"||f.c===filtre; }).forEach(function(f){
-    list.innerHTML+='<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\')">'+t(f.q)+'<span>+</span></div><div class="faq-a">'+t(f.a)+'</div></div>';
-  });
-}
-function filtrerFaq(cat,btn){
-  document.querySelectorAll(".tabs button").forEach(function(b){ b.classList.remove("active"); });
-  if(btn) btn.classList.add("active");
-  afficherFaq(cat);
-}
-function ouvrirWhatsApp(){
-  var msg=encodeURIComponent("Bonjour RocyInter, j'ai besoin d'aide.");
-  window.open("https://wa.me/22991478460?text="+msg,"_blank");
-}
-function ouvrirMail(){ window.location.href="mailto:rocyinter@gmail.com?subject=Aide RocyInter"; }
-function envoyerMessage(){
-  var nom=document.getElementById("nom").value.trim();
-  var contact=document.getElementById("contact").value.trim();
-  var sujet=document.getElementById("sujet").value;
-  var message=document.getElementById("message").value.trim();
-  if(!nom||!contact||!message){ alert(t("errRemplis")); return; }
-  document.getElementById("success").style.display="block";
-  document.getElementById("message").value="";
-  var texte=encodeURIComponent('Bonjour RocyInter\nNom: '+nom+'\nContact: '+contact+'\nSujet: '+sujet+'\nMessage: '+message);
-  setTimeout(function(){ window.open("https://wa.me/22991478460?text="+texte,"_blank"); }, 800);
-}
-document.addEventListener("DOMContentLoaded", function(){
-  changerLangue(localStorage.getItem("rocy_lang")||"fr");
-  majMenu();
-  afficherFaq("tout");
-});
+var DICT={fr:{titre:"Contact / Aide 🤝",sous:"Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7."},en:{titre:"Contact / Help 🤝",sous:"Problem with purchase, sale, payment or withdrawal? We help you. Fast reply, 7 days."},es:{titre:"Contacto / Ayuda 🤝",sous:"¿Problema con compra, venta, pago o retiro? Te ayudamos. Respuesta rápida, 7 días."},pt:{titre:"Contato / Ajuda 🤝",sous:"Problema com compra, venda, pagamento ou saque? Ajudamos você. Resposta rápida, 7 dias."},de:{titre:"Kontakt / Hilfe 🤝",sous:"Problem mit Kauf, Verkauf, Zahlung oder Auszahlung? Wir helfen. Schnelle Antwort, 7 Tage."},ar:{titre:"اتصل / مساعدة 🤝",sous:"مشكلة في شراء أو بيع أو دفع أو سحب؟ نساعدك. رد سريع، 7 أيام."},yo:{titre:"Olubasọrọ / Iranlọwọ 🤝",sous:"Iṣoro pẹlu rira, tita, isanwo tabi yiyọkuro? A ran ọ lọwọ."},fon:{titre:"Kpɔn mi / Alɔgɔ 🤝",sous:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we."},goun:{titre:"Kpɔn mi / Alɔgɔ 🤝",sous:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we."}};
+function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");b.style.display=(b.style.display==="block")?"none":"block";}
+function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";}}
+function fermerMenu(){document.getElementById("menuBox").classList.remove("open");document.getElementById("menuOverlay").style.display="none";}
+function gererAuth(){var e=localStorage.getItem("email_user");if(e){localStorage.clear();location.href="index.html"}else location.href="connexion.html";}
+function changerLangue(l){localStorage.setItem("rocy_lang",l);document.getElementById("langLabel").innerText={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"}[l];document.getElementById("langBox").style.display="none";var d=DICT[l]||DICT.fr;document.getElementById("titre").innerText=d.titre;document.getElementById("sousTitre").innerText=d.sous;afficherFaq("tout");}
+var faqs=[{q:"Comment acheter en sécurité ?",a:"Tu paies sur RocyInter. L'argent est bloqué (Escrow). Ne paie JAMAIS en dehors.",c:"acheteur"},{q:"J'ai payé mais je n'ai pas reçu ?",a:"Vérifie ton Tableau Acheteur, contacte le vendeur, sinon écris-nous ici.",c:"acheteur"},{q:"Comment publier un article ?",a:"Publier > Photos, titre, prix > Paie 2000F pour 30 jours.",c:"vendeur"},{q:"Combien je gagne ?",a:"Commission : 8,5% jusqu'à 500 000F, 7,5% jusqu'à 2 000 000F, 6,5% au-delà.",c:"vendeur"},{q:"Quand je reçois mon argent ?",a:"Après COLIS REÇU. Puis Retirer mon argent : MTN MoMo, Moov, Wave.",c:"paiement"},{q:"Pourquoi KYC ?",a:"Vérification d'identité obligatoire avant le 1er retrait.",c:"paiement"},{q:"Comment signaler une arnaque ?",a:"Ne paie jamais en dehors. Signale ici avec nom + captures.",c:"acheteur"}];
+function afficherFaq(f){var list=document.getElementById("faqList");list.innerHTML="";faqs.filter(function(x){return f==="tout"||x.c===f}).forEach(function(x){list.innerHTML+='<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\')">'+x.q+'<span>+</span></div><div class="faq-a">'+x.a+'</div></div>';});}
+function filtrerFaq(c,b){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active")});b.classList.add("active");afficherFaq(c);}
+function ouvrirWhatsApp(){window.open("https://wa.me/22991478460?text="+encodeURIComponent("Bonjour RocyInter, j'ai besoin d'aide."),"_blank");}
+function ouvrirMail(){window.location.href="mailto:rocyinter@gmail.com?subject=Aide RocyInter";}
+function envoyerMessage(){var n=document.getElementById("nom").value.trim();var co=document.getElementById("contact").value.trim();var s=document.getElementById("sujet").value;var m=document.getElementById("message").value.trim();if(!n||!co||!m){alert("Remplis ton nom, ton contact et ton message.");return;}document.getElementById("success").style.display="block";document.getElementById("message").value="";setTimeout(function(){window.open("https://wa.me/22991478460?text="+encodeURIComponent("Bonjour RocyInter\nNom: "+n+"\nContact: "+co+"\nSujet: "+s+"\nMessage: "+m),"_blank")},800);}
+document.addEventListener("DOMContentLoaded",function(){changerLangue(localStorage.getItem("rocy_lang")||"fr");afficherFaq("tout");var e=localStorage.getItem("email_user");document.getElementById("menuBonjour").innerText="Bonjour, "+(localStorage.getItem("nom_user")||"Visiteur");document.getElementById("btnAuth").innerText=e?"Déconnecter":"Connecter";document.getElementById("lienInscription").style.display=e?"none":"block";document.getElementById("lienMessages").style.display=e?"block":"none";});
 </script>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact / Aide - RocyInter</title>
-<style>
-*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0;color:#111}
-/* === §4 ENTETE === */
-header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;width:100%}
-header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px;font-family:Poppins,Arial,sans-serif}header a .inter{color:#FFC107}
-.hr{display:flex;gap:6px;align-items:center;flex-shrink:0}
-.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0}
-.langBtn{max-width:110px}.notifBtn{width:32px;height:32px;padding:0}.menuBtn{width:32px;height:32px;padding:0;font-size:17px;font-weight:900}
-header button{width:auto!important;flex-shrink:0}
-.retour{display:block;max-width:520px;margin:10px auto 0;padding:0 12px;color:#111;text-decoration:none;font-size:13px;font-weight:700}
-/* === §7 PIED === */
-footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px;font-family:Inter,Arial,sans-serif;font-weight:500}footer b{color:#FFC107}footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer .footIn{max-width:520px;margin:0 auto}footer p{margin:1px 0}
-/* === §6 MENU === */
-.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;color:#111;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
-.popMenu button{display:block;width:100%;text-align:left;padding:11px 10px;border:none;background:none;cursor:pointer;font-size:15px;color:#111;border-radius:8px}.popMenu button:hover{background:#f1f1f1}
-#menuOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000}
-#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;color:#111;z-index:1001;flex-direction:column;padding:18px 16px 14px;overflow:auto}
-#menuBox.open{display:flex}
-.menuHead b{font-size:22px;font-weight:900}#menuBox .inter{color:#FFC107}.menuBonjour{color:#666;font-size:14px;margin:6px 0 14px}
-#menuBox a,#menuBox .menuLink{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;cursor:pointer}#menuBox .rouge{color:#E40000;font-weight:700;border-bottom:none}
-#menuBox a.grise,#menuBox .menuLink.grise{color:#aaa;cursor:not-allowed;background:#f9f9f9}
-#menuBox a.grise::after{content:" 🔒";font-size:12px}
-#menuFermer{margin-top:auto;background:#000;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;width:100%}
-.notifDot{background:#ff3b30;color:#fff;border-radius:50%;min-width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 4px}
-/* === §10 CONTENU === */
-.container{max-width:520px;margin:14px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-@media(min-width:768px){.container{max-width:680px}.retour{max-width:680px}header a{font-size:19px}}@media(min-width:1024px){.container{max-width:820px}.retour{max-width:820px}}
-h1{font-size:22px;margin:0 0 8px;color:#0a1a2f}.subtitle{color:#666;margin-bottom:20px;line-height:1.5;font-size:14px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.card{background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px}
-.card h3{color:#111;margin:0 0 6px;font-size:15px}.card p{color:#666;font-size:13px;line-height:1.5;margin:0}
-.card button{margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}
-.btn-whatsapp{background:#25D366;color:#fff}.btn-mail{background:#FFC107;color:#111}
-.section-title{font-size:17px;margin:20px 0 12px;color:#0a1a2f}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.tabs button{padding:9px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;color:#111;cursor:pointer;font-size:13px}
-.tabs button.active{background:#FFC107;color:#111;font-weight:800;border-color:#FFC107}
-.faq-item{background:#f9f9f9;border:1px solid #eee;border-radius:12px;margin-bottom:8px;overflow:hidden}
-.faq-q{padding:14px;cursor:pointer;font-weight:700;display:flex;justify-content:space-between;font-size:14px}
-.faq-a{display:none;padding:0 14px 14px;color:#666;font-size:13px;line-height:1.6}
-.faq-item.open .faq-a{display:block}
-.form{background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px;margin-top:20px}
-.form h2{margin:0 0 6px;font-size:17px}.form p{color:#666;font-size:13px;margin:0}
-label{font-size:13px;color:#666;display:block;margin:12px 0 5px;font-weight:700}
-input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#111;outline:none;font-size:14px;font-family:Arial,sans-serif;box-sizing:border-box}
-textarea{min-height:110px;resize:vertical}
-.btn-send{margin-top:16px;width:100%;padding:14px;background:#FFC107;border:none;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer;color:#111}
-.success{display:none;background:#e8f5e9;border:1px solid #25D366;padding:12px;border-radius:10px;margin-top:12px;color:#2e7d32;text-align:center;font-size:13px}
-@media(max-width:600px){.cards{grid-template-columns:1fr}h1{font-size:20px}}
-</style>
-</head>
-<body>
-<header><a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="ouvrirNotif(event)">🔔 <span id="notifDot" class="notifDot">0</span></button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
-<div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
-<div id="menuOverlay" onclick="fermerMenu()"></div>
-<div id="menuBox"><div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour, Visiteur</div><a href="index.html" data-i18n="mAccueil">Accueil</a><a href="messages.html" data-auth="1">💬 <span data-i18n="mMessages">Messages</span></a><a href="publier.html" data-acces="vendeur" data-i18n="mPublier">Publier un produit</a><a href="vendeur.html" data-acces="vendeur" data-i18n="mVendeur">Tableau Vendeur</a><a href="acheteur.html" data-acces="acheteur" data-i18n="mAcheteur">Tableau Acheteur</a><a href="admin.html" data-acces="admin" data-i18n="mAdmin">Tableau Admin</a><a href="profil.html" data-auth="1" data-i18n="mProfil">Profil</a><a href="conditions.html" data-i18n="mConditions">Conditions</a><a href="contact.html" data-i18n="mContact">Contact</a><a href="apropos.html" data-i18n="mApropos">À Propos</a><a href="inscription.html" id="lienInscription" data-i18n="mInscription">Inscription</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()" data-i18n="mConnecter">Connecter</button><button id="menuFermer" onclick="fermerMenu()" data-i18n="mFermer">Fermer ✕</button></div>
-<a class="retour" href="javascript:history.back()" data-i18n="retour">← Retour</a>
-
-<div class="container">
-<h1 data-i18n="titre">Contact / Aide 🤝</h1>
-<p class="subtitle" data-i18n="sousTitre">Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.</p>
-
-<div class="cards">
-<div class="card">
-<h3 data-i18n="cardWa">💬 WhatsApp - Rapide</h3>
-<p data-i18n="cardWaDesc">Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.</p>
-<button class="btn-whatsapp" onclick="ouvrirWhatsApp()" data-i18n="btnWa">Ouvrir WhatsApp</button>
-</div>
-<div class="card">
-<h3 data-i18n="cardMail">📧 Email - Officiel</h3>
-<p data-i18n="cardMailDesc">Pour plainte, remboursement, KYC, problème de compte.</p>
-<p style="margin-top:8px;color:#FFC107;font-weight:700">rocyinter@gmail.com</p>
-<button class="btn-mail" onclick="ouvrirMail()" data-i18n="btnMail">Envoyer un Email</button>
-</div>
-</div>
-
-<h2 class="section-title" data-i18n="faqTitre">❓ Questions fréquentes</h2>
-<div class="tabs">
-<button class="active" id="tab-tout" onclick="filtrerFaq('tout',this)" data-i18n="tabTout">Tout</button>
-<button onclick="filtrerFaq('acheteur',this)" data-i18n="tabAcheteur">Acheteur</button>
-<button onclick="filtrerFaq('vendeur',this)" data-i18n="tabVendeur">Vendeur</button>
-<button onclick="filtrerFaq('paiement',this)" data-i18n="tabPaiement">Paiement / Retrait</button>
-</div>
-<div id="faqList"></div>
-
-<div class="form">
-<h2 data-i18n="formTitre">✉️ Nous écrire</h2>
-<p data-i18n="formDesc">Décris ton problème, on te répond vite.</p>
-<label data-i18n="lblNom">Ton nom *</label>
-<input id="nom" type="text" data-i18n-ph="phNom" placeholder="Ex: Jean K.">
-<label data-i18n="lblContact">Ton WhatsApp / Email *</label>
-<input id="contact" type="text" data-i18n-ph="phContact" placeholder="Ex: 96 00 00 00 ou ton email">
-<label data-i18n="lblSujet">Sujet *</label>
-<select id="sujet">
-<option value="Commande / Livraison" data-i18n="sujetCommande">Commande / Livraison</option>
-<option value="Paiement" data-i18n="sujetPaiement">Paiement</option>
-<option value="Retrait vendeur" data-i18n="sujetRetrait">Retrait vendeur</option>
-<option value="Compte / KYC" data-i18n="sujetKyc">Compte / KYC</option>
-<option value="Signaler une arnaque" data-i18n="sujetArnaque">Signaler une arnaque</option>
-<option value="Autre" data-i18n="sujetAutre">Autre</option>
-</select>
-<label data-i18n="lblMessage">Ton message *</label>
-<textarea id="message" data-i18n-ph="phMessage" placeholder="Explique ce qui s'est passé... N° de commande si tu l'as, nom du produit, date..."></textarea>
-<button class="btn-send" onclick="envoyerMessage()" data-i18n="btnEnvoyer">Envoyer →</button>
-<div id="success" class="success" data-i18n="success">✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.</div>
-</div>
-</div>
-
-<footer><div class="footIn"><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> &nbsp;|&nbsp; Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> &nbsp;|&nbsp; <b>Rocyinter@2026</b></p></div></footer>
-
-<script>
-var DICT = {
-fr:{mAccueil:"Accueil",mMessages:"Messages",mPublier:"Publier un produit",mVendeur:"Tableau Vendeur",mAcheteur:"Tableau Acheteur",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Conditions",mContact:"Contact",mApropos:"À Propos",mInscription:"Inscription",mConnecter:"Connecter",mDeconnecter:"Déconnecter",mFermer:"Fermer ✕",retour:"← Retour",titre:"Contact / Aide 🤝",sousTitre:"Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.",cardWa:"💬 WhatsApp - Rapide",cardWaDesc:"Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.",btnWa:"Ouvrir WhatsApp",cardMail:"📧 Email - Officiel",cardMailDesc:"Pour plainte, remboursement, KYC, problème de compte.",btnMail:"Envoyer un Email",faqTitre:"❓ Questions fréquentes",tabTout:"Tout",tabAcheteur:"Acheteur",tabVendeur:"Vendeur",tabPaiement:"Paiement / Retrait",formTitre:"✉️ Nous écrire",formDesc:"Décris ton problème, on te répond vite.",lblNom:"Ton nom *",phNom:"Ex: Jean K.",lblContact:"Ton WhatsApp / Email *",phContact:"Ex: 96 00 00 00 ou ton email",lblSujet:"Sujet *",sujetCommande:"Commande / Livraison",sujetPaiement:"Paiement",sujetRetrait:"Retrait vendeur",sujetKyc:"Compte / KYC",sujetArnaque:"Signaler une arnaque",sujetAutre:"Autre",lblMessage:"Ton message *",phMessage:"Explique ce qui s'est passé... N° de commande si tu l'as, nom du produit, date...",btnEnvoyer:"Envoyer →",success:"✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.",errRemplis:"Remplis ton nom, ton contact et ton message.",reserveVendeur:"Accès réservé aux vendeurs",reserveAcheteur:"Accès réservé aux acheteurs",reserveAdmin:"Accès réservé à l'admin",
-faq1q:"Comment acheter en sécurité ?",faq1a:"Tu paies sur RocyInter. L'argent est bloqué (Escrow). Le vendeur livre. Tu confirmes que tu as bien reçu. Ensuite seulement le vendeur est payé. Ne paie JAMAIS en dehors de RocyInter.",
-faq2q:"J'ai payé mais je n'ai pas reçu ?",faq2a:"1. Vérifie ton Tableau Acheteur > Ma commande. 2. Contacte le vendeur dans le chat. 3. Si pas de réponse en 24h, écris-nous ici en choisissant 'Commande / Livraison'. On bloque le paiement et on te rembourse.",
-faq3q:"Comment publier un article ?",faq3a:"Va sur Publier > Mets photos, titre, prix, description > Paie 2000F pour 30 jours. Les 20 premiers vendeurs ont le Booster gratuit, après c'est 500F.",
-faq4q:"Combien je gagne sur une vente ?",faq4a:"Commission dégressive : 8,5% jusqu'à 500 000F, 7,5% jusqu'à 2 000 000F, 6,5% au-delà. Exemple : vente à 100 000F = 91 500F pour toi.",
-faq5q:"Quand je reçois mon argent ?",faq5a:"Après que l'acheteur a confirmé la réception. Ton solde apparaît dans Tableau Vendeur. Tu cliques sur 'Retirer mon argent' et tu choisis MTN MoMo, Moov Money ou Wave.",
-faq6q:"Pourquoi on me demande le KYC ?",faq6a:"KYC = vérification d'identité avec ta pièce d'identité. C'est obligatoire avant le 1er retrait, pour éviter les arnaques et protéger ton argent. Sans KYC = pas de retrait.",
-faq7q:"Comment signaler une arnaque ?",faq7a:"Ne paie jamais en dehors de RocyInter. Si quelqu'un te demande de payer par WhatsApp direct, signale-le ici en choisissant 'Signaler une arnaque' + envoie son nom et captures."},
-en:{mAccueil:"Home",mMessages:"Messages",mPublier:"Publish a product",mVendeur:"Seller Dashboard",mAcheteur:"Buyer Dashboard",mAdmin:"Admin Dashboard",mProfil:"Profile",mConditions:"Terms",mContact:"Contact",mApropos:"About",mInscription:"Sign up",mConnecter:"Log in",mDeconnecter:"Log out",mFermer:"Close ✕",retour:"← Back",titre:"Contact / Help 🤝",sousTitre:"Problem with a purchase, sale, payment or withdrawal? We help you. Fast reply, 7 days a week.",cardWa:"💬 WhatsApp - Fast",cardWaDesc:"Fastest for urgent problem: blocked order, payment, delivery.",btnWa:"Open WhatsApp",cardMail:"📧 Email - Official",cardMailDesc:"For complaint, refund, KYC, account problem.",btnMail:"Send an Email",faqTitre:"❓ Frequently asked questions",tabTout:"All",tabAcheteur:"Buyer",tabVendeur:"Seller",tabPaiement:"Payment / Withdrawal",formTitre:"✉️ Write to us",formDesc:"Describe your problem, we reply fast.",lblNom:"Your name *",phNom:"Ex: Jean K.",lblContact:"Your WhatsApp / Email *",phContact:"Ex: 96 00 00 00 or your email",lblSujet:"Subject *",sujetCommande:"Order / Delivery",sujetPaiement:"Payment",sujetRetrait:"Seller withdrawal",sujetKyc:"Account / KYC",sujetArnaque:"Report a scam",sujetAutre:"Other",lblMessage:"Your message *",phMessage:"Explain what happened... Order number if you have it, product name, date...",btnEnvoyer:"Send →",success:"✅ Message sent! We reply very fast on WhatsApp / Email.",errRemplis:"Fill your name, contact and message.",reserveVendeur:"Sellers only",reserveAcheteur:"Buyers only",reserveAdmin:"Admin only",
-faq1q:"How to buy safely?",faq1a:"You pay on RocyInter. Money is blocked (Escrow). Seller ships. You confirm you received. Only then seller is paid. NEVER pay outside RocyInter.",
-faq2q:"I paid but did not receive?",faq2a:"1. Check Buyer Dashboard > My order. 2. Contact seller in chat. 3. If no reply in 24h, write here choosing 'Order / Delivery'. We block payment and refund you.",
-faq3q:"How to publish an item?",faq3a:"Go to Publish > Add photos, title, price, description > Pay 2000F for 30 days. First 20 sellers have free Booster, after 500F.",
-faq4q:"How much do I earn on a sale?",faq4a:"Degressive commission: 8.5% up to 500,000F, 7.5% up to 2,000,000F, 6.5% above. Example: sale at 100,000F = 91,500F for you.",
-faq5q:"When do I receive my money?",faq5a:"After buyer confirms receipt. Balance appears in Seller Dashboard. Click 'Withdraw my money' and choose MTN MoMo, Moov Money or Wave.",
-faq6q:"Why do you ask for KYC?",faq6a:"KYC = identity check with your ID. Mandatory before 1st withdrawal, to avoid scams and protect your money. No KYC = no withdrawal.",
-faq7q:"How to report a scam?",faq7a:"Never pay outside RocyInter. If someone asks you to pay via WhatsApp direct, report here choosing 'Report a scam' + send his name and screenshots."},
-es:{mAccueil:"Inicio",mMessages:"Mensajes",mPublier:"Publicar un producto",mVendeur:"Panel Vendedor",mAcheteur:"Panel Comprador",mAdmin:"Panel Admin",mProfil:"Perfil",mConditions:"Condiciones",mContact:"Contacto",mApropos:"Acerca de",mInscription:"Registrarse",mConnecter:"Iniciar sesión",mDeconnecter:"Cerrar sesión",mFermer:"Cerrar ✕",retour:"← Volver",titre:"Contacto / Ayuda 🤝",sousTitre:"¿Problema con compra, venta, pago o retiro? Te ayudamos. Respuesta rápida, 7 días.",cardWa:"💬 WhatsApp - Rápido",cardWaDesc:"Lo más rápido para problema urgente: pedido bloqueado, pago, entrega.",btnWa:"Abrir WhatsApp",cardMail:"📧 Email - Oficial",cardMailDesc:"Para queja, reembolso, KYC, problema de cuenta.",btnMail:"Enviar un Email",faqTitre:"❓ Preguntas frecuentes",tabTout:"Todo",tabAcheteur:"Comprador",tabVendeur:"Vendedor",tabPaiement:"Pago / Retiro",formTitre:"✉️ Escríbenos",formDesc:"Describe tu problema, te respondemos rápido.",lblNom:"Tu nombre *",phNom:"Ej: Jean K.",lblContact:"Tu WhatsApp / Email *",phContact:"Ej: 96 00 00 00 o tu email",lblSujet:"Asunto *",sujetCommande:"Pedido / Entrega",sujetPaiement:"Pago",sujetRetrait:"Retiro vendedor",sujetKyc:"Cuenta / KYC",sujetArnaque:"Denunciar estafa",sujetAutre:"Otro",lblMessage:"Tu mensaje *",phMessage:"Explica qué pasó... N° de pedido, nombre del producto, fecha...",btnEnvoyer:"Enviar →",success:"✅ ¡Mensaje enviado! Te respondemos muy rápido por WhatsApp / Email.",errRemplis:"Rellena tu nombre, contacto y mensaje.",reserveVendeur:"Solo vendedores",reserveAcheteur:"Solo compradores",reserveAdmin:"Solo admin",
-faq1q:"¿Cómo comprar con seguridad?",faq1a:"Pagas en RocyInter. El dinero se bloquea (Escrow). El vendedor envía. Confirmas que recibiste. Solo entonces se paga al vendedor. NUNCA pagues fuera de RocyInter.",
-faq2q:"¿Pagué pero no recibí?",faq2a:"1. Revisa Panel Comprador > Mi pedido. 2. Contacta al vendedor en el chat. 3. Si no responde en 24h, escríbenos aquí eligiendo 'Pedido / Entrega'. Bloqueamos el pago y te reembolsamos.",
-faq3q:"¿Cómo publicar un artículo?",faq3a:"Ve a Publicar > Pon fotos, título, precio, descripción > Paga 2000F por 30 días. Los 20 primeros vendedores tienen Booster gratis, después 500F.",
-faq4q:"¿Cuánto gano en una venta?",faq4a:"Comisión decreciente: 8,5% hasta 500.000F, 7,5% hasta 2.000.000F, 6,5% más allá. Ejemplo: venta a 100.000F = 91.500F para ti.",
-faq5q:"¿Cuándo recibo mi dinero?",faq5a:"Después de que el comprador confirme la recepción. Tu saldo aparece en Panel Vendedor. Haz clic en 'Retirar mi dinero' y elige MTN MoMo, Moov Money o Wave.",
-faq6q:"¿Por qué piden KYC?",faq6a:"KYC = verificación de identidad con tu documento. Obligatorio antes del 1er retiro, para evitar estafas y proteger tu dinero. Sin KYC = sin retiro.",
-faq7q:"¿Cómo denunciar una estafa?",faq7a:"Nunca pagues fuera de RocyInter. Si alguien te pide pagar por WhatsApp directo, denúncialo aquí eligiendo 'Denunciar estafa' + envía su nombre y capturas."},
-pt:{mAccueil:"Início",mMessages:"Mensagens",mPublier:"Publicar um produto",mVendeur:"Painel Vendedor",mAcheteur:"Painel Comprador",mAdmin:"Painel Admin",mProfil:"Perfil",mConditions:"Condições",mContact:"Contato",mApropos:"Sobre",mInscription:"Inscrever-se",mConnecter:"Entrar",mDeconnecter:"Sair",mFermer:"Fechar ✕",retour:"← Voltar",titre:"Contato / Ajuda 🤝",sousTitre:"Problema com compra, venda, pagamento ou saque? Ajudamos você. Resposta rápida, 7 dias.",cardWa:"💬 WhatsApp - Rápido",cardWaDesc:"O mais rápido para problema urgente: pedido bloqueado, pagamento, entrega.",btnWa:"Abrir WhatsApp",cardMail:"📧 E-mail - Oficial",cardMailDesc:"Para reclamação, reembolso, KYC, problema de conta.",btnMail:"Enviar um E-mail",faqTitre:"❓ Perguntas frequentes",tabTout:"Tudo",tabAcheteur:"Comprador",tabVendeur:"Vendedor",tabPaiement:"Pagamento / Saque",formTitre:"✉️ Escreva para nós",formDesc:"Descreva seu problema, respondemos rápido.",lblNom:"Seu nome *",phNom:"Ex: Jean K.",lblContact:"Seu WhatsApp / E-mail *",phContact:"Ex: 96 00 00 00 ou seu e-mail",lblSujet:"Assunto *",sujetCommande:"Pedido / Entrega",sujetPaiement:"Pagamento",sujetRetrait:"Saque vendedor",sujetKyc:"Conta / KYC",sujetArnaque:"Denunciar golpe",sujetAutre:"Outro",lblMessage:"Sua mensagem *",phMessage:"Explique o que aconteceu... N° do pedido, nome do produto, data...",btnEnvoyer:"Enviar →",success:"✅ Mensagem enviada! Respondemos muito rápido no WhatsApp / E-mail.",errRemplis:"Preencha seu nome, contato e mensagem.",reserveVendeur:"Só vendedores",reserveAcheteur:"Só compradores",reserveAdmin:"Só admin",
-faq1q:"Como comprar com segurança?",faq1a:"Você paga na RocyInter. O dinheiro fica bloqueado (Escrow). O vendedor envia. Você confirma que recebeu. Só então o vendedor é pago. NUNCA pague fora da RocyInter.",
-faq2q:"Paguei mas não recebi?",faq2a:"1. Verifique Painel Comprador > Meu pedido. 2. Contate o vendedor no chat. 3. Se não responder em 24h, escreva aqui escolhendo 'Pedido / Entrega'. Bloqueamos o pagamento e reembolsamos você.",
-faq3q:"Como publicar um artigo?",faq3a:"Vá em Publicar > Coloque fotos, título, preço, descrição > Pague 2000F por 30 dias. Os 20 primeiros vendedores têm Booster grátis, depois 500F.",
-faq4q:"Quanto ganho em uma venda?",faq4a:"Comissão decrescente: 8,5% até 500.000F, 7,5% até 2.000.000F, 6,5% acima. Exemplo: venda a 100.000F = 91.500F para você.",
-faq5q:"Quando recebo meu dinheiro?",faq5a:"Depois que o comprador confirmar o recebimento. Seu saldo aparece no Painel Vendedor. Clique em 'Retirar meu dinheiro' e escolha MTN MoMo, Moov Money ou Wave.",
-faq6q:"Por que pedem KYC?",faq6a:"KYC = verificação de identidade com seu documento. Obrigatório antes do 1º saque, para evitar golpes e proteger seu dinheiro. Sem KYC = sem saque.",
-faq7q:"Como denunciar um golpe?",faq7a:"Nunca pague fora da RocyInter. Se alguém pedir para pagar por WhatsApp direto, denuncie aqui escolhendo 'Denunciar golpe' + envie o nome e capturas."},
-de:{mAccueil:"Start",mMessages:"Nachrichten",mPublier:"Produkt veröffentlichen",mVendeur:"Verkäufer-Dashboard",mAcheteur:"Käufer-Dashboard",mAdmin:"Admin-Dashboard",mProfil:"Profil",mConditions:"Bedingungen",mContact:"Kontakt",mApropos:"Über uns",mInscription:"Registrieren",mConnecter:"Anmelden",mDeconnecter:"Abmelden",mFermer:"Schließen ✕",retour:"← Zurück",titre:"Kontakt / Hilfe 🤝",sousTitre:"Problem mit Kauf, Verkauf, Zahlung oder Auszahlung? Wir helfen. Schnelle Antwort, 7 Tage.",cardWa:"💬 WhatsApp - Schnell",cardWaDesc:"Am schnellsten bei dringendem Problem: blockierte Bestellung, Zahlung, Lieferung.",btnWa:"WhatsApp öffnen",cardMail:"📧 E-Mail - Offiziell",cardMailDesc:"Für Beschwerde, Erstattung, KYC, Kontoproblem.",btnMail:"E-Mail senden",faqTitre:"❓ Häufige Fragen",tabTout:"Alle",tabAcheteur:"Käufer",tabVendeur:"Verkäufer",tabPaiement:"Zahlung / Auszahlung",formTitre:"✉️ Schreib uns",formDesc:"Beschreibe dein Problem, wir antworten schnell.",lblNom:"Dein Name *",phNom:"Z.B.: Jean K.",lblContact:"Dein WhatsApp / E-Mail *",phContact:"Z.B.: 96 00 00 00 oder deine E-Mail",lblSujet:"Betreff *",sujetCommande:"Bestellung / Lieferung",sujetPaiement:"Zahlung",sujetRetrait:"Verkäufer-Auszahlung",sujetKyc:"Konto / KYC",sujetArnaque:"Betrug melden",sujetAutre:"Andere",lblMessage:"Deine Nachricht *",phMessage:"Erkläre was passiert ist... Bestellnummer, Produktname, Datum...",btnEnvoyer:"Senden →",success:"✅ Nachricht gesendet! Wir antworten sehr schnell auf WhatsApp / E-Mail.",errRemplis:"Fülle Name, Kontakt und Nachricht aus.",reserveVendeur:"Nur Verkäufer",reserveAcheteur:"Nur Käufer",reserveAdmin:"Nur Admin",
-faq1q:"Wie kaufe ich sicher?",faq1a:"Du zahlst auf RocyInter. Geld wird blockiert (Escrow). Verkäufer sendet. Du bestätigst Erhalt. Erst dann wird Verkäufer bezahlt. NIEMALS außerhalb von RocyInter zahlen.",
-faq2q:"Ich habe bezahlt, aber nichts erhalten?",faq2a:"1. Prüfe Käufer-Dashboard > Meine Bestellung. 2. Kontaktiere Verkäufer im Chat. 3. Keine Antwort in 24h, schreib hier mit 'Bestellung / Lieferung'. Wir blockieren Zahlung und erstatten.",
-faq3q:"Wie veröffentliche ich einen Artikel?",faq3a:"Gehe zu Veröffentlichen > Fotos, Titel, Preis, Beschreibung > Zahle 2000F für 30 Tage. Erste 20 Verkäufer haben kostenlosen Booster, danach 500F.",
-faq4q:"Wie viel verdiene ich bei einem Verkauf?",faq4a:"Degressive Provision: 8,5% bis 500.000F, 7,5% bis 2.000.000F, 6,5% darüber. Beispiel: Verkauf zu 100.000F = 91.500F für dich.",
-faq5q:"Wann erhalte ich mein Geld?",faq5a:"Nachdem Käufer Erhalt bestätigt hat. Guthaben erscheint im Verkäufer-Dashboard. Klicke 'Mein Geld abheben' und wähle MTN MoMo, Moov Money oder Wave.",
-faq6q:"Warum KYC?",faq6a:"KYC = Identitätsprüfung mit Ausweis. Pflicht vor 1. Auszahlung, um Betrug zu vermeiden und Geld zu schützen. Ohne KYC = keine Auszahlung.",
-faq7q:"Wie melde ich Betrug?",faq7a:"Niemals außerhalb von RocyInter zahlen. Wenn jemand dich bittet direkt per WhatsApp zu zahlen, melde hier mit 'Betrug melden' + Name und Screenshots."},
-ar:{mAccueil:"الرئيسية",mMessages:"الرسائل",mPublier:"نشر منتج",mVendeur:"لوحة البائع",mAcheteur:"لوحة المشتري",mAdmin:"لوحة المدير",mProfil:"الملف",mConditions:"الشروط",mContact:"اتصل",mApropos:"من نحن",mInscription:"التسجيل",mConnecter:"دخول",mDeconnecter:"خروج",mFermer:"إغلاق ✕",retour:"← رجوع",titre:"اتصل / مساعدة 🤝",sousTitre:"مشكلة في شراء أو بيع أو دفع أو سحب؟ نساعدك. رد سريع، 7 أيام.",cardWa:"💬 واتساب - سريع",cardWaDesc:"الأسرع لمشكلة عاجلة: طلب محجوز، دفع، توصيل.",btnWa:"فتح واتساب",cardMail:"📧 بريد - رسمي",cardMailDesc:"للشكوى، استرداد، KYC، مشكلة حساب.",btnMail:"إرسال بريد",faqTitre:"❓ أسئلة شائعة",tabTout:"الكل",tabAcheteur:"مشتري",tabVendeur:"بائع",tabPaiement:"دفع / سحب",formTitre:"✉️ اكتب لنا",formDesc:"صف مشكلتك، نرد بسرعة.",lblNom:"اسمك *",phNom:"مثال: Jean K.",lblContact:"واتساب / بريدك *",phContact:"مثال: 96 00 00 00 أو بريدك",lblSujet:"الموضوع *",sujetCommande:"طلب / توصيل",sujetPaiement:"دفع",sujetRetrait:"سحب بائع",sujetKyc:"حساب / KYC",sujetArnaque:"الإبلاغ عن احتيال",sujetAutre:"أخرى",lblMessage:"رسالتك *",phMessage:"اشرح ما حدث... رقم الطلب، اسم المنتج، التاريخ...",btnEnvoyer:"إرسال →",success:"✅ تم إرسال الرسالة! نرد بسرعة على واتساب / بريد.",errRemplis:"املأ اسمك وجهة اتصالك ورسالتك.",reserveVendeur:"البائعون فقط",reserveAcheteur:"المشترون فقط",reserveAdmin:"المدير فقط",
-faq1q:"كيف أشتري بأمان؟",faq1a:"تدفع على RocyInter. المال محجوز (Escrow). البائع يرسل. تؤكد الاستلام. عندها فقط يدفع للبائع. لا تدفع أبدا خارج RocyInter.",
-faq2q:"دفعت ولم أستلم؟",faq2a:"1. تحقق لوحة المشتري > طلبي. 2. اتصل بالبائع في الدردشة. 3. إذا لم يرد خلال 24 ساعة، اكتب هنا واختر 'طلب / توصيل'. نحجز الدفع ونسترد لك.",
-faq3q:"كيف أنشر مقالا؟",faq3a:"اذهب إلى نشر > ضع صورا وعنوانا وسعرا ووصفا > ادفع 2000F لمدة 30 يوما. أول 20 بائعا لديهم Booster مجاني، بعدها 500F.",
-faq4q:"كم أربح من بيع؟",faq4a:"عمولة تنازلية: 8,5% حتى 500.000F، 7,5% حتى 2.000.000F، 6,5% فوق ذلك. مثال: بيع بـ 100.000F = 91.500F لك.",
-faq5q:"متى أستلم أموالي؟",faq5a:"بعد أن يؤكد المشتري الاستلام. يظهر رصيدك في لوحة البائع. انقر 'سحب أموالي' واختر MTN MoMo أو Moov Money أو Wave.",
-faq6q:"لماذا يطلبون KYC؟",faq6a:"KYC = التحقق من الهوية بوثيقتك. إلزامي قبل أول سحب، لتجنب الاحتيال وحماية أموالك. بدون KYC = بدون سحب.",
-faq7q:"كيف أبلغ عن احتيال؟",faq7a:"لا تدفع أبدا خارج RocyInter. إذا طلب منك شخص الدفع عبر واتساب مباشرة، أبلغ هنا واختر 'الإبلاغ عن احتيال' + أرسل اسمه ولقطات."},
-yo:{mAccueil:"Ile",mMessages:"Awọn ifiranṣẹ",mPublier:"Fi ọja ranṣẹ",mVendeur:"Dashboard Oluta",mAcheteur:"Dashboard Olura",mAdmin:"Dashboard Admin",mProfil:"Profaili",mConditions:"Awọn ofin",mContact:"Olubasọrọ",mApropos:"Nipa wa",mInscription:"Forukọsilẹ",mConnecter:"Wọle",mDeconnecter:"Jade",mFermer:"Pa ✕",retour:"← Pada",titre:"Olubasọrọ / Iranlọwọ 🤝",sousTitre:"Iṣoro pẹlu rira, tita, isanwo tabi yiyọkuro? A ran ọ lọwọ. Idahun yara, ọjọ 7.",cardWa:"💬 WhatsApp - Yara",cardWaDesc:"Yara julọ fun iṣoro pajawiri: aṣẹ ti a pa mọ, isanwo, ifijiṣẹ.",btnWa:"Ṣi WhatsApp",cardMail:"📧 Imeeli - Osise",cardMailDesc:"Fun ẹdun, agbapada, KYC, iṣoro akọọlẹ.",btnMail:"Fi Imeeli ranṣẹ",faqTitre:"❓ Awọn ibeere ti o wọpọ",tabTout:"Gbogbo",tabAcheteur:"Olura",tabVendeur:"Oluta",tabPaiement:"Isanwo / Yiyọkuro",formTitre:"✉️ Kọ si wa",formDesc:"Ṣapejuwe iṣoro rẹ, a dahun yara.",lblNom:"Orukọ rẹ *",phNom:"Apẹẹrẹ: Jean K.",lblContact:"WhatsApp / Imeeli rẹ *",phContact:"Apẹẹrẹ: 96 00 00 00 tabi imeeli rẹ",lblSujet:"Koko-ọrọ *",sujetCommande:"Aṣẹ / Ifijiṣẹ",sujetPaiement:"Isanwo",sujetRetrait:"Yiyọkuro oluta",sujetKyc:"Akọọlẹ / KYC",sujetArnaque:"Jabo itanjẹ",sujetAutre:"Miiran",lblMessage:"Ifiranṣẹ rẹ *",phMessage:"Ṣalaye ohun ti o ṣẹlẹ... Nọmba aṣẹ, orukọ ọja, ọjọ...",btnEnvoyer:"Firanṣẹ →",success:"✅ Ifiranṣẹ ti firanṣẹ! A dahun ni kiakia lori WhatsApp / Imeeli.",errRemplis:"Kun orukọ rẹ, olubasọrọ ati ifiranṣẹ rẹ.",reserveVendeur:"Awọn oluta nikan",reserveAcheteur:"Awọn olura nikan",reserveAdmin:"Admin nikan",
-faq1q:"Bawo ni mo ṣe le ra lailewu?",faq1a:"O san lori RocyInter. Owo ti wa ni titiipa (Escrow). Oluta firanṣẹ. O jẹrisi pe o gba. Nigbana ni a san oluta. MAA ṢE san ni ita RocyInter.",
-faq2q:"Mo sanwo ṣugbọn ko gba?",faq2a:"1. Ṣayẹwo Dashboard Olura > Aṣẹ mi. 2. Kan si oluta ni iwiregbe. 3. Ti ko ba dahun ni wakati 24, kọ si wa nibi yan 'Aṣẹ / Ifijiṣẹ'. A pa isanwo mọ a si san ọ pada.",
-faq3q:"Bawo ni mo ṣe le fi nkan ranṣẹ?",faq3a:"Lọ si Fi ranṣẹ > Fi awọn fọto, akọle, iye, apejuwe > San 2000F fun ọjọ 30. Awọn oluta 20 akọkọ ni Booster ọfẹ, lẹhin 500F.",
-faq4q:"Elo ni mo n jo'gun lori tita?",faq4a:"Igbese idinku: 8,5% titi 500.000F, 7,5% titi 2.000.000F, 6,5% loke. Apẹẹrẹ: tita ni 100.000F = 91.500F fun ọ.",
-faq5q:"Nigbawo ni mo gba owo mi?",faq5a:"Lẹhin ti olura ti jẹrisi gbigba. Iwontunwonsi rẹ han ni Dashboard Oluta. Tẹ 'Yo owo mi kuro' ki o yan MTN MoMo, Moov Money tabi Wave.",
-faq6q:"Kini idi ti wọn fi n beere KYC?",faq6a:"KYC = ijẹrisi idanimọ pẹlu ID rẹ. Dandan ṣaaju yiyọkuro akọkọ, lati yago fun itanjẹ ati daabobo owo rẹ. Laisi KYC = ko si yiyọkuro.",
-faq7q:"Bawo ni mo ṣe le jabo itanjẹ?",faq7a:"Maa ṣe san ni ita RocyInter. Ti ẹnikan ba beere lọwọ rẹ lati san nipasẹ WhatsApp taara, jabo nibi yan 'Jabo itanjẹ' + fi orukọ rẹ ati awọn sikirinisọọti ranṣẹ."},
-fon:{mAccueil:"Xwé",mMessages:"Wɛn lɛ",mPublier:"Zɛ nǔ ɖokpo",mVendeur:"Tableau Sàtɔ́",mAcheteur:"Tableau Xɔ́tɔ́",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Sɛ́n lɛ",mContact:"Kpɔn mi",mApropos:"Mǐnɔ wɛ",mInscription:"Wlǎn ɖo",mConnecter:"Biyɔ",mDeconnecter:"Tɔ́n",mFermer:"Sú ✕",retour:"← Lɛkɔ",titre:"Kpɔn mi / Alɔgɔ 🤝",sousTitre:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we. Mǐ na yí wɛn ɖo hwenu kplé, azǎn 7.",cardWa:"💬 WhatsApp - Bla",cardWaDesc:"E bla húgǎn nú tagba e ɖo hudo hwenu: commande e è sɔ́ ɖo te, sú, sɛɖo.",btnWa:"Hùn WhatsApp",cardMail:"📧 Email - Sɛ́n",cardMailDesc:"Nú xó e a ɖo, akwɛ lɛkɔ, KYC, tagba compte.",btnMail:"Sɛ Email ɖo",faqTitre:"❓ Nǔkanbyɔ e è nɔ kan hwɛhwɛ lɛ",tabTout:"Bǐ",tabAcheteur:"Xɔ́tɔ́",tabVendeur:"Sàtɔ́",tabPaiement:"Sú / Ɖe akwɛ",formTitre:"✉️ Wlǎn nú mǐ",formDesc:"Ðɔ tagba towe, mǐ na yí we ɖo bla.",lblNom:"Nyǐkɔ towe *",phNom:"Kpɔndé: Jean K.",lblContact:"WhatsApp / Email towe *",phContact:"Kpɔndé: 96 00 00 00 alo email towe",lblSujet:"Xó *",sujetCommande:"Commande / Sɛɖo",sujetPaiement:"Sú",sujetRetrait:"Ɖe akwɛ sàtɔ́",sujetKyc:"Compte / KYC",sujetArnaque:"Ðɔ afɔɖiɖe",sujetAutre:"Ɖevo",lblMessage:"Wɛn towe *",phMessage:"Ðɔ nǔ e jɛ... Numéro commande, nyǐkɔ nǔ ɔ, azǎn...",btnEnvoyer:"Sɛ ɖo →",success:"✅ Wɛn ɔ sɛɖo! Mǐ na yí we ɖo bla ɖo WhatsApp / Email.",errRemplis:"Sɔ́ nyǐkɔ towe, kpɔn we kpo wɛn towe kpo.",reserveVendeur:"Sàtɔ́ lɛ kɛɖɛ",reserveAcheteur:"Xɔ́tɔ́ lɛ kɛɖɛ",reserveAdmin:"Admin kɛɖɛ",
-faq1q:"Nɛ mi ka sixu xɔ ɖo hwlɛn mɛ gbɔn?",faq1a:"A sú ɖo RocyInter. Akwɛ ɔ sɔ́ ɖo te (Escrow). Sàtɔ́ ɔ sɛ ɖo. A sɔ́ ɖɔ a yí. Enɛ gudo kɛɖɛ è na sú sàtɔ́ ɔ. MA SÚ ɖo RocyInter godo gbeɖe.",
-faq2q:"Un sú có ma yí ǎ?",faq2a:"1. Kpɔn Tableau Xɔ́tɔ́ > Commande ce. 2. Ðɔ xá sàtɔ́ ɔ ɖo wɛn mɛ. 3. E ma yí we ɖo ganxixo 24 mɛ ǎ ɔ, wlǎn nú mǐ ɖo fi bo sɔ́ 'Commande / Sɛɖo'. Mǐ na sɔ́ sú ɔ ɖo te bo na lɛkɔ akwɛ towe.",
-faq3q:"Nɛ mi ka sixu zɛ nǔ gbɔn?",faq3a:"Yi Zɛ > Sɔ́ fɔto, nyǐkɔ, axɔ́, ɖiɖe > Sú 2000F nú azǎn 30. Sàtɔ́ 20 nukɔntɔn lɛ ɖo Booster vɔnú, enɛ gudo 500F.",
-faq4q:"Akwɛ nabí wɛ un na mɔ ɖo sa ɖokpo mɛ?",faq4a:"Commission e nɔ hwe: 8,5% kaka 500 000F, 7,5% kaka 2 000 000F, 6,5% hú mɔ. Kpɔndé: sa ɖo 100 000F = 91 500F nú we.",
-faq5q:"Hwenu tɛ wɛ un na mɔ akwɛ ce?",faq5a:"Hwenu e xɔ́tɔ́ ɔ sɔ́ ɖɔ e yí gudo. Akwɛ towe na lɛn ɖo Tableau Sàtɔ́ mɛ. Zɛn 'Ɖe akwɛ ce' bo sɔ́ MTN MoMo, Moov Money alo Wave.",
-faq6q:"Ɖetɛwú è nɔ byɔ KYC?",faq6a:"KYC = kpɔn hwiɖe towe kpo wema towe kpo. E ɖo na wà jɛnukɔn ɖe akwɛ nukɔntɔn, nú afɔɖiɖe ma jɛ ǎ bo hwlɛn akwɛ towe. KYC mavo = ɖe akwɛ mavo.",
-faq7q:"Nɛ mi ka sixu ɖɔ afɔɖiɖe gbɔn?",faq7a:"Ma sú ɖo RocyInter godo gbeɖe. Enyí mɛɖe byɔ we ɖɔ a sú gbɔn WhatsApp tite ɔ, ɖɔ e ɖo fi bo sɔ́ 'Ðɔ afɔɖiɖe' + sɛ nyǐkɔ tɔn kpo fɔto lɛ kpo ɖo."},
-goun:{mAccueil:"Xwé",mMessages:"Wɛn lɛ",mPublier:"Zɛ nǔ ɖokpo",mVendeur:"Tableau Sàtɔ́",mAcheteur:"Tableau Xɔ́tɔ́",mAdmin:"Tableau Admin",mProfil:"Profil",mConditions:"Sɛ́n lɛ",mContact:"Kpɔn mi",mApropos:"Mǐnɔ wɛ",mInscription:"Wlǎn ɖo",mConnecter:"Biyɔ",mDeconnecter:"Tɔ́n",mFermer:"Sú ✕",retour:"← Lɛkɔ",titre:"Kpɔn mi / Alɔgɔ 🤝",sousTitre:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we. Mǐ na yí wɛn ɖo hwenu kplé, azǎn 7.",cardWa:"💬 WhatsApp - Bla",cardWaDesc:"E bla húgǎn nú tagba e ɖo hudo hwenu: commande e è sɔ́ ɖo te, sú, sɛɖo.",btnWa:"Hùn WhatsApp",cardMail:"📧 Email - Sɛ́n",cardMailDesc:"Nú xó e a ɖo, akwɛ lɛkɔ, KYC, tagba compte.",btnMail:"Sɛ Email ɖo",faqTitre:"❓ Nǔkanbyɔ e è nɔ kan hwɛhwɛ lɛ",tabTout:"Bǐ",tabAcheteur:"Xɔ́tɔ́",tabVendeur:"Sàtɔ́",tabPaiement:"Sú / Ɖe akwɛ",formTitre:"✉️ Wlǎn nú mǐ",formDesc:"Ðɔ tagba towe, mǐ na yí we ɖo bla.",lblNom:"Nyǐkɔ towe *",phNom:"Kpɔndé: Jean K.",lblContact:"WhatsApp / Email towe *",phContact:"Kpɔndé: 96 00 00 00 alo email towe",lblSujet:"Xó *",sujetCommande:"Commande / Sɛɖo",sujetPaiement:"Sú",sujetRetrait:"Ɖe akwɛ sàtɔ́",sujetKyc:"Compte / KYC",sujetArnaque:"Ðɔ afɔɖiɖe",sujetAutre:"Ɖevo",lblMessage:"Wɛn towe *",phMessage:"Ðɔ nǔ e jɛ... Numéro commande, nyǐkɔ nǔ ɔ, azǎn...",btnEnvoyer:"Sɛ ɖo →",success:"✅ Wɛn ɔ sɛɖo! Mǐ na y
-"✅ Wɛn ɔ sɛɖo! Mǐ na yí we ɖo bla ɖo WhatsApp / Email.",errRemplis:"Sɔ́ nyǐkɔ towe, kpɔn we kpo wɛn towe kpo.",reserveVendeur:"Sàtɔ́ lɛ kɛɖɛ",reserveAcheteur:"Xɔ́tɔ́ lɛ kɛɖɛ",reserveAdmin:"Admin kɛɖɛ",
-faq1q:"Nɛ mi ka sixu xɔ ɖo hwlɛn mɛ gbɔn?",faq1a:"A sú ɖo RocyInter. Akwɛ ɔ sɔ́ ɖo te (Escrow). Sàtɔ́ ɔ sɛ ɖo. A sɔ́ ɖɔ a yí. Enɛ gudo kɛɖɛ è na sú sàtɔ́ ɔ. MA SÚ ɖo RocyInter godo gbeɖe.",
-faq2q:"Un sú có ma yí ǎ?",faq2a:"1. Kpɔn Tableau Xɔ́tɔ́ > Commande ce. 2. Ðɔ xá sàtɔ́ ɔ ɖo wɛn mɛ. 3. E ma yí we ɖo ganxixo 24 mɛ ǎ ɔ, wlǎn nú mǐ ɖo fi bo sɔ́ 'Commande / Sɛɖo'. Mǐ na sɔ́ sú ɔ ɖo te bo na lɛkɔ akwɛ towe.",
-faq3q:"Nɛ mi ka sixu zɛ nǔ gbɔn?",faq3a:"Yi Zɛ > Sɔ́ fɔto, nyǐkɔ, axɔ́, ɖiɖe > Sú 2000F nú azǎn 30. Sàtɔ́ 20 nukɔntɔn lɛ ɖo Booster vɔnú, enɛ gudo 500F.",
-faq4q:"Akwɛ nabí wɛ un na mɔ ɖo sa ɖokpo mɛ?",faq4a:"Commission e nɔ hwe: 8,5% kaka 500 000F, 7,5% kaka 2 000 000F, 6,5% hú mɔ. Kpɔndé: sa ɖo 100 000F = 91 500F nú we.",
-faq5q:"Hwenu tɛ wɛ un na mɔ akwɛ ce?",faq5a:"Hwenu e xɔ́tɔ́ ɔ sɔ́ ɖɔ e yí gudo. Akwɛ towe na lɛn ɖo Tableau Sàtɔ́ mɛ. Zɛn 'Ɖe akwɛ ce' bo sɔ́ MTN MoMo, Moov Money alo Wave.",
-faq6q:"Ɖetɛwú è nɔ byɔ KYC?",faq6a:"KYC = kpɔn hwiɖe towe kpo wema towe kpo. E ɖo na wà jɛnukɔn ɖe akwɛ nukɔntɔn, nú afɔɖiɖe ma jɛ ǎ bo hwlɛn akwɛ towe. KYC mavo = ɖe akwɛ mavo.",
-faq7q:"Nɛ mi ka sixu ɖɔ afɔɖiɖe gbɔn?",faq7a:"Ma sú ɖo RocyInter godo gbeɖe. Enyí mɛɖe byɔ we ɖɔ a sú gbɔn WhatsApp tite ɔ, ɖɔ e ɖo fi bo sɔ́ 'Ðɔ afɔɖiɖe' + sɛ nyǐkɔ tɔn kpo fɔto lɛ kpo ɖo."}
-};
-function t(k){ var lang=localStorage.getItem("rocy_lang")||"fr"; return (DICT[lang]||DICT.fr)[k]||DICT.fr[k]||k; }
-function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");fermerMenu();b.style.display=(b.style.display==="block")?"none":"block"}
-function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");var l=document.getElementById("langBox");if(l)l.style.display="none";if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";majMenu()}}
-function fermerMenu(){var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m)m.classList.remove("open");if(o)o.style.display="none"}
-function majMenu(){
-  var role=localStorage.getItem("role_user")||localStorage.getItem("rocy_role")||""; var email=localStorage.getItem("email_user")||""; var nom=localStorage.getItem("nom_user")||(email?"Utilisateur":"Visiteur"); var connecte=!!email;
-  var bj=document.getElementById("menuBonjour"); if(bj) bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"acheteur"):"visiteur")+")";
-  var lienInsc=document.getElementById("lienInscription"); if(lienInsc) lienInsc.style.display=connecte?"none":"block";
-  document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){
-    if(a.getAttribute("href")==="messages.html"){ a.style.display=connecte?"block":"none"; return; }
-    if(!connecte){ a.classList.add("grise"); a.onclick=function(ev){ev.preventDefault();localStorage.setItem("retour_apres_connexion","contact.html");location.href="connexion.html";return false} } else { a.classList.remove("grise"); a.onclick=null; }
-  });
-  document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){
-    var besoin=a.getAttribute("data-acces"); var ok=(role==="admin")||(connecte&&role===besoin);
-    if(ok){ a.classList.remove("grise"); a.onclick=null; }
-    else { a.classList.add("grise"); a.onclick=function(ev){ev.preventDefault(); if(!connecte){localStorage.setItem("retour_apres_connexion","contact.html");location.href="connexion.html"} else if(besoin==="vendeur") alert(t("reserveVendeur")); else if(besoin==="acheteur") alert(t("reserveAcheteur")); else alert(t("reserveAdmin")); return false} }
-  });
-  var b=document.getElementById("btnAuth"); if(b) b.innerText=connecte?t("mDeconnecter"):t("mConnecter");
-}
-function gererAuth(){ var email=localStorage.getItem("email_user"); if(email){ ["email_user","user_id","role_user","rocy_role","rocy_user","nom_user"].forEach(function(k){localStorage.removeItem(k)}); alert("Déconnecté"); location.href="index.html"; } else location.href="connexion.html"; }
-function ouvrirNotif(e){ if(e)e.stopPropagation(); alert("Aucune notification"); }
-function changerLangue(lang){
-  localStorage.setItem("rocy_lang", lang);
-  var ll=document.getElementById("langLabel"); if(ll) ll.innerText={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"}[lang]||"Français";
-  var lb=document.getElementById("langBox"); if(lb) lb.style.display="none"; fermerMenu();
-  document.querySelectorAll("[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); if(t(k)) el.textContent=t(k); });
-  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ var k=el.getAttribute("data-i18n-ph"); if(t(k)) el.placeholder=t(k); });
-  document.querySelectorAll("option[data-i18n]").forEach(function(el){ var k=el.getAttribute("data-i18n"); if(t(k)) el.textContent=t(k); });
-  if(lang==="ar") document.body.style.direction="rtl"; else document.body.style.direction="ltr";
-  afficherFaq(window._filtreFaq||"tout");
-  majMenu();
-}
-window.changerLangue=changerLangue;
-// ===== FAQ - TRADUITE =====
-var faqs=[
-{q:"faq1q",a:"faq1a",c:"acheteur"},
-{q:"faq2q",a:"faq2a",c:"acheteur"},
-{q:"faq3q",a:"faq3a",c:"vendeur"},
-{q:"faq4q",a:"faq4a",c:"vendeur"},
-{q:"faq5q",a:"faq5a",c:"paiement"},
-{q:"faq6q",a:"faq6a",c:"paiement"},
-{q:"faq7q",a:"faq7a",c:"acheteur"}
-];
-function afficherFaq(filtre){
-  filtre=filtre||"tout"; window._filtreFaq=filtre;
-  var list=document.getElementById("faqList"); if(!list) return;
-  list.innerHTML="";
-  faqs.filter(function(f){ return filtre==="tout"||f.c===filtre; }).forEach(function(f){
-    list.innerHTML+='<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\')">'+t(f.q)+'<span>+</span></div><div class="faq-a">'+t(f.a)+'</div></div>';
-  });
-}
-function filtrerFaq(cat,btn){
-  document.querySelectorAll(".tabs button").forEach(function(b){ b.classList.remove("active"); });
-  if(btn) btn.classList.add("active");
-  afficherFaq(cat);
-}
-function ouvrirWhatsApp(){
-  var msg=encodeURIComponent("Bonjour RocyInter, j'ai besoin d'aide.");
-  window.open("https://wa.me/22991478460?text="+msg,"_blank");
-}
-function ouvrirMail(){ window.location.href="mailto:rocyinter@gmail.com?subject=Aide RocyInter"; }
-function envoyerMessage(){
-  var nom=document.getElementById("nom").value.trim();
-  var contact=document.getElementById("contact").value.trim();
-  var sujet=document.getElementById("sujet").value;
-  var message=document.getElementById("message").value.trim();
-  if(!nom||!contact||!message){ alert(t("errRemplis")); return; }
-  document.getElementById("success").style.display="block";
-  document.getElementById("message").value="";
-  var texte=encodeURIComponent('Bonjour RocyInter\nNom: '+nom+'\nContact: '+contact+'\nSujet: '+sujet+'\nMessage: '+message);
-  setTimeout(function(){ window.open("https://wa.me/22991478460?text="+texte,"_blank"); }, 800);
-}
-document.addEventListener("DOMContentLoaded", function(){
-  changerLangue(localStorage.getItem("rocy_lang")||"fr");
-  majMenu();
-  afficherFaq("tout");
-});
-</script>
-<script src="commun.js"></script>
 </body>
 </html>
