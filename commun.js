@@ -307,3 +307,69 @@ setTimeout(verifierEmailAuRetrait, 3000);
   setTimeout(supprimerDoublon, 1000);
   setTimeout(supprimerDoublon, 2500);
 })();
+// ===== FIX ENTETE UNIQUE - AJOUTÉ À LA FIN, NE TOUCHE À RIEN D'AUTRE =====
+// Met partout : ROCYINTER | 🔔 | 💱 ₦ | 🌐 Français | ☰  dans cet ordre
+(function(){
+  function unifierEntete(){
+    try{
+      var page = (location.pathname.split("/").pop()||"").toLowerCase();
+      if(page==="connexion.html" || page==="inscription.html") return;
+      var headers = document.querySelectorAll("header");
+      if(headers.length === 0) return;
+      // S'il y a 2 headers collés (double copier-coller), on garde le 1er
+      for(var i=1;i<headers.length;i++){ headers[i].remove(); }
+      var h = document.querySelector("header");
+      if(!h) return;
+      // On repère les boutons existants créés par les pages + par commun.js
+      var btnDevise = document.getElementById("btnDevise");
+      var btnLangue = document.getElementById("btnLangue") || document.querySelector('button[onclick*="Langue"],button[onclick*="toggleLang"],button[onclick*="changerLangue"]');
+      // Sur certaines pages le bouton langue n'a pas d'id, on le cherche par son texte
+      if(!btnLangue){
+        document.querySelectorAll("header button").forEach(function(b){
+          if((b.textContent||"").indexOf("Français")>=0 || (b.textContent||"").indexOf("English")>=0) btnLangue = b;
+        });
+      }
+      var btnMenu = document.querySelector('button[onclick*="Menu"],button[onclick*="toggleMenu"]');
+      if(!btnMenu){
+        document.querySelectorAll("header button").forEach(function(b){ if((b.textContent||"").trim()==="☰") btnMenu = b; });
+      }
+      var btnNotif = document.querySelector('button[onclick*="Notif"]');
+      if(!btnNotif){
+        document.querySelectorAll("header button").forEach(function(b){ if((b.textContent||"").indexOf("🔔")>=0) btnNotif = b; });
+      }
+      // On trouve / crée le conteneur droit
+      var hr = h.querySelector(".header-right") || h.querySelector(".hr") || h.querySelector("div:last-child");
+      if(!hr) return;
+      hr.classList.add("header-right");
+      hr.style.cssText = "display:flex;gap:6px;align-items:center;flex-shrink:0";
+      // On remet les boutons DANS L'ORDRE, sans les recréer
+      var ordre = [];
+      if(btnNotif) ordre.push(btnNotif);
+      if(btnDevise) ordre.push(btnDevise);
+      if(btnLangue) ordre.push(btnLangue);
+      if(btnMenu) ordre.push(btnMenu);
+      // Les autres boutons restants du header, on les laisse après
+      ordre.forEach(function(b){ hr.appendChild(b); });
+      // Style uniforme pour les 4 boutons
+      if(btnNotif) btnNotif.style.cssText = "background:#fff;color:#000;border:none;height:32px;width:32px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0";
+      if(btnDevise) btnDevise.style.cssText = "height:32px;max-width:110px;background:#FFC107;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:700;padding:0 8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px";
+      if(btnLangue) btnLangue.style.cssText = "background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;max-width:110px;white-space:nowrap";
+      if(btnMenu) btnMenu.style.cssText = "background:#fff;color:#000;border:none;height:32px;width:32px;border-radius:8px;font-size:17px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0";
+      // On tue les 2èmes boutons devise flottants
+      document.querySelectorAll("button").forEach(function(b){
+        if(b!==btnDevise && b.id!=="btnDevise" && (b.textContent||"").trim()==="₦"){
+          b.style.display="none";
+        }
+      });
+      // On débloque les clics : overlay caché sauf si menu ouvert
+      var ov = document.getElementById("menuOverlay");
+      var mb = document.getElementById("menuBox");
+      if(ov && !(mb && mb.classList.contains("open"))){ ov.style.display="none"; ov.style.pointerEvents="none"; }
+    }catch(e){ console.log("fix entete", e); }
+  }
+  document.addEventListener("DOMContentLoaded", function(){
+    unifierEntete();
+    setTimeout(unifierEntete, 800);  // rocy_devise.js arrive en retard
+    setTimeout(unifierEntete, 2000);
+  });
+})();
