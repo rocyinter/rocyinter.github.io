@@ -4,23 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact / Aide - RocyInter</title>
+<script src="rocy_devise.js"></script>
 <style>
 *{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0;color:#111}
-header{position:sticky;top:0;z-index:100;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
-header a{color:#fff;text-decoration:none;font-weight:800;font-size:17px}header a span{color:#FFC107}
-.hr{display:flex;gap:6px;align-items:center}
-.langBtn,.menuBtn,.notifBtn{background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer}
-.menuBtn,.notifBtn{width:32px;padding:0;font-size:17px}
-.retour{display:block;max-width:520px;margin:10px auto 0;padding:0 12px;color:#111;text-decoration:none;font-size:13px;font-weight:700}
-footer{background:#111;color:#fff;text-align:center;padding:10px 12px;font-size:9px;line-height:1.4;margin-top:8px}footer b,footer a{color:#FFC107;text-decoration:none;font-weight:700;font-size:9px}footer p{margin:1px 0}
-.popMenu{display:none;position:fixed;top:56px;right:10px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);width:240px;z-index:1000;padding:8px}
-.popMenu button{display:block;width:100%;text-align:left;padding:11px;border:none;background:none;font-size:15px;cursor:pointer}
-#menuOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000}
-#menuBox{display:none;position:fixed;top:0;right:0;height:100%;width:85%;max-width:360px;background:#fff;z-index:1001;flex-direction:column;padding:18px 16px;overflow:auto}
-#menuBox.open{display:flex}
-#menuBox a,#menuBox button{display:block;padding:13px 4px;border-bottom:1px solid #eee;font-size:17px;color:#111;text-decoration:none;background:none;border:none;width:100%;text-align:left;cursor:pointer}
-#menuBox .rouge{color:#E40000;font-weight:700}
-#menuFermer{margin-top:auto!important;background:#000!important;color:#fff!important;border-radius:10px!important;text-align:center!important}
 .container{max-width:520px;margin:14px auto;background:#fff;padding:20px;border-radius:12px}
 h1{font-size:22px;margin:0 0 8px}.subtitle{color:#666;font-size:14px;line-height:1.5}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
@@ -36,46 +22,43 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radiu
 </style>
 </head>
 <body>
-<header><a href="index.html">ROCY<span>INTER</span></a><div class="hr"><button class="notifBtn" onclick="alert('Aucune notification')">🔔</button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div></header>
-<div id="langBox" class="popMenu"><button onclick="changerLangue('fr')">Français</button><button onclick="changerLangue('en')">English</button><button onclick="changerLangue('es')">Español</button><button onclick="changerLangue('pt')">Português</button><button onclick="changerLangue('de')">Deutsch</button><button onclick="changerLangue('ar')">العربية</button><button onclick="changerLangue('yo')">Yoruba</button><button onclick="changerLangue('fon')">Fon</button><button onclick="changerLangue('goun')">Goun</button></div>
-<div id="menuOverlay" onclick="fermerMenu()"></div>
-<div id="menuBox"><b style="font-size:22px">ROCY <span style="color:#FFC107">INTER</span></b><div id="menuBonjour" style="color:#666;margin:6px 0 14px">Bonjour, Visiteur</div><a href="index.html">Accueil</a><a href="messages.html" id="lienMessages">💬 Messages</a><a href="publier.html">Publier un produit</a><a href="vendeur.html">Tableau Vendeur</a><a href="acheteur.html">Tableau Acheteur</a><a href="admin.html">Tableau Admin</a><a href="profil.html">Profil</a><a href="conditions.html">Conditions</a><a href="contact.html">Contact</a><a href="apropos.html">À Propos</a><a href="inscription.html" id="lienInscription">Inscription</a><button class="rouge" id="btnAuth" onclick="gererAuth()">Connecter</button><button id="menuFermer" onclick="fermerMenu()">Fermer ✕</button></div>
-<a class="retour" href="javascript:history.back()">← Retour</a>
 <div class="container">
-<h1 id="titre">Contact / Aide 🤝</h1>
-<p class="subtitle" id="sousTitre">Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.</p>
+<h1 id="titre" data-original="Contact / Aide 🤝">Contact / Aide 🤝</h1>
+<p class="subtitle" id="sousTitre" data-original="Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.">Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7.</p>
 <div class="cards">
-<div class="card"><h3>💬 WhatsApp - Rapide</h3><p>Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.</p><button class="btn-whatsapp" onclick="ouvrirWhatsApp()">Ouvrir WhatsApp</button></div>
-<div class="card"><h3>📧 Email - Officiel</h3><p>Pour plainte, remboursement, KYC, problème de compte.</p><p style="color:#FFC107;font-weight:700">rocyinter@gmail.com</p><button class="btn-mail" onclick="ouvrirMail()">Envoyer un Email</button></div>
+<div class="card"><h3 data-original="💬 WhatsApp - Rapide">💬 WhatsApp - Rapide</h3><p data-original="Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.">Le plus rapide pour un problème urgent : commande bloquée, paiement, livraison.</p><button class="btn-whatsapp" onclick="ouvrirWhatsApp()" data-original="Ouvrir WhatsApp">Ouvrir WhatsApp</button></div>
+<div class="card"><h3 data-original="📧 Email - Officiel">📧 Email - Officiel</h3><p data-original="Pour plainte, remboursement, KYC, problème de compte.">Pour plainte, remboursement, KYC, problème de compte.</p><p style="color:#FFC107;font-weight:700">rocyinter@gmail.com</p><button class="btn-mail" onclick="ouvrirMail()" data-original="Envoyer un Email">Envoyer un Email</button></div>
 </div>
-<h2>❓ Questions fréquentes</h2>
-<div class="tabs"><button class="active" onclick="filtrerFaq('tout',this)">Tout</button><button onclick="filtrerFaq('acheteur',this)">Acheteur</button><button onclick="filtrerFaq('vendeur',this)">Vendeur</button><button onclick="filtrerFaq('paiement',this)">Paiement / Retrait</button></div>
+<h2 data-original="❓ Questions fréquentes">❓ Questions fréquentes</h2>
+<div class="tabs"><button class="active" onclick="filtrerFaq('tout',this)" data-original="Tout">Tout</button><button onclick="filtrerFaq('acheteur',this)" data-original="Acheteur">Acheteur</button><button onclick="filtrerFaq('vendeur',this)" data-original="Vendeur">Vendeur</button><button onclick="filtrerFaq('paiement',this)" data-original="Paiement / Retrait">Paiement / Retrait</button></div>
 <div id="faqList"></div>
 <div style="background:#f9f9f9;border:1px solid #eee;border-radius:12px;padding:16px;margin-top:20px">
-<h2>✉️ Nous écrire</h2>
-<label>Ton nom *</label><input id="nom" placeholder="Ex: Jean K.">
-<label>Ton WhatsApp / Email *</label><input id="contact" placeholder="Ex: 96 00 00 00 ou ton email">
-<label>Sujet *</label><select id="sujet"><option>Commande / Livraison</option><option>Paiement</option><option>Retrait vendeur</option><option>Compte / KYC</option><option>Signaler une arnaque</option><option>Autre</option></select>
-<label>Ton message *</label><textarea id="message" placeholder="Explique ce qui s'est passé..."></textarea>
-<button class="btn-send" onclick="envoyerMessage()">Envoyer →</button>
-<div id="success" class="success">✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.</div>
+<h2 data-original="✉️ Nous écrire">✉️ Nous écrire</h2>
+<label data-original="Ton nom *">Ton nom *</label><input id="nom" data-ph-original="Ex: Jean K." placeholder="Ex: Jean K.">
+<label data-original="Ton WhatsApp / Email *">Ton WhatsApp / Email *</label><input id="contact" data-ph-original="Ex: 96 00 00 00 ou ton email" placeholder="Ex: 96 00 00 00 ou ton email">
+<label data-original="Sujet *">Sujet *</label><select id="sujet"><option data-original="Commande / Livraison">Commande / Livraison</option><option data-original="Paiement">Paiement</option><option data-original="Retrait vendeur">Retrait vendeur</option><option data-original="Compte / KYC">Compte / KYC</option><option data-original="Signaler une arnaque">Signaler une arnaque</option><option data-original="Autre">Autre</option></select>
+<label data-original="Ton message *">Ton message *</label><textarea id="message" data-ph-original="Explique ce qui s'est passé..." placeholder="Explique ce qui s'est passé..."></textarea>
+<button class="btn-send" onclick="envoyerMessage()" data-original="Envoyer →">Envoyer →</button>
+<div id="success" class="success" data-original="✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.">✅ Message envoyé ! On te répond très vite sur WhatsApp / Email.</div>
 </div>
 </div>
-<footer><p>Email : <a href="mailto:rocyinter@gmail.com">rocyinter@gmail.com</a> | Tél : <a href="tel:+2290148270448">+229 01 48 27 04 48</a> / <a href="tel:+2290191478460">01 91 47 84 60</a> | <b>Rocyinter@2026</b></p></footer>
 <script>
-var DICT={fr:{titre:"Contact / Aide 🤝",sous:"Un problème avec un achat, une vente, un paiement ou un retrait ? On t'aide. Réponse rapide, 7j/7."},en:{titre:"Contact / Help 🤝",sous:"Problem with purchase, sale, payment or withdrawal? We help you. Fast reply, 7 days."},es:{titre:"Contacto / Ayuda 🤝",sous:"¿Problema con compra, venta, pago o retiro? Te ayudamos. Respuesta rápida, 7 días."},pt:{titre:"Contato / Ajuda 🤝",sous:"Problema com compra, venda, pagamento ou saque? Ajudamos você. Resposta rápida, 7 dias."},de:{titre:"Kontakt / Hilfe 🤝",sous:"Problem mit Kauf, Verkauf, Zahlung oder Auszahlung? Wir helfen. Schnelle Antwort, 7 Tage."},ar:{titre:"اتصل / مساعدة 🤝",sous:"مشكلة في شراء أو بيع أو دفع أو سحب؟ نساعدك. رد سريع، 7 أيام."},yo:{titre:"Olubasọrọ / Iranlọwọ 🤝",sous:"Iṣoro pẹlu rira, tita, isanwo tabi yiyọkuro? A ran ọ lọwọ."},fon:{titre:"Kpɔn mi / Alɔgɔ 🤝",sous:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we."},goun:{titre:"Kpɔn mi / Alɔgɔ 🤝",sous:"Tagba ɖo xɔ / sa / sú / ɖe akwɛ mɛ a? Mǐ na alɔ we."}};
-function toggleLang(e){if(e)e.stopPropagation();var b=document.getElementById("langBox");b.style.display=(b.style.display==="block")?"none":"block";}
-function toggleMenu(e){if(e)e.stopPropagation();var m=document.getElementById("menuBox");var o=document.getElementById("menuOverlay");if(m.classList.contains("open")){fermerMenu()}else{m.classList.add("open");o.style.display="block";}}
-function fermerMenu(){document.getElementById("menuBox").classList.remove("open");document.getElementById("menuOverlay").style.display="none";}
-function gererAuth(){var e=localStorage.getItem("email_user");if(e){localStorage.clear();location.href="index.html"}else location.href="connexion.html";}
-function changerLangue(l){localStorage.setItem("rocy_lang",l);document.getElementById("langLabel").innerText={fr:"Français",en:"English",es:"Español",pt:"Português",de:"Deutsch",ar:"العربية",yo:"Yoruba",fon:"Fon",goun:"Goun"}[l];document.getElementById("langBox").style.display="none";var d=DICT[l]||DICT.fr;document.getElementById("titre").innerText=d.titre;document.getElementById("sousTitre").innerText=d.sous;afficherFaq("tout");}
-var faqs=[{q:"Comment acheter en sécurité ?",a:"Tu paies sur RocyInter. L'argent est bloqué (Escrow). Ne paie JAMAIS en dehors.",c:"acheteur"},{q:"J'ai payé mais je n'ai pas reçu ?",a:"Vérifie ton Tableau Acheteur, contacte le vendeur, sinon écris-nous ici.",c:"acheteur"},{q:"Comment publier un article ?",a:"Publier > Photos, titre, prix > Paie 2000F pour 30 jours.",c:"vendeur"},{q:"Combien je gagne ?",a:"Commission : 8,5% jusqu'à 500 000F, 7,5% jusqu'à 2 000 000F, 6,5% au-delà.",c:"vendeur"},{q:"Quand je reçois mon argent ?",a:"Après COLIS REÇU. Puis Retirer mon argent : MTN MoMo, Moov, Wave.",c:"paiement"},{q:"Pourquoi KYC ?",a:"Vérification d'identité obligatoire avant le 1er retrait.",c:"paiement"},{q:"Comment signaler une arnaque ?",a:"Ne paie jamais en dehors. Signale ici avec nom + captures.",c:"acheteur"}];
-function afficherFaq(f){var list=document.getElementById("faqList");list.innerHTML="";faqs.filter(function(x){return f==="tout"||x.c===f}).forEach(function(x){list.innerHTML+='<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\')">'+x.q+'<span>+</span></div><div class="faq-a">'+x.a+'</div></div>';});}
+// ===== CONTACT.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
+var faqs=[
+{q:"Comment acheter en sécurité ?",a:"Tu paies sur RocyInter. L'argent est bloqué (Escrow). Ne paie JAMAIS en dehors.",c:"acheteur"},
+{q:"J'ai payé mais je n'ai pas reçu ?",a:"Vérifie ton Tableau Acheteur, contacte le vendeur, sinon écris-nous ici.",c:"acheteur"},
+{q:"Comment publier un article ?",a:"Publier > Photos, titre, prix. Publier est gratuit. GRATUIT : 5 produits max. PRO : 2 000 F / mois, illimité.",c:"vendeur"},
+{q:"Combien je gagne ?",a:"Commission : 8,5% jusqu'à 500 000 F, 7,5% jusqu'à 2 000 000 F, 6,5% au-delà. Frais : vendeur 25%, ROCYINTER 75%.",c:"vendeur"},
+{q:"Quand je reçois mon argent ?",a:"Après COLIS REÇU. Puis Retirer mon argent : MTN MoMo, Moov, Wave.",c:"paiement"},
+{q:"Pourquoi KYC ?",a:"Vérification d'identité obligatoire avant le 1er retrait.",c:"paiement"},
+{q:"Comment signaler une arnaque ?",a:"Ne paie jamais en dehors. Signale ici avec nom + captures.",c:"acheteur"}
+];
+function afficherFaq(f){var list=document.getElementById("faqList");list.innerHTML="";faqs.filter(function(x){return f==="tout"||x.c===f}).forEach(function(x){list.innerHTML+='<div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle(\'open\')"><span data-original="'+x.q+'">'+x.q+'</span><span>+</span></div><div class="faq-a" data-original="'+x.a+'">'+x.a+'</div></div>';});if(typeof window.traduireTouteLaPage==="function")window.traduireTouteLaPage();}
 function filtrerFaq(c,b){document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active")});b.classList.add("active");afficherFaq(c);}
 function ouvrirWhatsApp(){window.open("https://wa.me/22991478460?text="+encodeURIComponent("Bonjour RocyInter, j'ai besoin d'aide."),"_blank");}
 function ouvrirMail(){window.location.href="mailto:rocyinter@gmail.com?subject=Aide RocyInter";}
 function envoyerMessage(){var n=document.getElementById("nom").value.trim();var co=document.getElementById("contact").value.trim();var s=document.getElementById("sujet").value;var m=document.getElementById("message").value.trim();if(!n||!co||!m){alert("Remplis ton nom, ton contact et ton message.");return;}document.getElementById("success").style.display="block";document.getElementById("message").value="";setTimeout(function(){window.open("https://wa.me/22991478460?text="+encodeURIComponent("Bonjour RocyInter\nNom: "+n+"\nContact: "+co+"\nSujet: "+s+"\nMessage: "+m),"_blank")},800);}
-document.addEventListener("DOMContentLoaded",function(){changerLangue(localStorage.getItem("rocy_lang")||"fr");afficherFaq("tout");var e=localStorage.getItem("email_user");document.getElementById("menuBonjour").innerText="Bonjour, "+(localStorage.getItem("nom_user")||"Visiteur");document.getElementById("btnAuth").innerText=e?"Déconnecter":"Connecter";document.getElementById("lienInscription").style.display=e?"none":"block";document.getElementById("lienMessages").style.display=e?"block":"none";});
+document.addEventListener("DOMContentLoaded",function(){afficherFaq("tout");});
 </script>
 </body>
 </html>
