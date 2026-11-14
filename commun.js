@@ -1,15 +1,10 @@
-// ===== AUTO-CHARGEMENT ROCY DEVISE - CAS B §19 - NE TOUCHE À RIEN D'AUTRE =====
-(function(){
-  if(window.__ROCY_DEVISE_CHARGE) return;
-  window.__ROCY_DEVISE_CHARGE = true;
-  var s = document.createElement("script");
-  s.src = "rocy_devise.js";
-  s.defer = true;
-  document.head.appendChild(s);
-})();
-// ===== ROCYINTER - COMMUN.JS - V4 CAHIER FINAL =====
-// Ne casse JAMAIS les autres pages. Ne touche pas à window.supabase (lib).
+// ===== COMMUN.JS - NETTOYÉ V7 - CAHIER V7 §12 =====
+// RÈGLE : commun.js ne doit PLUS contenir header, footer, traduction, convertisseur en double.
+// Le chef unique c'est rocy_devise.js V7.
+// commun.js garde seulement : Supabase, logs APDP, rôles, déconnexion, blocage retrait sans email, petite réparation article.
+// Il appelle chargerTauxLive() qui est l'alias de RocyChargerTauxLive() dans rocy_devise.js.
 
+// ===== SUPABASE CLIENT UNIQUE =====
 if(typeof window.rocyClient === "undefined"){
   window.ROCY_SUPABASE_URL = 'https://ahoxxzmdjxqvvpphxeow.supabase.co';
   window.ROCY_SUPABASE_KEY = 'sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3';
@@ -21,6 +16,15 @@ if(typeof window.rocyClient === "undefined"){
     }
   }catch(e){ console.log("supabase commun non cree", e); }
 }
+
+// ===== TAUX LIVE - ALIAS VERS LE CHEF rocy_devise.js V7 =====
+// Ne pas recalculer les taux ici. Le chef c'est RocyChargerTauxLive() dans rocy_devise.js.
+function chargerTauxLive(){
+  if(typeof window.RocyChargerTauxLive === "function"){ return window.RocyChargerTauxLive(); }
+  if(typeof window.chargerTauxLiveChef === "function"){ return window.chargerTauxLiveChef(); }
+  return Promise.resolve(null);
+}
+window.chargerTauxLive = chargerTauxLive;
 
 // --- LOGS LEGAUX Benin / APDP ---
 async function enregistrerLog(action, email){
@@ -42,19 +46,19 @@ document.addEventListener("DOMContentLoaded", function(){ setTimeout(function(){
 if(typeof window.getRole === "undefined"){
   window.getRole = function(){ return localStorage.getItem("rocy_role") || localStorage.getItem("role_user") || "visiteur"; };
 }
-// §3 DÉCONNEXION 1 CLIC DANS ☰ - CORRIGÉ : on enlève TOUT
+// Déconnexion 1 clic dans ☰
 window.deconnexionCommun = function(){
   enregistrerLog('deconnexion');
-  ["rocy_role","role_user","rocy_user","email_user","nom_user","user_id","retour_apres_connexion","retour_apres_profil"].forEach(function(k){ localStorage.removeItem(k); });
+  ["rocy_role","role_user","rocy_user","email_user","nom_user","user_id","retour_apres_connexion","retour_apres_profil","statut_user","type_compte"].forEach(function(k){ localStorage.removeItem(k); });
   window.location.href = "index.html";
 };
 window.deconnexion = window.deconnexionCommun;
 
-// ===== RÉPARATION /ar, /en... =====
+// ===== RÉPARATION /ar, /en... - 7 LANGUES SEULEMENT, SANS FON / GOUN =====
 (function(){
   try{
     var path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-    var languesUrl = ["fr","en","yo","fon","goun","es","pt","de","ar"];
+    var languesUrl = ["fr","en","es","pt","de","ar","yo"];
     if(languesUrl.indexOf(path) !== -1){ localStorage.setItem("rocy_lang", path); window.location.replace("index.html"); }
     if(window.location.pathname.indexOf("article.html") !== -1){
       var params = new URLSearchParams(window.location.search);
@@ -96,112 +100,29 @@ document.addEventListener("DOMContentLoaded", function(){
       var img = document.getElementById("photoProduit");
       if(img && (p.photo || p.image)){ img.src = p.photo || p.image; img.style.display = "block"; }
       var prixEl = document.getElementById("prixProduit");
-      // ✅ ON NE CALCULE PLUS LE PRIX ICI - c'est rocy_devise.js qui fait fmtMontant()
-      if(prixEl){ prixEl.setAttribute("data-prix", p.prix); if(window.fmtMontant) prixEl.textContent = window.fmtMontant(Number(p.prix)); else prixEl.textContent = Number(p.prix).toLocaleString('fr-FR') + " F CFA"; }
+      if(prixEl){ prixEl.setAttribute("data-prix", p.prix); if(window.fmtMontant) prixEl.textContent = window.fmtMontant(Number(p.prix)); else prixEl.textContent = Number(p.prix).toLocaleString('fr-FR') + " F"; }
       var villeEl = document.getElementById("villeProduit");
       if(villeEl){ villeEl.textContent = p.ville || ""; villeEl.setAttribute("data-original", p.ville || ""); }
       var descEl = document.getElementById("descProduit");
       if(descEl){ descEl.textContent = p.description || ""; descEl.setAttribute("data-original", p.description || ""); }
-      var descPop = document.getElementById("descPopup");
-      if(descPop) descPop.textContent = p.description || "";
       var nomV = p.nom_vendeur || p.vendeur_nom || "";
-      var villeV = p.ville || "";
-      var photoV = p.photo_vendeur || p.avatar_vendeur || p.photo_profil_vendeur || "";
       var vendeurId = p.vendeur_id || "";
       var nomEstFaux = !nomV || nomV.toLowerCase() === "vendeur" || nomV.toLowerCase() === "seller";
       if(nomEstFaux && vendeurId){
         try{
           var r2 = await client.from("profils").select("nom, nom_complet, nom_entreprise, ville, photo, photo_profil, avatar").eq("id", vendeurId).single();
-          if(r2 && r2.data){ var pr = r2.data; var vrai = pr.nom_entreprise || pr.nom_complet || pr.nom || ""; if(vrai) nomV = vrai; if(pr.ville) villeV = pr.ville; if(pr.photo_profil || pr.photo || pr.avatar) photoV = pr.photo_profil || pr.photo || pr.avatar; }
+          if(r2 && r2.data){ var pr = r2.data; var vrai = pr.nom_entreprise || pr.nom_complet || pr.nom || ""; if(vrai) nomV = vrai; }
         }catch(e){}
       }
       if(!nomV) nomV = "Vendeur";
       var nomVEl = document.getElementById("nomVendeur");
       if(nomVEl){ nomVEl.textContent = nomV; nomVEl.setAttribute("data-original", nomV); nomVEl.setAttribute("data-ne-pas-traduire", "1"); }
-      var infoEl = document.getElementById("infoVendeur");
-      if(infoEl){ infoEl.textContent = villeV; infoEl.setAttribute("data-original", villeV); }
-      var av = document.getElementById("avatarVendeur");
-      if(av){ if(photoV) av.innerHTML = '<img src="' + photoV + '" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent=\'' + nomV.charAt(0) + '\'">'; else av.textContent = nomV.charAt(0); }
-      // ✅ COMMISSION : on laisse rocy_devise.js calculer avec RocyCalculCommande()
       if(typeof window.mettreAJourPrix === "function"){ try{ window.mettreAJourPrix(); }catch(e){} }
-      if(typeof window.appliquerTraductionProduits === "function"){ try{ window.appliquerTraductionProduits(); }catch(e){} }
     }catch(e){ console.log("reparation article", e); }
   }, 2500);
 });
 
-// ===== §4-§6-§12 ENTETE : BOUTON DEVISE + MENU + LANGUE - CRÉÉS PAR COMMUN.JS =====
-var DEVISES_ROCY = [
-  {code:'XOF', label:'FCFA - Franc CFA', symbole:'F CFA'},
-  {code:'EUR', label:'Euro €', symbole:'€'},
-  {code:'USD', label:'Dollar $', symbole:'$'},
-  {code:'NGN', label:'Naira ₦', symbole:'₦'},
-  {code:'GHS', label:'Cedi GH₵', symbole:'GH₵'},
-  {code:'GBP', label:'Livre £', symbole:'£'}
-];
-function getDeviseActuelle(){ return localStorage.getItem('rocy_devise') || 'XOF'; }
-function getLabelDevise(code){ var d = DEVISES_ROCY.find(function(x){ return x.code===code; }); return d ? d.symbole : code; }
-function togglePopupDevise(){
-  var pl = document.getElementById('popupLangue'); if(pl) pl.style.display='none';
-  var p = document.getElementById('popupDevise'); if(!p) return;
-  p.style.display = (p.style.display==='block' ? 'none' : 'block');
-}
-function togglePopupLangue(){
-  var pd = document.getElementById('popupDevise'); if(pd) pd.style.display='none';
-  var p = document.getElementById('popupLangue'); if(!p) return;
-  p.style.display = (p.style.display==='block' ? 'none' : 'block');
-}
-function changerDeviseGlobal(devise){
-  localStorage.setItem('rocy_devise', devise);
-  var lbl = document.getElementById('deviseLabel'); if(lbl) lbl.textContent = getLabelDevise(devise);
-  var p = document.getElementById('popupDevise'); if(p) p.style.display='none';
-  var sel = document.getElementById('selectDevise'); if(sel) sel.value = devise;
-  if(window.chargerTauxLive) window.chargerTauxLive();
-  document.dispatchEvent(new CustomEvent('rocy_devise_change', {detail:{devise:devise}}));
-  if(typeof afficherSolde !== 'undefined' && typeof soldeFCFAActuel !== 'undefined') afficherSolde(soldeFCFAActuel);
-  if(typeof afficherProduits === 'function') afficherProduits();
-  if(typeof afficherCommandes === 'function') afficherCommandes();
-  if(typeof afficherTotaux === 'function') afficherTotaux();
-  if(typeof afficherBilan === 'function') afficherBilan();
-  if(typeof chargerRetraits === 'function' && typeof monProfil !== 'undefined' && monProfil) chargerRetraits(monProfil.id);
-}
-function creerBoutonDeviseHeader(){
-  // Ne pas créer sur connexion / inscription - §9 entête spéciale
-  if(window.location.pathname.includes('connexion') || window.location.pathname.includes('inscription')) return;
-  var headerRight = document.querySelector('.header-right') || document.querySelector('header div:last-child');
-  if(!headerRight) return;
-  if(document.getElementById('btnDevise')) return;
-  var btn = document.createElement('button');
-  btn.id = 'btnDevise'; btn.type = 'button';
-  btn.innerHTML = '💱 <span id="deviseLabel">' + getLabelDevise(getDeviseActuelle()) + '</span> ⌄';
-  btn.style.cssText = 'height:32px;max-width:110px;background:#FFC107;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:700;padding:0 8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
-  btn.onclick = togglePopupDevise;
-  var btnLangue = document.getElementById('btnLangue');
-  if(btnLangue && btnLangue.parentNode === headerRight) headerRight.insertBefore(btn, btnLangue);
-  else headerRight.appendChild(btn);
-  if(!document.getElementById('popupDevise')){
-    var popup = document.createElement('div');
-    popup.id = 'popupDevise';
-    popup.style.cssText = 'display:none;position:fixed;top:52px;right:110px;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:200;padding:8px;min-width:180px';
-    popup.innerHTML = DEVISES_ROCY.map(function(d){ return '<button type="button" onclick="changerDeviseGlobal(\''+d.code+'\')" style="display:block;width:100%;text-align:left;background:none;border:none;padding:10px;border-radius:8px;font-size:14px;cursor:pointer;color:#111">'+d.label+'</button>'; }).join('');
-    document.body.appendChild(popup);
-  }
-  document.addEventListener('click', function(e){
-    var pp = document.getElementById('popupDevise');
-    if(!pp || pp.style.display!=='block') return;
-    if(e.target.closest('#btnDevise') || e.target.closest('#popupDevise')) return;
-    pp.style.display='none';
-  });
-}
-document.addEventListener('DOMContentLoaded', creerBoutonDeviseHeader);
-setTimeout(creerBoutonDeviseHeader, 500);
-setTimeout(creerBoutonDeviseHeader, 1500);
-window.changerDeviseGlobal = changerDeviseGlobal;
-window.togglePopupDevise = togglePopupDevise;
-window.togglePopupLangue = togglePopupLangue;
-// NE PAS DEFINIR changerLangue ICI - c'est chaque page qui gère son DICT, commun ne fait que le popup
-// NE PAS DEFINIR googleTranslateElementInit ICI
-
-// ===== BLOCAGE RETRAIT SANS VRAI EMAIL - DANS COMMUN.JS, UNE SEULE FOIS =====
+// ===== BLOCAGE RETRAIT SANS VRAI EMAIL - UNE SEULE FOIS =====
 function aVraiEmailRetrait(){
   var e = localStorage.getItem('email_user') || '';
   if(!e) return false;
@@ -272,104 +193,6 @@ document.addEventListener('click', function(e){
 document.addEventListener('DOMContentLoaded', verifierEmailAuRetrait);
 setTimeout(verifierEmailAuRetrait, 1000);
 setTimeout(verifierEmailAuRetrait, 3000);
-// ===== SUPPRIMER LE DOUBLON DEVISE DU BAS - VERSION FORTE - PAR CONTENU =====
-(function(){
-  function supprimerDoublon(){
-    // 1. Tous les <select> qui ne sont PAS dans le header
-    document.querySelectorAll('select').forEach(function(sel){
-      if(sel.closest('header')) return; // On ne touche jamais au haut
-      if(sel.closest('.header-right')) return;
-      var html = (sel.innerHTML || '').toLowerCase();
-      // S'il contient Euro + Naira / Dollar / FCFA = c'est le doublon devise
-      if(html.includes('eur') && html.includes('ngn') || html.includes('euro') && html.includes('naira')){
-        sel.remove();
-        return;
-      }
-      // Si son id contient "devise" ou "currency" et qu'il n'est pas en haut
-      var id = (sel.id || '').toLowerCase();
-      var cls = (sel.className || '').toLowerCase();
-      if(id.includes('devise') || id.includes('currency') || cls.includes('devise')){
-        sel.remove();
-      }
-    });
-
-    // 2. La ligne "Taux à l'instant T..." du bas - on la cherche par son texte, pas par son id
-    document.querySelectorAll('p, div, span, small').forEach(function(el){
-      if(el.closest('header')) return;
-      var txt = (el.textContent || '');
-      if(txt.includes('Taux à l\'instant') || txt.includes('Taux a l\'instant') || txt.includes('FCFA par défaut')){
-        el.remove();
-      }
-    });
-  }
-  document.addEventListener('DOMContentLoaded', supprimerDoublon);
-  setTimeout(supprimerDoublon, 300);
-  setTimeout(supprimerDoublon, 1000);
-  setTimeout(supprimerDoublon, 2500);
-})();
-// ===== FIX ENTETE UNIQUE - AJOUTÉ À LA FIN, NE TOUCHE À RIEN D'AUTRE =====
-// Met partout : ROCYINTER | 🔔 | 💱 ₦ | 🌐 Français | ☰  dans cet ordre
-(function(){
-  function unifierEntete(){
-    try{
-      var page = (location.pathname.split("/").pop()||"").toLowerCase();
-      if(page==="connexion.html" || page==="inscription.html") return;
-      var headers = document.querySelectorAll("header");
-      if(headers.length === 0) return;
-      // S'il y a 2 headers collés (double copier-coller), on garde le 1er
-      for(var i=1;i<headers.length;i++){ headers[i].remove(); }
-      var h = document.querySelector("header");
-      if(!h) return;
-      // On repère les boutons existants créés par les pages + par commun.js
-      var btnDevise = document.getElementById("btnDevise");
-      var btnLangue = document.getElementById("btnLangue") || document.querySelector('button[onclick*="Langue"],button[onclick*="toggleLang"],button[onclick*="changerLangue"]');
-      // Sur certaines pages le bouton langue n'a pas d'id, on le cherche par son texte
-      if(!btnLangue){
-        document.querySelectorAll("header button").forEach(function(b){
-          if((b.textContent||"").indexOf("Français")>=0 || (b.textContent||"").indexOf("English")>=0) btnLangue = b;
-        });
-      }
-      var btnMenu = document.querySelector('button[onclick*="Menu"],button[onclick*="toggleMenu"]');
-      if(!btnMenu){
-        document.querySelectorAll("header button").forEach(function(b){ if((b.textContent||"").trim()==="☰") btnMenu = b; });
-      }
-      var btnNotif = document.querySelector('button[onclick*="Notif"]');
-      if(!btnNotif){
-        document.querySelectorAll("header button").forEach(function(b){ if((b.textContent||"").indexOf("🔔")>=0) btnNotif = b; });
-      }
-      // On trouve / crée le conteneur droit
-      var hr = h.querySelector(".header-right") || h.querySelector(".hr") || h.querySelector("div:last-child");
-      if(!hr) return;
-      hr.classList.add("header-right");
-      hr.style.cssText = "display:flex;gap:6px;align-items:center;flex-shrink:0";
-      // On remet les boutons DANS L'ORDRE, sans les recréer
-      var ordre = [];
-      if(btnNotif) ordre.push(btnNotif);
-      if(btnDevise) ordre.push(btnDevise);
-      if(btnLangue) ordre.push(btnLangue);
-      if(btnMenu) ordre.push(btnMenu);
-      // Les autres boutons restants du header, on les laisse après
-      ordre.forEach(function(b){ hr.appendChild(b); });
-      // Style uniforme pour les 4 boutons
-      if(btnNotif) btnNotif.style.cssText = "background:#fff;color:#000;border:none;height:32px;width:32px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0";
-      if(btnDevise) btnDevise.style.cssText = "height:32px;max-width:110px;background:#FFC107;color:#000;border:none;border-radius:8px;font-size:11px;font-weight:700;padding:0 8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px";
-      if(btnLangue) btnLangue.style.cssText = "background:#fff;color:#000;border:none;height:32px;padding:0 10px;border-radius:8px;font-weight:600;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;max-width:110px;white-space:nowrap";
-      if(btnMenu) btnMenu.style.cssText = "background:#fff;color:#000;border:none;height:32px;width:32px;border-radius:8px;font-size:17px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0";
-      // On tue les 2èmes boutons devise flottants
-      document.querySelectorAll("button").forEach(function(b){
-        if(b!==btnDevise && b.id!=="btnDevise" && (b.textContent||"").trim()==="₦"){
-          b.style.display="none";
-        }
-      });
-      // On débloque les clics : overlay caché sauf si menu ouvert
-      var ov = document.getElementById("menuOverlay");
-      var mb = document.getElementById("menuBox");
-      if(ov && !(mb && mb.classList.contains("open"))){ ov.style.display="none"; ov.style.pointerEvents="none"; }
-    }catch(e){ console.log("fix entete", e); }
-  }
-  document.addEventListener("DOMContentLoaded", function(){
-    unifierEntete();
-    setTimeout(unifierEntete, 800);  // rocy_devise.js arrive en retard
-    setTimeout(unifierEntete, 2000);
-  });
-})();
+window.aVraiEmailRetrait = aVraiEmailRetrait;
+window.allerProfilRetrait = allerProfilRetrait;
+window.verifierEmailAuRetrait = verifierEmailAuRetrait;
