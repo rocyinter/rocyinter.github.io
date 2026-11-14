@@ -64,7 +64,7 @@ button.btn{width:100%;padding:14px;border:0;border-radius:12px;background:#11182
 <button class="btn" id="btnEnvoyerKYC" data-original="Envoyer ma vérification">Envoyer ma vérification</button><p id="msgKYC"></p></div>
 
 <div class="card"><h2 data-original="💰 Mon Solde & Retrait">💰 Mon Solde & Retrait</h2><h1 id="soldeProfil" style="text-align:center">0 F</h1><p style="text-align:center" data-original="Solde disponible">Solde disponible</p>
-<label data-original="Montant à retirer (F)">Montant à retirer (F)</label><input type="number" id="montantRetrait" data-ph-original="Ex: 10000" placeholder="Ex: 10000">
+<label data-original="Montant à retirer (F)">Montant à retirer (F)</label><input type="number" id="montantRetrait" data-ph-original="Ex: 1000000" placeholder="Ex: 1000000">
 <label data-original="Moyen de retrait">Moyen de retrait</label><select id="moyenRetrait"><option value="mtn" data-original="MTN MoMo">MTN MoMo</option><option value="moov" data-original="Moov Money">Moov Money</option><option value="celtiis" data-original="Celtiis Cash">Celtiis Cash</option><option value="virement" data-original="Virement bancaire">Virement bancaire</option></select>
 <label data-original="Numéro / Compte pour recevoir">Numéro / Compte pour recevoir</label><input id="compteRetrait" data-ph-original="Ex: +229 97..." placeholder="Ex: +229 97...">
 <button class="btn btn-retrait" id="btnRetrait" data-original="Demander le retrait">Demander le retrait</button><p id="msgRetrait"></p></div>
@@ -134,7 +134,7 @@ document.getElementById('btnEnvoyerKYC').addEventListener('click',async function
 document.getElementById('btnRetrait').addEventListener('click',async function(){
   if(!aVraiEmailProfil()){alert("Va compléter ton vrai email dans Profil pour retirer ton argent.");afficherBlocEmail();document.getElementById('blocEmailProfil').scrollIntoView({behavior:'smooth'});return;}
   const montant=Number(document.getElementById('montantRetrait').value);const moyen=document.getElementById('moyenRetrait').value;const compte=document.getElementById('compteRetrait').value.trim();
-  if(!montant||montant<1000){alert("Minimum retrait : 1000 F");return;}if(!compte){alert("Mets ton numéro / compte pour recevoir");return;}
+  if(!montant||montant<1000000){alert("Minimum retrait : 1000000 F");return;}if(!compte){alert("Mets ton numéro / compte pour recevoir");return;}
   const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");return;}
   if(monProfil&&monProfil.kyc_statut!=='verifie'){alert("Tu dois être vérifié KYC pour retirer. Envoie d'abord ton KYC.");return;}
   const{error}=await supabaseClient.from('retraits').insert([{user_id:session.user.id,montant:montant,moyen:moyen,compte:compte,statut:'en_attente'}]);if(error)alert(error.message);else{document.getElementById('msgRetrait').innerText="Demande envoyée, Admin va valider ✅";chargerRetraits(session.user.id);}
