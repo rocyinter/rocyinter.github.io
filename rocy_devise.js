@@ -1,9 +1,15 @@
 // ===== ROCYINTER - ROCY_DEVISE.JS - V7 SANS FON / GOUN - FICHIER CHEF =====
 // Langues : fr, en, es, pt, de, ar, yo - 7 langues
 // Traduction auto partout, sans dictionnaire. On n'ecrit que le francais dans les pages.
+// REGLE SPECIALES INSCRIPTION / CONNEXION : pas de convertisseur, pas de ☰, pas de 🔔, seule la traduction.
 (function(){
   if(window.__ROCY_UNIFIE_CHARGE) return;
   window.__ROCY_UNIFIE_CHARGE = true;
+
+  function estPageAuth(){
+    var p = (window.location.pathname.split("/").pop()||"").toLowerCase().split("?")[0];
+    return p === "connexion.html" || p === "inscription.html";
+  }
 
   // ========== 1. CSS COMMUN ==========
   var css = `
@@ -31,10 +37,31 @@
 
   // ========== 2. ENTETE + MENU + CONVERTISSEUR + PIED DE PAGE ==========
   window.RocyInjecterEntetePied = function(){
+    var auth = estPageAuth();
     if(!document.querySelector('header')){
       var h = document.createElement('header');
-      h.innerHTML = '<a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="location.href=\'messages.html\'">🔔</button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div>';
+      if(auth){
+        // INSCRIPTION / CONNEXION : logo à gauche, SEULE la traduction à droite
+        h.innerHTML = '<a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button></div>';
+      } else {
+        h.innerHTML = '<a href="index.html">ROCY<span class="inter">INTER</span></a><div class="hr"><button class="notifBtn" onclick="location.href=\'messages.html\'">🔔</button><button class="langBtn" onclick="toggleLang(event)"><span id="langLabel">Français</span> ⌄</button><button class="menuBtn" onclick="toggleMenu(event)">☰</button></div>';
+      }
       document.body.insertBefore(h, document.body.firstChild);
+    } else {
+      // Si la page avait déjà un header en dur, on nettoie pour les pages auth
+      if(auth){
+        var notif = document.querySelector('header .notifBtn');
+        if(notif) notif.remove();
+        var menuBtn = document.querySelector('header .menuBtn');
+        if(menuBtn) menuBtn.remove();
+        if(!document.querySelector('header .langBtn')){
+          var hr = document.querySelector('header .hr') || document.querySelector('header');
+          var b = document.createElement('button');
+          b.className = 'langBtn'; b.setAttribute('onclick','toggleLang(event)');
+          b.innerHTML = '<span id="langLabel">Français</span> ⌄';
+          if(hr) hr.appendChild(b);
+        }
+      }
     }
     if(!document.getElementById('langBox')){
       var langBox = document.createElement('div');
@@ -42,7 +69,8 @@
       langBox.innerHTML = '<button onclick="changerLangue(\'fr\')">Français</button><button onclick="changerLangue(\'en\')">English</button><button onclick="changerLangue(\'es\')">Español</button><button onclick="changerLangue(\'pt\')">Português</button><button onclick="changerLangue(\'de\')">Deutsch</button><button onclick="changerLangue(\'ar\')">العربية</button><button onclick="changerLangue(\'yo\')">Yoruba</button>';
       document.body.appendChild(langBox);
     }
-    if(!document.getElementById('menuBox')){
+    // Menu + overlay : JAMAIS sur inscription / connexion
+    if(!auth && !document.getElementById('menuBox')){
       var overlay = document.createElement('div');
       overlay.id = 'menuOverlay'; overlay.onclick = function(){ window.fermerMenu(); };
       document.body.appendChild(overlay);
@@ -51,7 +79,16 @@
       menu.innerHTML = '<div class="menuHead"><b>ROCY <span class="inter">INTER</span></b></div><div class="menuBonjour" id="menuBonjour">Bonjour</div><a href="index.html" data-original="Accueil">Accueil</a><a href="messages.html" data-original="💬 Messages">💬 Messages</a><a href="publier.html" data-acces="vendeur" data-original="Publier un produit">Publier un produit</a><a href="vendeur.html" data-acces="vendeur" data-original="Tableau Vendeur">Tableau Vendeur</a><a href="acheteur.html" data-acces="acheteur" data-original="Tableau Acheteur">Tableau Acheteur</a><a href="admin.html" data-acces="admin" data-original="Tableau Admin">Tableau Admin</a><a href="profil.html" data-auth="1" data-original="Profil">Profil</a><a href="conditions.html" data-original="Conditions">Conditions</a><a href="contact.html" data-original="Contact">Contact</a><a href="apropos.html" data-original="À Propos">À Propos</a><button class="menuLink rouge" id="btnAuth" onclick="gererAuth()" data-original="Déconnecter">Déconnecter</button><button id="menuFermer" onclick="fermerMenu()" data-original="Fermer ✕">Fermer ✕</button>';
       document.body.appendChild(menu);
     }
-    if(!document.getElementById('devise')){
+    if(auth){
+      // Si un vieux menu traîne, on l'enlève sur ces 2 pages
+      var vieuxMenu = document.getElementById('menuBox'); if(vieuxMenu) vieuxMenu.remove();
+      var vieuxOverlay = document.getElementById('menuOverlay'); if(vieuxOverlay) vieuxOverlay.remove();
+    }
+    // Convertisseur : JAMAIS sur inscription / connexion
+    if(auth){
+      var vieuxDevise = document.getElementById('devise');
+      if(vieuxDevise && vieuxDevise.parentElement) vieuxDevise.parentElement.remove();
+    } else if(!document.getElementById('devise')){
       var conv = document.createElement('div');
       conv.style.cssText = "max-width:520px;margin:10px auto;padding:0 12px;display:flex;gap:8px;align-items:center;justify-content:flex-end";
       conv.innerHTML = '<div style="font-size:13px">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF">FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select><div id="tauxInfo" style="font-size:11px;color:#666;margin-top:4px">Taux en cours...</div></div>';
@@ -139,11 +176,11 @@
   };
 
   // ========== 5. MENU / LANGUE / AUTH ==========
-  window.toggleLang = function(e){ if(e) e.stopPropagation(); var b=document.getElementById("langBox"); window.fermerMenu(); b.style.display=(b.style.display==="block")?"none":"block"; };
-  window.toggleMenu = function(e){ if(e) e.stopPropagation(); var m=document.getElementById("menuBox"); var o=document.getElementById("menuOverlay"); var l=document.getElementById("langBox"); if(l) l.style.display="none"; if(m.classList.contains("open")){ window.fermerMenu(); }else{ m.classList.add("open"); o.style.display="block"; window.majMenu(); } };
+  window.toggleLang = function(e){ if(e) e.stopPropagation(); var b=document.getElementById("langBox"); window.fermerMenu(); if(b) b.style.display=(b.style.display==="block")?"none":"block"; };
+  window.toggleMenu = function(e){ if(estPageAuth()) return; if(e) e.stopPropagation(); var m=document.getElementById("menuBox"); var o=document.getElementById("menuOverlay"); var l=document.getElementById("langBox"); if(l) l.style.display="none"; if(!m) return; if(m.classList.contains("open")){ window.fermerMenu(); }else{ m.classList.add("open"); if(o) o.style.display="block"; window.majMenu(); } };
   window.fermerMenu = function(){ var m=document.getElementById("menuBox"); var o=document.getElementById("menuOverlay"); if(m) m.classList.remove("open"); if(o) o.style.display="none"; };
   window.getRole = function(){ return localStorage.getItem("rocy_role")||localStorage.getItem("role_user")||"visiteur"; };
-  window.majMenu = function(){ var role=localStorage.getItem("role_user")||localStorage.getItem("rocy_role")||""; var email=localStorage.getItem("email_user")||""; var nom=localStorage.getItem("nom_user")||"Visiteur"; var connecte=!!email; var bj=document.getElementById("menuBonjour"); if(bj) bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"visiteur"):"visiteur")+")"; document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){ if(!connecte){ a.classList.add("grise"); a.onclick=function(ev){ ev.preventDefault(); location.href="connexion.html"; return false; }; }else{ a.classList.remove("grise"); a.onclick=null; } }); document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){ var besoin=a.getAttribute("data-acces"); var ok=false; if(role==="admin") ok=true; else if(connecte&&role===besoin) ok=true; if(ok){ a.classList.remove("grise"); a.onclick=null; }else{ a.classList.add("grise"); a.onclick=function(ev){ ev.preventDefault(); if(!connecte) location.href="connexion.html"; else alert("Accès réservé"); return false; }; } }); var b=document.getElementById("btnAuth"); if(b) b.innerText=connecte?"Déconnecter":"Connecter"; };
+  window.majMenu = function(){ if(estPageAuth()) return; var role=localStorage.getItem("role_user")||localStorage.getItem("rocy_role")||""; var email=localStorage.getItem("email_user")||""; var nom=localStorage.getItem("nom_user")||"Visiteur"; var connecte=!!email; var bj=document.getElementById("menuBonjour"); if(bj) bj.innerText="Bonjour, "+nom+" ("+(connecte?(role||"visiteur"):"visiteur")+")"; document.querySelectorAll("#menuBox [data-auth]").forEach(function(a){ if(!connecte){ a.classList.add("grise"); a.onclick=function(ev){ ev.preventDefault(); location.href="connexion.html"; return false; }; }else{ a.classList.remove("grise"); a.onclick=null; } }); document.querySelectorAll("#menuBox [data-acces]").forEach(function(a){ var besoin=a.getAttribute("data-acces"); var ok=false; if(role==="admin") ok=true; else if(connecte&&role===besoin) ok=true; if(ok){ a.classList.remove("grise"); a.onclick=null; }else{ a.classList.add("grise"); a.onclick=function(ev){ ev.preventDefault(); if(!connecte) location.href="connexion.html"; else alert("Accès réservé"); return false; }; } }); var b=document.getElementById("btnAuth"); if(b) b.innerText=connecte?"Déconnecter":"Connecter"; };
   window.gererAuth = function(){ var email=localStorage.getItem("email_user"); if(email){ localStorage.removeItem("email_user"); localStorage.removeItem("user_id"); localStorage.removeItem("role_user"); localStorage.removeItem("rocy_role"); location.href="index.html"; }else location.href="connexion.html"; };
 
   document.addEventListener("click", function(e){ if(!e.target.closest("#langBox")&&!e.target.closest(".langBtn")){ var l=document.getElementById("langBox"); if(l) l.style.display="none"; } });
