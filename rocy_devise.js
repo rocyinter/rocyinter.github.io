@@ -53,8 +53,8 @@
     }
     if(!document.getElementById('devise')){
       var conv = document.createElement('div');
-      conv.style.cssText = "max-width:520px;margin:10px auto;padding:0 12px;display:flex;gap:8px;align-items:center;justify-content:space-between";
-      conv.innerHTML = '<a href="index.html" style="color:#666;text-decoration:none;font-size:13px" data-original="← Retour">← Retour</a><div style="font-size:13px">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF">FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select><div id="tauxInfo" style="font-size:11px;color:#666;margin-top:4px">Taux en cours...</div></div>';
+      conv.style.cssText = "max-width:520px;margin:10px auto;padding:0 12px;display:flex;gap:8px;align-items:center;justify-content:flex-end";
+      conv.innerHTML = '<div style="font-size:13px">💰 <select id="devise" onchange="convertirPrix()"><option value="XOF">FCFA</option><option value="EUR">Euro €</option><option value="USD">Dollar $</option><option value="NGN">Naira ₦</option><option value="GHS">Cedi GH₵</option><option value="GBP">Livre £</option></select><div id="tauxInfo" style="font-size:11px;color:#666;margin-top:4px">Taux en cours...</div></div>';
       var headerEl = document.querySelector('header');
       if(headerEl && headerEl.nextSibling) headerEl.parentNode.insertBefore(conv, headerEl.nextSibling);
       else document.body.appendChild(conv);
