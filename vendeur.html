@@ -8,9 +8,8 @@
 <script src="rocy_devise.js"></script>
 <style>
 *{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;padding:0}
-.retour{display:block;max-width:520px;margin:10px auto 0;padding:0 12px;color:#111;text-decoration:none;font-size:13px;font-weight:700}
 .container{max-width:520px;margin:14px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-@media(min-width:768px){.container{max-width:680px}.retour{max-width:680px}}@media(min-width:1024px){.container{max-width:820px}.retour{max-width:820px}}
+@media(min-width:768px){.container{max-width:680px}}@media(min-width:1024px){.container{max-width:820px}}
 .profil{display:flex;gap:12px;align-items:center}
 .avatar{width:50px;height:50px;background:#ff6b00;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:bold;overflow:hidden;flex-shrink:0}
 .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
@@ -26,9 +25,25 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 .btn-pro{width:100%;background:#FFC107;color:#111;border:none;padding:14px;border-radius:10px;font-size:13px;font-weight:900;margin-top:10px;cursor:pointer}
 .produit{display:flex;gap:12px;background:#f9f9f9;padding:10px;border-radius:10px;margin-top:10px;cursor:pointer}
 .produit img{width:70px;height:70px;object-fit:cover;border-radius:8px}.produit span{font-size:10px;color:#666}.produit b{font-size:11px}.produit a{font-size:10px;color:#ff6b00;text-decoration:none;font-weight:bold}.produit a.red{color:#e53935}
-.vente{background:#fff8f0;border:1px solid #ffe0b2;padding:12px;border-radius:10px;margin-top:10px;font-size:11px;line-height:1.6}
+.vente{background:#fff;border:1px solid #eee;border-radius:12px;margin-top:10px;overflow:hidden}
+.vente-ligne{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px;cursor:pointer;background:#fff}
+.vente-ligne:active{background:#FFF8E1}
+.vente-ligne b{font-size:12px;color:#0a1a2f}
+.vente-ligne small{font-size:10px;color:#666;display:block;margin-top:2px}
+.vente-prix{font-size:12px;font-weight:800;color:#0a1a2f;white-space:nowrap}
+.vente-fleche{font-size:14px;color:#999}
+.vente-detail{display:none;padding:0 12px 12px;background:#FFFBF5;border-top:1px solid #FFE0B2}
+.vente-detail.open{display:block}
+.detail-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #FFE0B2;font-size:11px}
+.detail-row span{color:#666}.detail-row b{color:#111}
+.detail-row.total{border-bottom:none;background:#111;color:#fff;border-radius:8px;padding:10px;margin-top:8px}
+.detail-row.total span{color:#FFC107}.detail-row.total b{color:#fff;font-size:13px}
+.badge-statut{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.statut-bloque{background:#FFF3E0;color:#E65100}
+.statut-envoye{background:#E3F2FD;color:#1565C0}
+.statut-recu{background:#E8F5E9;color:#2E7D32}
 .orange{color:#ff6b00;font-weight:bold}.green{color:#2e7d32;font-weight:bold}
-.btn-small{background:#0a1a2f;color:#fff;border:none;padding:10px;border-radius:8px;font-size:10px;font-weight:bold;margin-top:8px;cursor:pointer}
+.btn-small{background:#0a1a2f;color:#fff;border:none;padding:11px;border-radius:8px;font-size:11px;font-weight:bold;margin-top:8px;cursor:pointer;width:100%}
 .btn-boost{background:#FFC107;color:#111;border:none;padding:10px;border-radius:8px;font-size:10px;font-weight:900;margin-top:6px;cursor:pointer}
 .btn-boost:disabled{background:#fff !important;color:#111 !important;border:1px solid #ddd !important;cursor:not-allowed !important}
 .argent{background:#f4f8ff;padding:14px;border-radius:10px;margin-top:10px;line-height:1.8;font-size:11px}
@@ -41,7 +56,6 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 </style>
 </head>
 <body>
-<a class="retour" href="javascript:history.back()" data-original="← Retour">← Retour</a>
 <div class="container">
 <div class="profil">
 <div class="avatar" id="avatarVendeur">R</div>
@@ -65,12 +79,6 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 <button class="btn-pro" onclick="passerPro()" data-original="💳 Payer PRO - 2 000 F / mois">💳 Payer PRO - 2 000 F / mois</button>
 </div>
 
-<div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:10px;margin-top:14px;font-size:12px;line-height:1.7">
-<b data-original="Exemple : Comment tu es payé ?">Exemple : Comment tu es payé ?</b><br>
-<span data-original="Vente 100 000 F - Commission 8 500 F - Frais 25% 900 F = Tu reçois 90 600 F">Vente 100 000 F - Commission 8 500 F - Frais 25% 900 F = Tu reçois 90 600 F</span><br>
-<span data-original="Frais : vendeur paie 25%, ROCYINTER paie 75%, calcul automatique.">Frais : vendeur paie 25%, ROCYINTER paie 75%, calcul automatique.</span>
-</div>
-
 <div class="stats">
 <div class="card"><b id="statArgent">0 F</b><span data-original="Mon argent">Mon argent</span></div>
 <div class="card"><b id="statProduits">0</b><span data-original="Produits">Produits</span></div>
@@ -81,7 +89,7 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 <h3 data-original="Mes produits - Clique pour voir le détail">Mes produits - Clique pour voir le détail</h3>
 <div id="listeProduits"><p style="font-size:10px;color:#666" data-original="Chargement de tes produits...">Chargement de tes produits...</p></div>
 <h3 data-original="Mes ventes / Commandes reçues">Mes ventes / Commandes reçues</h3>
-<p style="font-size:9px;color:#666;margin:-5px 0 10px" data-original="Tu cliques 📦 J'AI ENVOYÉ quand tu envoies + tu mets ta preuve dans 24h. Tu es payé seulement quand l'acheteur clique COLIS REÇU.">Tu cliques <b>📦 J'AI ENVOYÉ</b> quand tu envoies + tu mets ta preuve dans 24h. Tu es payé seulement quand l'acheteur clique <b>COLIS REÇU</b>.</p>
+<p style="font-size:9px;color:#666;margin:-5px 0 10px" data-original="Clique sur une commande pour voir le détail.">Clique sur une commande pour voir le détail. Tu cliques <b>📦 J'AI ENVOYÉ</b> quand tu envoies + tu mets ta preuve dans 24h. Tu es payé seulement quand l'acheteur clique <b>COLIS REÇU</b>.</p>
 <div id="listeVentes"><p style="font-size:10px;color:#666" data-original="Chargement de tes commandes...">Chargement de tes commandes...</p></div>
 <div id="formEnvoi" style="display:none;border:2px solid #FF6B00;padding:12px;border-radius:10px;margin-top:10px;background:#FFF8E1">
 <b style="font-size:11px"><span data-original="📦 Preuve d'envoi -">📦 Preuve d'envoi -</span> <span id="nomProduitEnvoi"></span></b><br>
@@ -176,7 +184,6 @@ function passerPro(){
 }
 function boosterProduit(id){
   var p=_produitsVendeur.find(function(x){ return String(x.id)===String(id); }); if(!p) return;
-  // CORRECTION BOOST : si deja booste et pas encore fini, on bloque
   var maintenantB = new Date();
   var finB = p.boost_fin ? new Date(p.boost_fin) : null;
   if ((p.boost || p.booster) && finB && maintenantB < finB) {
@@ -224,6 +231,14 @@ async function activerPro(moyen){
   if(supabaseClient && vendeurIdActuel){ var res=await supabaseClient.from('profils').update({is_pro:true, statut:'pro', abonnement:'pro', statut_pro:'paye', demande_pro:false, fin_pro:fin.toISOString(), pro_fin:fin.toISOString()}).eq('id', vendeurIdActuel); if(res.error){ alert("Erreur PRO : "+res.error.message); return; } }
   alert("✅ Tu es maintenant PRO pour 1 mois ! Badge doré, illimité, en haut.");
   chargerVendeur();
+}
+function basculerCommande(id){
+  var detail = document.getElementById('detail-cmd-'+id);
+  if(!detail) return;
+  var estOuvert = detail.classList.contains('open');
+  document.querySelectorAll('.vente-detail').forEach(function(d){ d.classList.remove('open'); });
+  document.querySelectorAll('.vente-fleche').forEach(function(f){ f.innerText='›'; });
+  if(!estOuvert){ detail.classList.add('open'); var fl=document.getElementById('fleche-cmd-'+id); if(fl) fl.innerText='⌄'; }
 }
 async function chargerVendeur(){
   var ok = await verifierVendeur(); if(!ok) return;
@@ -276,19 +291,23 @@ async function chargerVendeur(){
   var zoneV = document.getElementById('listeVentes');
   if(zoneV){
     if(!commandes || commandes.length === 0){ zoneV.innerHTML = "<p style='font-size:10px;color:#666'>Aucune commande reçue pour le moment.</p>"; }
-    else { zoneV.innerHTML = ""; commandes.forEach(function(c){
-      var nomAff = c.nom || c.nom_produit || "Produit"; var nomSafe = nomAff.split("'").join(""); var acheteurAff = c.nom_acheteur || c.email_acheteur || "Acheteur"; var villeAff = c.ville_acheteur || ""; var moyenAff = c.moyen_paiement ? "<br>Moyen : " + c.moyen_paiement : ""; var statutAff = c.statut || "argent_bloque";
+    else { zoneV.innerHTML = ""; commandes.forEach(function(c, index){
+      var numeroCommande = String(index+1).padStart(4,'0');
+      var nomAff = c.nom || c.nom_produit || "Produit"; var nomSafe = nomAff.split("'").join("");
+      var acheteurAff = c.nom_acheteur || c.email_acheteur || "Acheteur"; var villeAff = c.ville_acheteur || ""; var moyenAff = c.moyen_paiement || "Non précisé"; var statutAff = c.statut || "argent_bloque";
       var totalVente = Number(c.total || c.prix || 0);
       var fraisTotal = c.frais_livraison_total ? Number(c.frais_livraison_total) : Math.round(totalVente*0.036);
       var fraisVendeur = c.frais_vendeur ? Number(c.frais_vendeur) : Math.round(fraisTotal*0.25);
       var d = calculerDetail(totalVente); d.fraisVendeur=fraisVendeur; d.net=totalVente - d.commission - fraisVendeur;
-      var detailCalc = "Vente : "+fmt(totalVente)+" - Commission : "+fmt(d.commission)+" - Frais 25% : "+fmt(fraisVendeur)+" = <b>Tu reçois : "+fmt(d.net)+"</b>";
+      var classeStatut = (statutAff === "colis_recu" || statutAff === "Colis reçu") ? "statut-recu" : (statutAff === "envoye" || statutAff === "Colis envoyé") ? "statut-envoye" : "statut-bloque";
+      var texteStatut = (statutAff === "colis_recu" || statutAff === "Colis reçu") ? "✅ Colis reçu" : (statutAff === "envoye" || statutAff === "Colis envoyé") ? "📦 Envoyé" : "💰 Argent bloqué";
       var btn = "";
-      if(statutAff === "argent_bloque" || statutAff === "En attente d'envoi"){ btn = '<button class="btn-small" onclick="ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYÉ - Mettre la preuve</button><br><span class="orange">💰 Argent bloqué - Tu dois envoyer + mettre ta preuve dans 24h</span>'; }
-      else if(statutAff === "envoye" || statutAff === "Colis envoyé"){ btn = '<span class="orange">✅ Envoyé - ' + (c.transporteur||"") + ' N° ' + (c.numero_colis||"") + '</span><br><span>En attente COLIS REÇU par l\'acheteur</span>'; }
-      else if(statutAff === "colis_recu" || statutAff === "Colis reçu"){ btn = '<span class="green">✅ Colis reçu - Argent débloqué</span>'; }
-      else { btn = '<button class="btn-small" onclick="ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYÉ - Mettre la preuve</button>'; }
-      zoneV.innerHTML += '<div class="vente"><b>Commande #' + String(c.id || '0000').slice(0,4) + ' - ' + nomAff + ' - <span class="prix" data-prix="' + totalVente + '">' + fmt(totalVente) + '</span></b><br>Acheteur : ' + acheteurAff + ' - ' + villeAff + moyenAff + '<br>Statut : <span class="orange">' + statutAff + '</span><br>'+detailCalc+'<br>' + btn + '</div>';
+      var infoEnvoi = "";
+      if(statutAff === "argent_bloque" || statutAff === "En attente d'envoi"){ btn = '<button class="btn-small" onclick="event.stopPropagation();ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYÉ - Mettre la preuve</button><div style="font-size:10px;color:#E65100;margin-top:6px;font-weight:700">💰 Argent bloqué - Tu dois envoyer + mettre ta preuve dans 24h</div>'; }
+      else if(statutAff === "envoye" || statutAff === "Colis envoyé"){ infoEnvoi = '<div class="detail-row"><span>Transporteur</span><b>' + (c.transporteur||"-") + '</b></div><div class="detail-row"><span>N° Colis</span><b>' + (c.numero_colis||"-") + '</b></div>'; btn = '<div style="font-size:10px;color:#1565C0;margin-top:6px;font-weight:700">En attente COLIS REÇU par l\'acheteur</div>'; }
+      else if(statutAff === "colis_recu" || statutAff === "Colis reçu"){ btn = '<div style="font-size:10px;color:#2E7D32;margin-top:6px;font-weight:700">✅ Colis reçu - Argent débloqué</div>'; }
+      else { btn = '<button class="btn-small" onclick="event.stopPropagation();ouvrirPreuveEnvoi(\'' + c.id + '\',\'' + nomSafe + '\')">📦 J\'AI ENVOYÉ - Mettre la preuve</button>'; }
+      zoneV.innerHTML += '<div class="vente"><div class="vente-ligne" onclick="basculerCommande(\'' + c.id + '\')"><div><b>Commande #' + numeroCommande + ' - ' + nomAff + '</b><small>' + acheteurAff + ' - ' + villeAff + '</small><span class="badge-statut ' + classeStatut + '">' + texteStatut + '</span></div><div style="text-align:right"><div class="vente-prix">' + fmt(totalVente) + '</div><div class="vente-fleche" id="fleche-cmd-' + c.id + '">›</div></div></div><div class="vente-detail" id="detail-cmd-' + c.id + '"><div class="detail-row"><span>Produit</span><b>' + nomAff + '</b></div><div class="detail-row"><span>Acheteur</span><b>' + acheteurAff + '</b></div><div class="detail-row"><span>Moyen de paiement</span><b>' + moyenAff + '</b></div><div class="detail-row"><span>Statut</span><b>' + statutAff + '</b></div>' + infoEnvoi + '<div class="detail-row"><span>Vente</span><b>' + fmt(totalVente) + '</b></div><div class="detail-row"><span>Commission</span><b>' + fmt(d.commission) + '</b></div><div class="detail-row"><span>Frais 25%</span><b>' + fmt(fraisVendeur) + '</b></div><div class="detail-row total"><span>Tu reçois</span><b>' + fmt(d.net) + '</b></div>' + btn + '</div></div>';
     }); }
   }
   if(produits && commandes){
@@ -317,7 +336,7 @@ async function supprimerProduit(id){ if(!confirm("Supprimer ce produit ?")) retu
 function retirerArgent(){ var f = document.getElementById('formRetrait'); if(!f) return; f.style.display = (f.style.display === 'block') ? 'none' : 'block'; chargerMesRetraits(); }
 async function demanderRetrait(){ var montant = Number(document.getElementById('montantRetrait').value || 0); var methode = document.getElementById('methodeRetrait').value; var pays = document.getElementById('paysRetrait').value || 'Bénin'; var devise = document.getElementById('deviseRetrait').value || 'XOF'; var numero = document.getElementById('numeroRetrait').value; if(!montant || montant < 1000){ alert("Montant minimum : 1000 F"); return; } if(!numero){ alert("Mets ton numéro ou ton compte pour recevoir"); return; } if(!supabaseClient){ alert("Connexion en cours, réessaie."); return; } var res = await supabaseClient.from('retraits').insert([{ vendeur_id: vendeurIdActuel || null, montant: montant, methode: methode, pays: pays, devise: devise, numero: numero, statut: 'en_attente' }]); if(res.error){ alert('Erreur : ' + res.error.message); return; } alert('✅ Demande envoyée !'); document.getElementById('montantRetrait').value = ''; document.getElementById('numeroRetrait').value = ''; chargerMesRetraits(); }
 async function chargerMesRetraits(){ var box = document.getElementById('mesRetraits'); if(!box || !supabaseClient) return; var q = supabaseClient.from('retraits').select('*').order('created_at', {ascending:false}); if(vendeurIdActuel) q = q.eq('vendeur_id', vendeurIdActuel); var res = await q; if(res.error){ box.innerHTML = 'Erreur : ' + res.error.message; return; } if(!res.data || !res.data.length){ box.innerHTML = 'Aucune demande pour le moment.'; return; } box.innerHTML = res.data.map(function(r){ var coul = r.statut === 'paye' ? 'green' : r.statut === 'refuse' ? 'red' : 'orange'; var txt = r.statut === 'paye' ? '✅ Payé' : r.statut === 'refuse' ? '❌ Refusé' : '⏳ En attente'; return '<div style="border:1px solid #eee;padding:8px;border-radius:8px;margin-top:6px"><b>' + fmt(r.montant||0) + ' ' + (r.devise||'XOF') + '</b> - ' + (r.methode||'FedaPay') + '<br><span style="color:'+coul+';font-weight:bold">' + txt + '</span> - ' + (r.pays||'') + '</div>'; }).join(''); }
-window.allerPublier = allerPublier; window.supprimerProduit = supprimerProduit; window.voirDetailProduit = voirDetailProduit; window.fermerDetailProduit = fermerDetailProduit; window.modifierDepuisDetail = modifierDepuisDetail; window.supprimerDepuisDetail = supprimerDepuisDetail; window.ouvrirPreuveEnvoi = ouvrirPreuveEnvoi; window.confirmerEnvoi = confirmerEnvoi; window.fermerEnvoi = fermerEnvoi; window.retirerArgent = retirerArgent; window.demanderRetrait = demanderRetrait; window.chargerMesRetraits = chargerMesRetraits; window.boosterProduit = boosterProduit; window.passerPro = passerPro; window.ouvrirPaiement = ouvrirPaiement; window.fermerPaiement = fermerPaiement; window.confirmerPaiement = confirmerPaiement;
+window.allerPublier = allerPublier; window.supprimerProduit = supprimerProduit; window.voirDetailProduit = voirDetailProduit; window.fermerDetailProduit = fermerDetailProduit; window.modifierDepuisDetail = modifierDepuisDetail; window.supprimerDepuisDetail = supprimerDepuisDetail; window.ouvrirPreuveEnvoi = ouvrirPreuveEnvoi; window.confirmerEnvoi = confirmerEnvoi; window.fermerEnvoi = fermerEnvoi; window.retirerArgent = retirerArgent; window.demanderRetrait = demanderRetrait; window.chargerMesRetraits = chargerMesRetraits; window.boosterProduit = boosterProduit; window.passerPro = passerPro; window.ouvrirPaiement = ouvrirPaiement; window.fermerPaiement = fermerPaiement; window.confirmerPaiement = confirmerPaiement; window.basculerCommande = basculerCommande;
 </script>
 </body>
 </html>
