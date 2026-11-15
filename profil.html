@@ -46,7 +46,7 @@ button.btn-small{padding:10px 12px;border:0;border-radius:10px;background:#FFC10
 </div>
 
 <div id="blocEmailProfil" style="display:none;background:#FFF3E8;border:1px solid #FFC107;padding:14px;border-radius:12px;margin:14px 0">
-<b>⚠️ Complète ton vrai email ici</b><br><small style="font-size:12px;color:#666">Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.</small>
+<b>⚠️ Complète ton vrai email ici</b><br><small id="texteBlocEmail" style="font-size:12px;color:#666">Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.</small>
 </div>
 
 <div class="card" id="blocPasserPro" style="display:none;text-align:center">
@@ -118,7 +118,7 @@ button.btn-small{padding:10px 12px;border:0;border-radius:10px;background:#FFC10
 </div>
 
 <div class="card" id="cardVerification" style="display:none"><h2>✅ Vérification Email & Téléphone</h2>
-<p style="font-size:13px;color:#666;margin:0 0 10px">Même si tu as déjà mis tes infos à l'inscription, tu dois vérifier ici avec un code à 6 chiffres. C'est obligatoire pour retirer ton argent.</p>
+<p id="texteVerification" style="font-size:13px;color:#666;margin:0 0 10px">Même si tu as déjà mis tes infos à l'inscription, tu dois vérifier ici avec un code à 6 chiffres. C'est obligatoire pour retirer ton argent.</p>
 <div class="verif-box">
 <b>📧 Email : <span id="emailAVerifier">-</span></b><br>
 <span id="statutEmail">❌ Non vérifié</span><br>
@@ -141,7 +141,7 @@ button.btn-small{padding:10px 12px;border:0;border-radius:10px;background:#FFC10
 
 <div class="card" id="cardAcheteur" style="display:none"><h2>🛒 Historique de mes achats - Acheteur</h2><div id="listeAchats">Chargement...</div><button class="btn" onclick="location.href='acheteur.html'">→ Aller à mon Tableau Acheteur</button></div>
 
-<div class="card"><h2>🛡️ KYC - Vérification identité</h2><p>Pour retirer ton argent, tu dois vérifier ton identité.</p>
+<div class="card" id="cardKYC"><h2>🛡️ KYC - Vérification identité</h2><p id="texteKYC">Pour retirer ton argent, tu dois vérifier ton identité.</p>
 <div id="kycVue" style="display:none"></div>
 <div id="kycForm">
 <label>Type de pièce</label><select id="typePiece"><option value="cni">Carte d'identité (CNI)</option><option value="passeport">Passeport</option><option value="permis">Permis de conduire</option></select>
@@ -152,13 +152,13 @@ button.btn-small{padding:10px 12px;border:0;border-radius:10px;background:#FFC10
 <button class="btn-light" id="btnModifierKYC" style="display:none">✏️ Modifier mon KYC</button>
 </div>
 
-<div class="card"><h2>💰 Mon Solde & Retrait</h2><h1 id="soldeProfil" style="text-align:center">0 F</h1><p style="text-align:center">Solde disponible</p>
+<div class="card" id="cardSolde"><h2>💰 Mon Solde & Retrait</h2><h1 id="soldeProfil" style="text-align:center">0 F</h1><p style="text-align:center">Solde disponible</p>
 <label>Montant à retirer (F)</label><input type="number" id="montantRetrait" placeholder="Ex: 1000000">
 <label>Moyen de retrait</label><select id="moyenRetrait"><option value="mtn">MTN MoMo</option><option value="moov">Moov Money</option><option value="celtiis">Celtiis Cash</option><option value="virement">Virement bancaire</option></select>
 <label>Numéro / Compte pour recevoir</label><input id="compteRetrait" placeholder="Ex: +229 97...">
 <button class="btn btn-retrait" id="btnRetrait">Demander le retrait</button><p id="msgRetrait"></p></div>
 
-<div class="card"><h2>Mes demandes de retrait</h2><div id="listeRetraits">Chargement...</div></div>
+<div class="card" id="cardListeRetraits"><h2>Mes demandes de retrait</h2><div id="listeRetraits">Chargement...</div></div>
 </div>
 
 <div id="popupPaiement" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000">
@@ -346,6 +346,38 @@ function majKycVue(p){
 document.getElementById('photoProfilInput').addEventListener('change',async function(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=function(ev){document.getElementById('photoProfilImg').src=ev.target.result;};r.readAsDataURL(file);const{data:{session}}=await supabaseClient.auth.getSession();if(!session)return;const b64=await new Promise(function(res){const r2=new FileReader();r2.onload=function(ev){res(ev.target.result);};r2.readAsDataURL(file);});const{error}=await supabaseClient.from('profils').update({photo_profil:b64}).eq('id',session.user.id);if(error)alert('Erreur photo : '+error.message);else alert('Photo de profil sauvegardée ✅');});
 document.getElementById('photoPiece').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=document.getElementById('previewPiece');img.src=ev.target.result;img.style.display='block';};r.readAsDataURL(f);});
 function statutPro(p){ return p.statut==='pro' || p.abonnement==='pro' || p.is_pro===true || p.type_compte==='pro' || p.statut_vendeur==='pro'; }
+function majAffichageParRole(role, isPro){
+  var blocPro=document.getElementById('blocPasserPro');
+  var cardSolde=document.getElementById('cardSolde');
+  var cardListe=document.getElementById('cardListeRetraits');
+  var cardVendeur=document.getElementById('cardVendeur');
+  var cardAcheteur=document.getElementById('cardAcheteur');
+  var texteKYC=document.getElementById('texteKYC');
+  var texteVerif=document.getElementById('texteVerification');
+  var texteBlocEmail=document.getElementById('texteBlocEmail');
+  var estVendeur = (role==='vendeur' || role==='admin');
+  var estAcheteur = (role==='acheteur' || role==='admin');
+  if(estVendeur){
+    if(cardVendeur) cardVendeur.style.display='block';
+    if(cardSolde) cardSolde.style.display='block';
+    if(cardListe) cardListe.style.display='block';
+    if(blocPro) blocPro.style.display = isPro ? 'none' : 'block';
+    if(texteKYC) texteKYC.innerText='Pour retirer ton argent, tu dois vérifier ton identité.';
+    if(texteVerif) texteVerif.innerText="Même si tu as déjà mis tes infos à l'inscription, tu dois vérifier ici avec un code à 6 chiffres. C'est obligatoire pour retirer ton argent.";
+    if(texteBlocEmail) texteBlocEmail.innerText='Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.';
+  } else {
+    if(cardVendeur) cardVendeur.style.display='none';
+    if(cardSolde) cardSolde.style.display='none';
+    if(cardListe) cardListe.style.display='none';
+    if(blocPro) blocPro.style.display='none';
+    if(texteKYC) texteKYC.innerText='Pour sécuriser ton compte et en cas de litige, vérifie ton identité.';
+    if(texteVerif) texteVerif.innerText="Même si tu as déjà mis tes infos à l'inscription, tu dois vérifier ici avec un code à 6 chiffres. C'est pour sécuriser ton compte.";
+    if(texteBlocEmail) texteBlocEmail.innerText='Complète ton vrai email pour recevoir les infos de tes commandes.';
+  }
+  if(estAcheteur && cardAcheteur) cardAcheteur.style.display='block';
+  if(!estAcheteur && cardAcheteur) cardAcheteur.style.display='none';
+  if(role==='vendeur' && cardAcheteur) cardAcheteur.style.display='none';
+}
 async function chargerProfil(){
   afficherSolde(0);
   afficherBlocEmail();
@@ -367,26 +399,24 @@ async function chargerProfil(){
   var isPro=statutPro(data);
   var badge=document.getElementById('badgeStatut');
   var finEl=document.getElementById('finPro');
-  var blocPro=document.getElementById('blocPasserPro');
   var finProDate = data.fin_pro||data.pro_fin||data.date_fin_pro||null;
   if(isPro && finProDate && new Date(finProDate).getTime() < Date.now()){ isPro=false; }
-  if(isPro){
+  var role=data.role||'acheteur';
+  var estVendeur = (role==='vendeur' || role==='admin');
+  if(isPro && estVendeur){
     badge.style.display='inline-block';
     badge.innerText='⭐ PRO';
     var joursRestants = finProDate ? Math.ceil((new Date(finProDate)-new Date())/(1000*60*60*24)) : 0;
     finEl.innerText = finProDate ? ('Fin : '+new Date(finProDate).toLocaleDateString('fr-FR')+' - Reste '+joursRestants+' jour(s)') : 'PRO actif';
-    if(blocPro) blocPro.style.display='none';
   } else {
     badge.style.display='none';
     finEl.innerText='';
-    if(blocPro) blocPro.style.display='block';
   }
+  majAffichageParRole(role, isPro);
   afficherSolde(data.solde||0);
-  afficherBlocEmail();chargerRetraits(session.user.id);
-  var role=data.role||'acheteur';
-  if(role==='vendeur' || role==='admin'){ document.getElementById('cardVendeur').style.display='block'; chargerVendeur(session.user.id, data.email, isPro); }
-  if(role==='acheteur' || role==='admin'){ document.getElementById('cardAcheteur').style.display='block'; chargerAchats(session.user.id, data.email); }
-  if(role==='vendeur'){ document.getElementById('cardAcheteur').style.display='none'; }
+  afficherBlocEmail();
+  if(estVendeur){ chargerVendeur(session.user.id, data.email, isPro); chargerRetraits(session.user.id); }
+  if(role==='acheteur' || role==='admin'){ chargerAchats(session.user.id, data.email); }
   if(typeof window.traduireTouteLaPage==="function") window.traduireTouteLaPage();
 }
 async function chargerVendeur(userId, email, isPro){
