@@ -30,6 +30,7 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 .orange{color:#ff6b00;font-weight:bold}.green{color:#2e7d32;font-weight:bold}
 .btn-small{background:#0a1a2f;color:#fff;border:none;padding:10px;border-radius:8px;font-size:10px;font-weight:bold;margin-top:8px;cursor:pointer}
 .btn-boost{background:#FFC107;color:#111;border:none;padding:10px;border-radius:8px;font-size:10px;font-weight:900;margin-top:6px;cursor:pointer}
+.btn-boost:disabled{background:#fff !important;color:#111 !important;border:1px solid #ddd !important;cursor:not-allowed !important}
 .argent{background:#f4f8ff;padding:14px;border-radius:10px;margin-top:10px;line-height:1.8;font-size:11px}
 #detailOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000}
 #detailBox{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:480px;max-height:88vh;overflow:auto;background:#fff;border-radius:16px;padding:16px;z-index:2001}
@@ -124,7 +125,6 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 <div id="detailOverlay" onclick="fermerDetailProduit()"></div>
 <div id="detailBox"><img id="detailPhoto" src=""><h2 id="detailNom"></h2><p id="detailPrix"></p><p id="detailLieu"></p><p id="detailDesc"></p><p id="detailInfos"></p><button class="btn" onclick="modifierDepuisDetail()" data-original="Modifier ce produit">Modifier ce produit</button><button class="btn" style="background:#e53935" onclick="supprimerDepuisDetail()" data-original="Supprimer ce produit">Supprimer ce produit</button><button id="detailFermer" onclick="fermerDetailProduit()" data-original="Fermer ✕">Fermer ✕</button></div>
 
-<!-- POPUP PAIEMENT BOOST / PRO -->
 <div id="popupPaiement" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000">
 <div style="background:#fff;max-width:400px;margin:15% auto;padding:16px;border-radius:14px">
 <b id="titrePaiement">Paiement</b><br><br>
@@ -162,8 +162,6 @@ function majStatutUI(){
   else if(_isPro){ badge.innerText='⭐ PRO - 2 000 F / mois'; badge.className='badge-pro'; fin.innerText=_finPro?('Fin PRO : '+new Date(_finPro).toLocaleDateString('fr-FR')):'PRO actif'; if(btnPro) btnPro.style.display='none'; if(alerte) alerte.style.display='none'; }
   else { badge.innerText='GRATUIT - 0 F'; badge.className='badge-gratuit'; fin.innerText='GRATUIT : 5 produits max. Passe PRO pour illimité.'; if(btnPro) btnPro.style.display='block'; if(alerte) alerte.style.display='none'; }
 }
-
-// ===== PAIEMENT D'ABORD, BOOST / PRO APRES =====
 function ouvrirPaiement(type, produitId, montant, titre){
   _paiementEnCours = {type:type, produitId:produitId, montant:montant};
   document.getElementById('titrePaiement').innerText = titre + " - " + montant + " F";
@@ -178,6 +176,14 @@ function passerPro(){
 }
 function boosterProduit(id){
   var p=_produitsVendeur.find(function(x){ return String(x.id)===String(id); }); if(!p) return;
+  // CORRECTION BOOST : si deja booste et pas encore fini, on bloque
+  var maintenantB = new Date();
+  var finB = p.boost_fin ? new Date(p.boost_fin) : null;
+  if ((p.boost || p.booster) && finB && maintenantB < finB) {
+    var resteB = Math.ceil((finB - maintenantB) / (1000*60*60*24));
+    alert("Ce produit est deja booste. Il reste " + resteB + " jour(s). Attends la fin.");
+    return;
+  }
   var dejaGratuit=false;
   if(_isPro){ var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1); if(!localStorage.getItem('rocy_boost_gratuit_'+mois)){ dejaGratuit=true; } }
   if(dejaGratuit){
@@ -219,7 +225,6 @@ async function activerPro(moyen){
   alert("✅ Tu es maintenant PRO pour 1 mois ! Badge doré, illimité, en haut.");
   chargerVendeur();
 }
-
 async function chargerVendeur(){
   var ok = await verifierVendeur(); if(!ok) return;
   if(supabaseClient){
@@ -247,8 +252,22 @@ async function chargerVendeur(){
   if(zoneP){
     if(!produits || produits.length === 0){ zoneP.innerHTML = "<p style='font-size:10px;color:#666'>Tu n'as encore publié aucun produit. Clique sur + PUBLIER UN PRODUIT.</p>"; }
     else { zoneP.innerHTML = ""; produits.forEach(function(p){
-      var estBooste = p.boost || p.booster || p.est_booste; var boostTxt = estBooste ? "⭐ BOOSTÉ - À LA UNE" : "";
-      zoneP.innerHTML += '<div class="produit" onclick="voirDetailProduit(\'' + p.id + '\')"><img src="' + (p.photo || "") + '"><div><b>' + p.nom + ' - <span class="prix" data-prix="' + Number(p.prix||0) + '">' + fmt(p.prix||0) + '</span></b><br><span>En ligne - ' + (p.vues || 0) + ' vues - Clique pour voir le détail 👁️ ' + boostTxt + '</span><br><button class="btn-boost" onclick="event.stopPropagation();boosterProduit(\''+p.id+'\')">⭐ Booster 500 F / 7 jours</button><br><a href="publier.html?id=' + p.id + '" onclick="event.stopPropagation()">Modifier</a> | <a href="#" class="red" onclick="event.stopPropagation();supprimerProduit(\'' + p.id + '\');return false;">Supprimer</a></div></div>';
+      var maintenant = new Date();
+      var finBoost = p.boost_fin ? new Date(p.boost_fin) : null;
+      var estEncoreBooste = (p.boost || p.booster) && finBoost && maintenant < finBoost;
+      var boostTxt = estEncoreBooste ? "⭐ BOOSTÉ - À LA UNE" : "";
+      var texteBouton = "⭐ Booster 500 F / 7 jours";
+      var styleBouton = "background:#FFC107;color:#111;";
+      var disabledAttr = "";
+      var clicBouton = "event.stopPropagation();boosterProduit('"+p.id+"')";
+      if (estEncoreBooste) {
+        var joursRestants = Math.ceil((finBoost - maintenant) / (1000*60*60*24));
+        texteBouton = "✅ BOOSTÉ - Reste " + joursRestants + " jour(s)";
+        styleBouton = "background:#fff;color:#111;border:1px solid #ddd;cursor:not-allowed;";
+        disabledAttr = "disabled";
+        clicBouton = "event.stopPropagation();";
+      }
+      zoneP.innerHTML += '<div class="produit" onclick="voirDetailProduit(\'' + p.id + '\')"><img src="' + (p.photo || "") + '"><div><b>' + p.nom + ' - <span class="prix" data-prix="' + Number(p.prix||0) + '">' + fmt(p.prix||0) + '</span></b><br><span>En ligne - ' + (p.vues || 0) + ' vues - Clique pour voir le détail 👁️ ' + boostTxt + '</span><br><button class="btn-boost" style="' + styleBouton + '" ' + disabledAttr + ' onclick="' + clicBouton + '">' + texteBouton + '</button><br><a href="publier.html?id=' + p.id + '" onclick="event.stopPropagation()">Modifier</a> | <a href="#" class="red" onclick="event.stopPropagation();supprimerProduit(\'' + p.id + '\');return false;">Supprimer</a></div></div>';
     }); }
   }
   var commandes = [];
