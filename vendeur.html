@@ -123,10 +123,25 @@ h3{color:#0a1a2f;margin-top:22px;border-bottom:1px solid #eee;padding-bottom:6px
 </div>
 <div id="detailOverlay" onclick="fermerDetailProduit()"></div>
 <div id="detailBox"><img id="detailPhoto" src=""><h2 id="detailNom"></h2><p id="detailPrix"></p><p id="detailLieu"></p><p id="detailDesc"></p><p id="detailInfos"></p><button class="btn" onclick="modifierDepuisDetail()" data-original="Modifier ce produit">Modifier ce produit</button><button class="btn" style="background:#e53935" onclick="supprimerDepuisDetail()" data-original="Supprimer ce produit">Supprimer ce produit</button><button id="detailFermer" onclick="fermerDetailProduit()" data-original="Fermer ✕">Fermer ✕</button></div>
+
+<!-- POPUP PAIEMENT BOOST / PRO -->
+<div id="popupPaiement" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000">
+<div style="background:#fff;max-width:400px;margin:15% auto;padding:16px;border-radius:14px">
+<b id="titrePaiement">Paiement</b><br><br>
+<label style="font-size:11px">Moyen de paiement</label>
+<select id="moyenPaiement" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+<option>MTN MoMo</option><option>Moov Money</option><option>Orange Money</option><option>Wave</option><option>Carte bancaire</option>
+</select>
+<label style="font-size:11px">Numéro / Compte</label>
+<input id="numeroPaiement" placeholder="Ex: 22997000000" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+<button onclick="confirmerPaiement()" style="width:100%;padding:12px;background:#FF6B00;color:#fff;border:none;border-radius:10px;font-weight:bold">💳 PAYER MAINTENANT</button>
+<button onclick="fermerPaiement()" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:6px">Annuler</button>
+</div></div>
+
 <script>
-// ===== VENDEUR.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
 var supabaseClient = null; var vendeurIdActuel = ""; var emailVendeurActuel = localStorage.getItem('email_user') || "";
 var _produitsVendeur = []; var _produitDetailId = null; var _isPro=false; var _finPro=null; var _proImpaye=false;
+var _paiementEnCours = null; var _produitABooster = null;
 function fmt(v){ if(window.fmtMontant) return window.fmtMontant(v); return Math.round(v).toLocaleString('fr-FR')+" F"; }
 function calculerDetail(vente){
   if(window.RocyCalculCommande){ var r=window.RocyCalculCommande(Number(vente||0)); return {vente:Number(vente||0), commission:r.commission, fraisVendeur:r.fraisVendeur, fraisTotal:r.fraisTotal, net:r.net}; }
@@ -147,25 +162,64 @@ function majStatutUI(){
   else if(_isPro){ badge.innerText='⭐ PRO - 2 000 F / mois'; badge.className='badge-pro'; fin.innerText=_finPro?('Fin PRO : '+new Date(_finPro).toLocaleDateString('fr-FR')):'PRO actif'; if(btnPro) btnPro.style.display='none'; if(alerte) alerte.style.display='none'; }
   else { badge.innerText='GRATUIT - 0 F'; badge.className='badge-gratuit'; fin.innerText='GRATUIT : 5 produits max. Passe PRO pour illimité.'; if(btnPro) btnPro.style.display='block'; if(alerte) alerte.style.display='none'; }
 }
-function passerPro(){
-  var email=localStorage.getItem('email_user')||'';
-  alert("Passer PRO : 2 000 F / mois.\nProduits illimités, badge doré, en haut, 1 Booster gratuit / mois.\n\nChoisis ton paiement après OK.");
-  localStorage.setItem('demande_pro','oui');
-  // On passe par profil / paiement - pour l'instant on reste sur vendeur et on marque en attente
-  if(supabaseClient && vendeurIdActuel){ supabaseClient.from('profils').update({demande_pro:true, statut_pro:'en_attente'}).eq('id',vendeurIdActuel).then(function(){}); }
-  alert("Demande PRO envoyée. L'Admin va valider après ton paiement de 2 000 F.");
+
+// ===== PAIEMENT D'ABORD, BOOST / PRO APRES =====
+function ouvrirPaiement(type, produitId, montant, titre){
+  _paiementEnCours = {type:type, produitId:produitId, montant:montant};
+  document.getElementById('titrePaiement').innerText = titre + " - " + montant + " F";
+  document.getElementById('popupPaiement').style.display = 'block';
 }
-async function boosterProduit(id){
+function fermerPaiement(){
+  document.getElementById('popupPaiement').style.display = 'none';
+  _paiementEnCours = null; _produitABooster = null;
+}
+function passerPro(){
+  ouvrirPaiement('pro', null, 2000, "Passer PRO - 2 000 F / mois");
+}
+function boosterProduit(id){
   var p=_produitsVendeur.find(function(x){ return String(x.id)===String(id); }); if(!p) return;
   var dejaGratuit=false;
-  if(_isPro){ var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1); if(!localStorage.getItem('rocy_boost_gratuit_'+mois)){ dejaGratuit=true; localStorage.setItem('rocy_boost_gratuit_'+mois,'oui'); } }
-  var prixBoost=dejaGratuit?0:500;
-  if(!confirm("Booster ce produit 7 jours ?\n\nPrix : "+fmt(prixBoost)+(dejaGratuit?" (1 gratuit / mois PRO)":"")+"\nIl passera À LA UNE en haut de l'Accueil.")) return;
+  if(_isPro){ var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1); if(!localStorage.getItem('rocy_boost_gratuit_'+mois)){ dejaGratuit=true; } }
+  if(dejaGratuit){
+    if(!confirm("Utiliser ton 1 Booster gratuit PRO / mois ?")) return;
+    localStorage.setItem('rocy_boost_gratuit_'+(new Date().getFullYear()+'-'+(new Date().getMonth()+1)), 'oui');
+    activerBoost(id, 0, "Gratuit PRO");
+    return;
+  }
+  _produitABooster = id;
+  ouvrirPaiement('boost', id, 500, "Booster 7 jours");
+}
+async function confirmerPaiement(){
+  if(!_paiementEnCours) return;
+  var moyen = document.getElementById('moyenPaiement').value;
+  var numero = document.getElementById('numeroPaiement').value.trim();
+  if(!numero){ alert("Mets ton numéro pour payer."); return; }
+  var okPaiement = confirm("Paiement " + _paiementEnCours.montant + " F via " + moyen + " (" + numero + ") ?\n\nClique OK si tu as payé, Annuler sinon.");
+  if(!okPaiement){ alert("Paiement annulé. Ton produit n'est pas boosté, tu n'es pas passé PRO."); fermerPaiement(); return; }
+  if(supabaseClient){
+    await supabaseClient.from('paiements').insert([{
+      vendeur_id: vendeurIdActuel, email_vendeur: emailVendeurActuel,
+      type: _paiementEnCours.type, produit_id: _paiementEnCours.produitId,
+      montant: _paiementEnCours.montant, moyen: moyen, numero: numero, statut: 'paye'
+    }]);
+  }
+  if(_paiementEnCours.type === 'boost'){ await activerBoost(_paiementEnCours.produitId, 500, moyen); }
+  else if(_paiementEnCours.type === 'pro'){ await activerPro(moyen); }
+  fermerPaiement();
+}
+async function activerBoost(id, prix, moyen){
   var fin=new Date(); fin.setDate(fin.getDate()+7);
-  if(supabaseClient){ var res=await supabaseClient.from('produits').update({boost:true, booster:true, boost_fin:fin.toISOString(), date_boost:new Date().toISOString()}).eq('id',id); if(res.error){ alert("Erreur : "+res.error.message); return; } }
+  if(supabaseClient){ var res=await supabaseClient.from('produits').update({boost:true, booster:true, boost_prix:prix, boost_fin:fin.toISOString(), date_boost:new Date().toISOString()}).eq('id',id); if(res.error){ alert("Erreur : "+res.error.message); return; } }
   alert("✅ Boosté 7 jours ! Ton produit est À LA UNE.");
   chargerVendeur();
 }
+async function activerPro(moyen){
+  var fin=new Date(); fin.setMonth(fin.getMonth()+1);
+  if(supabaseClient && vendeurIdActuel){ var res=await supabaseClient.from('profils').update({is_pro:true, statut:'pro', abonnement:'pro', statut_pro:'paye', demande_pro:false, fin_pro:fin.toISOString(), pro_fin:fin.toISOString()}).eq('id', vendeurIdActuel); if(res.error){ alert("Erreur PRO : "+res.error.message); return; } }
+  alert("✅ Tu es maintenant PRO pour 1 mois ! Badge doré, illimité, en haut.");
+  chargerVendeur();
+}
+
 async function chargerVendeur(){
   var ok = await verifierVendeur(); if(!ok) return;
   if(supabaseClient){
@@ -206,7 +260,6 @@ async function chargerVendeur(){
     else { zoneV.innerHTML = ""; commandes.forEach(function(c){
       var nomAff = c.nom || c.nom_produit || "Produit"; var nomSafe = nomAff.split("'").join(""); var acheteurAff = c.nom_acheteur || c.email_acheteur || "Acheteur"; var villeAff = c.ville_acheteur || ""; var moyenAff = c.moyen_paiement ? "<br>Moyen : " + c.moyen_paiement : ""; var statutAff = c.statut || "argent_bloque";
       var totalVente = Number(c.total || c.prix || 0);
-      // Frais livraison total estimé : 3,6% du total, vendeur paie 25%
       var fraisTotal = c.frais_livraison_total ? Number(c.frais_livraison_total) : Math.round(totalVente*0.036);
       var fraisVendeur = c.frais_vendeur ? Number(c.frais_vendeur) : Math.round(fraisTotal*0.25);
       var d = calculerDetail(totalVente); d.fraisVendeur=fraisVendeur; d.net=totalVente - d.commission - fraisVendeur;
@@ -245,7 +298,7 @@ async function supprimerProduit(id){ if(!confirm("Supprimer ce produit ?")) retu
 function retirerArgent(){ var f = document.getElementById('formRetrait'); if(!f) return; f.style.display = (f.style.display === 'block') ? 'none' : 'block'; chargerMesRetraits(); }
 async function demanderRetrait(){ var montant = Number(document.getElementById('montantRetrait').value || 0); var methode = document.getElementById('methodeRetrait').value; var pays = document.getElementById('paysRetrait').value || 'Bénin'; var devise = document.getElementById('deviseRetrait').value || 'XOF'; var numero = document.getElementById('numeroRetrait').value; if(!montant || montant < 1000){ alert("Montant minimum : 1000 F"); return; } if(!numero){ alert("Mets ton numéro ou ton compte pour recevoir"); return; } if(!supabaseClient){ alert("Connexion en cours, réessaie."); return; } var res = await supabaseClient.from('retraits').insert([{ vendeur_id: vendeurIdActuel || null, montant: montant, methode: methode, pays: pays, devise: devise, numero: numero, statut: 'en_attente' }]); if(res.error){ alert('Erreur : ' + res.error.message); return; } alert('✅ Demande envoyée !'); document.getElementById('montantRetrait').value = ''; document.getElementById('numeroRetrait').value = ''; chargerMesRetraits(); }
 async function chargerMesRetraits(){ var box = document.getElementById('mesRetraits'); if(!box || !supabaseClient) return; var q = supabaseClient.from('retraits').select('*').order('created_at', {ascending:false}); if(vendeurIdActuel) q = q.eq('vendeur_id', vendeurIdActuel); var res = await q; if(res.error){ box.innerHTML = 'Erreur : ' + res.error.message; return; } if(!res.data || !res.data.length){ box.innerHTML = 'Aucune demande pour le moment.'; return; } box.innerHTML = res.data.map(function(r){ var coul = r.statut === 'paye' ? 'green' : r.statut === 'refuse' ? 'red' : 'orange'; var txt = r.statut === 'paye' ? '✅ Payé' : r.statut === 'refuse' ? '❌ Refusé' : '⏳ En attente'; return '<div style="border:1px solid #eee;padding:8px;border-radius:8px;margin-top:6px"><b>' + fmt(r.montant||0) + ' ' + (r.devise||'XOF') + '</b> - ' + (r.methode||'FedaPay') + '<br><span style="color:'+coul+';font-weight:bold">' + txt + '</span> - ' + (r.pays||'') + '</div>'; }).join(''); }
-window.allerPublier = allerPublier; window.supprimerProduit = supprimerProduit; window.voirDetailProduit = voirDetailProduit; window.fermerDetailProduit = fermerDetailProduit; window.modifierDepuisDetail = modifierDepuisDetail; window.supprimerDepuisDetail = supprimerDepuisDetail; window.ouvrirPreuveEnvoi = ouvrirPreuveEnvoi; window.confirmerEnvoi = confirmerEnvoi; window.fermerEnvoi = fermerEnvoi; window.retirerArgent = retirerArgent; window.demanderRetrait = demanderRetrait; window.chargerMesRetraits = chargerMesRetraits; window.boosterProduit = boosterProduit; window.passerPro = passerPro;
+window.allerPublier = allerPublier; window.supprimerProduit = supprimerProduit; window.voirDetailProduit = voirDetailProduit; window.fermerDetailProduit = fermerDetailProduit; window.modifierDepuisDetail = modifierDepuisDetail; window.supprimerDepuisDetail = supprimerDepuisDetail; window.ouvrirPreuveEnvoi = ouvrirPreuveEnvoi; window.confirmerEnvoi = confirmerEnvoi; window.fermerEnvoi = fermerEnvoi; window.retirerArgent = retirerArgent; window.demanderRetrait = demanderRetrait; window.chargerMesRetraits = chargerMesRetraits; window.boosterProduit = boosterProduit; window.passerPro = passerPro; window.ouvrirPaiement = ouvrirPaiement; window.fermerPaiement = fermerPaiement; window.confirmerPaiement = confirmerPaiement;
 </script>
 </body>
 </html>
