@@ -8,60 +8,85 @@
 <script src="rocy_devise.js"></script>
 <style>
 *{box-sizing:border-box}html,body{height:100%}body{font-family:Arial,sans-serif;background:#f6f7fb;margin:0;display:flex;flex-direction:column;min-height:100vh}
-.btn-retour{display:inline-block;margin:12px 0 0 12px;color:#111;text-decoration:none;font-weight:bold;font-size:14px}
 .wrap{max-width:520px;width:calc(100% - 24px);margin:12px auto;flex:1 0 auto}
 @media(min-width:768px){.wrap{max-width:680px}}@media(min-width:1024px){.wrap{max-width:820px}}
 .top{background:#111827;color:#fff;padding:20px;border-radius:16px;text-align:center}.top h1{margin:10px 0 0;font-size:22px}
 .card{background:#fff;padding:18px;border-radius:16px;margin:14px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)}
 label{display:block;margin:12px 0 5px;font-weight:bold;font-size:14px}input,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:5px;font-size:15px}
 button.btn{width:100%;padding:14px;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:bold;margin-top:14px;cursor:pointer;font-size:15px}
-#badgeRole,#badgeKYC,#badgeStatut{display:inline-block;background:#f59e0b;color:#fff;padding:5px 12px;border-radius:20px;font-size:13px;margin:5px}
+button.btn-light{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff;color:#111;font-weight:bold;margin-top:10px;cursor:pointer;font-size:14px}
+#badgeRole,#badgeKYC{display:inline-block;background:#f59e0b;color:#fff;padding:5px 12px;border-radius:20px;font-size:13px;margin:5px}
+#badgeStatut{display:none;background:#FFC107;color:#111;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:900;margin:5px}
+#finPro{font-size:12px;color:#FFC107;display:block;margin-top:4px}
+.infos-ligne{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.infos-ligne:last-child{border-bottom:none}
+.infos-ligne span{color:#666}.infos-ligne b{color:#111;text-align:right;word-break:break-word}
 .retrait-item{border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0;font-size:13px}
 .cmd-item{border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0;font-size:13px;line-height:1.6}
 .prod-item{display:flex;gap:10px;align-items:center;border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0;font-size:13px}.prod-item img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#eee}
 #photoProfilImg{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff}
 .btn-photo{display:block;background:#f59e0b;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:bold;margin:10px auto 0;cursor:pointer;width:fit-content}
 .btn-pro{width:100%;padding:14px;border:0;border-radius:12px;background:#FFC107;color:#111;font-weight:900;margin-top:14px;cursor:pointer;font-size:15px}
+.kyc-ok{background:#E8F5E9;color:#2E7D32;padding:10px;border-radius:10px;font-size:13px;font-weight:700}
 </style>
 </head>
 <body>
-<a href="javascript:history.back()" class="btn-retour" data-original="← Retour">← Retour</a>
-
 <div class="wrap">
 <div class="top">
   <img id="photoProfilImg" src="https://via.placeholder.com/110?text=👤" alt="photo"><br>
   <label for="photoProfilInput" class="btn-photo" data-original="📷 Changer ma photo">📷 Changer ma photo</label>
   <input type="file" id="photoProfilInput" accept="image/*" hidden>
   <h1 data-original="👤 Mon Profil">👤 Mon Profil</h1>
-  <p id="emailProfil">...</p><span id="badgeRole">...</span><span id="badgeKYC">KYC : non_verifie</span><br><span id="badgeStatut" data-original="GRATUIT - 0 F">GRATUIT - 0 F</span><span id="finPro" style="font-size:12px;color:#FFC107"></span>
+  <p id="emailProfil">...</p><span id="badgeRole">...</span><span id="badgeKYC">KYC : non_verifie</span><br><span id="badgeStatut">⭐ PRO</span><span id="finPro"></span>
 </div>
 
 <div id="blocEmailProfil" style="display:none;background:#FFF3E8;border:1px solid #FFC107;padding:14px;border-radius:12px;margin:14px 0">
 <b data-original="⚠️ Complète ton vrai email ici">⚠️ Complète ton vrai email ici</b><br><small style="font-size:12px;color:#666" data-original="Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.">Tu peux compléter ton vrai email dans Profil. Sans vrai email, tu ne pourras pas retirer ton argent.</small>
 </div>
 
+<div class="card" id="blocPasserPro" style="display:none;text-align:center">
+<h2 style="margin:0 0 6px" data-original="⭐ Passer PRO">⭐ Passer PRO</h2>
+<p style="font-size:13px;color:#666;margin:0" data-original="PRO : 2 000 F / mois, produits illimités, badge doré, en haut de l'Accueil, 1 Booster gratuit / mois.">PRO : 2 000 F / mois, produits illimités, badge doré, en haut de l'Accueil, 1 Booster gratuit / mois.</p>
+<button class="btn-pro" onclick="ouvrirPaiementPro()" data-original="⭐ Passer PRO - 2 000 F / mois">⭐ Passer PRO - 2 000 F / mois</button>
+</div>
+
 <div class="card"><h2 data-original="Mes infos">Mes infos</h2>
+<div id="infosVue">
+<div class="infos-ligne"><span data-original="Nom complet">Nom complet</span><b id="vueNom">-</b></div>
+<div class="infos-ligne"><span data-original="Email">Email</span><b id="vueEmail">-</b></div>
+<div class="infos-ligne"><span data-original="Téléphone">Téléphone</span><b id="vueTel">-</b></div>
+<div class="infos-ligne"><span data-original="Ville / Pays">Ville / Pays</span><b id="vueVille">-</b></div>
+<button class="btn-light" id="btnModifierInfos" data-original="✏️ Modifier mes infos">✏️ Modifier mes infos</button>
+</div>
+<div id="infosForm" style="display:none">
 <label data-original="Nom complet">Nom complet</label><input id="nomProfil" data-ph-original="Ton nom complet" placeholder="Ton nom complet">
 <label data-original="Email">Email</label><input type="email" id="emailProfilInput" data-ph-original="Ex: toi@gmail.com" placeholder="Ex: toi@gmail.com">
 <p style="font-size:12px;color:#666;margin:0" data-original="Tu peux compléter ton vrai email dans Profil.">Tu peux compléter ton vrai email dans Profil.</p>
 <label data-original="Téléphone">Téléphone</label><input id="telProfil" data-ph-original="+229 ..." placeholder="+229 ...">
 <label data-original="Ville / Pays">Ville / Pays</label><input id="villeProfil" data-ph-original="Cotonou, Bénin" placeholder="Cotonou, Bénin">
-<button class="btn" id="btnSauverProfil" data-original="Sauvegarder mes infos">Sauvegarder mes infos</button></div>
+<button class="btn" id="btnSauverProfil" data-original="Sauvegarder mes infos">Sauvegarder mes infos</button>
+<button class="btn-light" id="btnAnnulerInfos" data-original="Annuler">Annuler</button>
+</div>
+</div>
 
 <div class="card" id="cardVendeur" style="display:none"><h2 data-original="🛍️ Mes produits & Mes gains - Vendeur">🛍️ Mes produits & Mes gains - Vendeur</h2>
 <p><span data-original="Mes gains :">Mes gains :</span> <b id="gainsVendeur">0 F</b></p>
 <p><span data-original="Mes produits :">Mes produits :</span> <b id="nbProduitsVendeur">0</b> <span id="limiteProduits" style="font-size:12px;color:#666"></span></p>
 <div id="listeProduitsVendeur"></div>
-<button class="btn-pro" id="btnPasserProVendeur" onclick="location.href='vendeur.html'" data-original="⭐ Passer PRO - 2 000 F / mois">⭐ Passer PRO - 2 000 F / mois</button>
 <button class="btn" onclick="location.href='vendeur.html'" data-original="→ Aller à mon Tableau Vendeur">→ Aller à mon Tableau Vendeur</button></div>
 
 <div class="card" id="cardAcheteur" style="display:none"><h2 data-original="🛒 Historique de mes achats - Acheteur">🛒 Historique de mes achats - Acheteur</h2><div id="listeAchats">Chargement...</div><button class="btn" onclick="location.href='acheteur.html'" data-original="→ Aller à mon Tableau Acheteur">→ Aller à mon Tableau Acheteur</button></div>
 
 <div class="card"><h2 data-original="🛡️ KYC - Vérification identité">🛡️ KYC - Vérification identité</h2><p data-original="Pour retirer ton argent, tu dois vérifier ton identité.">Pour retirer ton argent, tu dois vérifier ton identité.</p>
+<div id="kycVue" style="display:none"></div>
+<div id="kycForm">
 <label data-original="Type de pièce">Type de pièce</label><select id="typePiece"><option value="cni" data-original="Carte d'identité (CNI)">Carte d'identité (CNI)</option><option value="passeport" data-original="Passeport">Passeport</option><option value="permis" data-original="Permis de conduire">Permis de conduire</option></select>
 <label data-original="Numéro de la pièce">Numéro de la pièce</label><input id="numPiece" data-ph-original="Ex: 12345678" placeholder="Ex: 12345678">
 <label data-original="Photo de la pièce">Photo de la pièce</label><input type="file" id="photoPiece" accept="image/*"><img id="previewPiece" style="display:none;width:100%;border-radius:12px;margin-top:10px">
-<button class="btn" id="btnEnvoyerKYC" data-original="Envoyer ma vérification">Envoyer ma vérification</button><p id="msgKYC"></p></div>
+<button class="btn" id="btnEnvoyerKYC" data-original="Envoyer ma vérification">Envoyer ma vérification</button><p id="msgKYC"></p>
+</div>
+<button class="btn-light" id="btnModifierKYC" style="display:none" data-original="✏️ Modifier mon KYC">✏️ Modifier mon KYC</button>
+</div>
 
 <div class="card"><h2 data-original="💰 Mon Solde & Retrait">💰 Mon Solde & Retrait</h2><h1 id="soldeProfil" style="text-align:center">0 F</h1><p style="text-align:center" data-original="Solde disponible">Solde disponible</p>
 <label data-original="Montant à retirer (F)">Montant à retirer (F)</label><input type="number" id="montantRetrait" data-ph-original="Ex: 1000000" placeholder="Ex: 1000000">
@@ -70,17 +95,69 @@ button.btn{width:100%;padding:14px;border:0;border-radius:12px;background:#11182
 <button class="btn btn-retrait" id="btnRetrait" data-original="Demander le retrait">Demander le retrait</button><p id="msgRetrait"></p></div>
 
 <div class="card"><h2 data-original="Mes demandes de retrait">Mes demandes de retrait</h2><div id="listeRetraits">Chargement...</div></div>
-
-<div class="card"><h2 data-original="⭐ Passer PRO">⭐ Passer PRO</h2><p data-original="PRO : 2 000 F / mois, produits illimités, badge doré, en haut de l'Accueil, 1 Booster gratuit / mois.">PRO : 2 000 F / mois, produits illimités, badge doré, en haut de l'Accueil, 1 Booster gratuit / mois.</p><button class="btn-pro" onclick="location.href='vendeur.html'" data-original="⭐ Passer PRO - 2 000 F / mois">⭐ Passer PRO - 2 000 F / mois</button></div>
 </div>
 
+<div id="popupPaiement" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000">
+<div style="background:#fff;max-width:400px;margin:15% auto;padding:16px;border-radius:14px">
+<b>Passer PRO - 2 000 F / mois</b><br><br>
+<label style="font-size:13px">Moyen de paiement</label>
+<select id="moyenPaiement" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+<option>MTN MoMo</option><option>Moov Money</option><option>Orange Money</option><option>Wave</option><option>Carte bancaire</option>
+</select>
+<label style="font-size:13px">Numéro / Compte</label>
+<input id="numeroPaiement" placeholder="Ex: 22997000000" style="width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px">
+<button onclick="confirmerPaiementPro()" style="width:100%;padding:12px;background:#FFC107;color:#111;border:none;border-radius:10px;font-weight:900">💳 PAYER 2 000 F</button>
+<button onclick="fermerPaiementPro()" style="width:100%;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:6px">Annuler</button>
+</div></div>
+
 <script>
-// ===== PROFIL.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
 function aVraiEmailProfil(){var e=localStorage.getItem('email_user')||document.getElementById('emailProfilInput').value.trim()||'';return e&&!e.endsWith('@rocyinter.bj')&&e.includes('@');}
 function afficherBlocEmail(){var b=document.getElementById('blocEmailProfil');if(b)b.style.display=aVraiEmailProfil()?'none':'block';}
 const supabaseClient=window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co','sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3');
 let monProfil=null;
+let _sessionUserId=null;
 function afficherSolde(fcfa){var el=document.getElementById('soldeProfil');var v=Number(fcfa)||0;if(window.fmtMontant)el.textContent=window.fmtMontant(v);else el.textContent=v.toLocaleString('fr-FR')+' F';}
+function ouvrirPaiementPro(){ document.getElementById('popupPaiement').style.display='block'; }
+function fermerPaiementPro(){ document.getElementById('popupPaiement').style.display='none'; }
+async function confirmerPaiementPro(){
+  var moyen=document.getElementById('moyenPaiement').value;
+  var numero=document.getElementById('numeroPaiement').value.trim();
+  if(!numero){ alert("Mets ton numéro pour payer."); return; }
+  var ok=confirm("Paiement 2 000 F via "+moyen+" ("+numero+") ?\n\nClique OK si tu as payé.");
+  if(!ok){ alert("Paiement annulé."); fermerPaiementPro(); return; }
+  var fin=new Date(); fin.setMonth(fin.getMonth()+1);
+  var res=await supabaseClient.from('profils').update({is_pro:true, statut:'pro', abonnement:'pro', statut_pro:'paye', fin_pro:fin.toISOString(), pro_fin:fin.toISOString()}).eq('id',_sessionUserId);
+  if(res.error){ alert("Erreur PRO : "+res.error.message); return; }
+  try{ await supabaseClient.from('paiements').insert([{vendeur_id:_sessionUserId, email_vendeur:localStorage.getItem('email_user')||'', type:'pro', montant:2000, moyen:moyen, numero:numero, statut:'paye'}]); }catch(e){}
+  localStorage.setItem('statut_user','pro');
+  fermerPaiementPro();
+  alert("✅ Tu es maintenant PRO pour 1 mois !");
+  chargerProfil();
+}
+function majInfosVue(nom,email,tel,ville){
+  document.getElementById('vueNom').innerText=nom||'-';
+  document.getElementById('vueEmail').innerText=email||'-';
+  document.getElementById('vueTel').innerText=tel||'-';
+  document.getElementById('vueVille').innerText=ville||'-';
+  var toutRempli = !!(nom && email && tel && ville);
+  var btn=document.getElementById('btnModifierInfos');
+  if(btn) btn.innerText = toutRempli ? "✏️ Modifier mes infos" : "➕ Compléter mes infos";
+}
+function majKycVue(p){
+  var vue=document.getElementById('kycVue');
+  var form=document.getElementById('kycForm');
+  var btnMod=document.getElementById('btnModifierKYC');
+  var statut=p.kyc_statut||'non_verifie';
+  if(statut==='non_verifie' || !p.kyc_numero){
+    vue.style.display='none'; form.style.display='block'; btnMod.style.display='none';
+    return;
+  }
+  var label = statut==='verifie' ? "✅ KYC Vérifié" : statut==='en_attente' ? "⏳ KYC en attente de vérification" : "KYC : "+statut;
+  vue.style.display='block';
+  vue.innerHTML='<div class="kyc-ok">'+label+'</div><div class="infos-ligne"><span>Type de pièce</span><b>'+(p.kyc_type||'-')+'</b></div><div class="infos-ligne"><span>Numéro</span><b>'+(p.kyc_numero||'-')+'</b></div>';
+  form.style.display='none'; btnMod.style.display='block';
+  document.getElementById('numPiece').value=p.kyc_numero||'';
+}
 document.getElementById('photoProfilInput').addEventListener('change',async function(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=function(ev){document.getElementById('photoProfilImg').src=ev.target.result;};r.readAsDataURL(file);const{data:{session}}=await supabaseClient.auth.getSession();if(!session)return;const b64=await new Promise(function(res){const r2=new FileReader();r2.onload=function(ev){res(ev.target.result);};r2.readAsDataURL(file);});const{error}=await supabaseClient.from('profils').update({photo_profil:b64}).eq('id',session.user.id);if(error)alert('Erreur photo : '+error.message);else alert('Photo de profil sauvegardée ✅');});
 document.getElementById('photoPiece').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=document.getElementById('previewPiece');img.src=ev.target.result;img.style.display='block';};r.readAsDataURL(f);});
 function statutPro(p){ return p.statut==='pro' || p.abonnement==='pro' || p.is_pro===true || p.type_compte==='pro' || p.statut_vendeur==='pro'; }
@@ -88,15 +165,31 @@ async function chargerProfil(){
   afficherSolde(0);
   afficherBlocEmail();
   const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");localStorage.setItem('retour_apres_connexion','profil.html');window.location.href='connexion.html';return;}
+  _sessionUserId=session.user.id;
   const{data,error}=await supabaseClient.from('profils').select('*').eq('id',session.user.id).single();if(error){alert('Erreur profil: '+error.message);return;}
   monProfil=data;if(data.photo_profil)document.getElementById('photoProfilImg').src=data.photo_profil;
   document.getElementById('emailProfil').innerText=data.email||session.user.email||'';
   localStorage.setItem('email_user',data.email||session.user.email||'');
   document.getElementById('emailProfilInput').value=aVraiEmailProfil()?(data.email||''):'';document.getElementById('badgeRole').innerText=data.role||'acheteur';document.getElementById('badgeKYC').innerText='KYC : '+(data.kyc_statut||'non_verifie');document.getElementById('nomProfil').value=data.nom||data.nom_complet||'';document.getElementById('telProfil').value=data.telephone||'';document.getElementById('villeProfil').value=data.ville||'';
+  majInfosVue(data.nom||data.nom_complet, data.email, data.telephone, data.ville);
+  majKycVue(data);
   var isPro=statutPro(data);
   var badge=document.getElementById('badgeStatut');
-  if(isPro){ badge.innerText='⭐ PRO - 2 000 F / mois'; badge.style.background='#FFC107'; badge.style.color='#111'; document.getElementById('finPro').innerText=data.fin_pro?(' - Fin : '+new Date(data.fin_pro).toLocaleDateString('fr-FR')):''; }
-  else { badge.innerText='GRATUIT - 0 F'; badge.style.background='#999'; document.getElementById('finPro').innerText=''; }
+  var finEl=document.getElementById('finPro');
+  var blocPro=document.getElementById('blocPasserPro');
+  var finProDate = data.fin_pro||data.pro_fin||data.date_fin_pro||null;
+  if(isPro && finProDate && new Date(finProDate).getTime() < Date.now()){ isPro=false; }
+  if(isPro){
+    badge.style.display='inline-block';
+    badge.innerText='⭐ PRO';
+    var joursRestants = finProDate ? Math.ceil((new Date(finProDate)-new Date())/(1000*60*60*24)) : 0;
+    finEl.innerText = finProDate ? ('Fin : '+new Date(finProDate).toLocaleDateString('fr-FR')+' - Reste '+joursRestants+' jour(s)') : 'PRO actif';
+    if(blocPro) blocPro.style.display='none';
+  } else {
+    badge.style.display='none';
+    finEl.innerText='';
+    if(blocPro) blocPro.style.display='block';
+  }
   afficherSolde(data.solde||0);
   afficherBlocEmail();chargerRetraits(session.user.id);
   var role=data.role||'acheteur';
@@ -129,8 +222,11 @@ async function chargerAchats(userId, email){
   }).join('');
 }
 async function chargerRetraits(userId){const{data}=await supabaseClient.from('retraits').select('*').eq('user_id',userId).order('created_at',{ascending:false});if(!data||!data.length){document.getElementById('listeRetraits').innerHTML='Aucune demande pour l\'instant.';return;}document.getElementById('listeRetraits').innerHTML=data.map(function(r){var m=window.fmtMontant?window.fmtMontant(r.montant):r.montant+' F';return '<div class="retrait-item"><b>'+m+'</b> - '+r.moyen+' - '+r.compte+' - <b>'+r.statut+'</b></div>';}).join('');}
-document.getElementById('btnSauverProfil').addEventListener('click',async function(){var email=document.getElementById('emailProfilInput').value.trim().toLowerCase();if(email&&(!email.includes('@')||email.endsWith('@rocyinter.bj'))){alert("Mets un vrai email, ex: tonnom@gmail.com");return;}const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");window.location.href='connexion.html';return;}var upd={nom:document.getElementById('nomProfil').value.trim(),telephone:document.getElementById('telProfil').value.trim(),ville:document.getElementById('villeProfil').value.trim()};if(email){upd.email=email;upd.email_technique=false;}const{error}=await supabaseClient.from('profils').update(upd).eq('id',session.user.id);if(error)alert(error.message);else{if(email){localStorage.setItem('email_user',email);document.getElementById('emailProfil').innerText=email;}alert("Email enregistré ! Tu peux maintenant retirer ton argent.");afficherBlocEmail();var ret2=localStorage.getItem('retour_apres_profil');if(ret2&&email){localStorage.removeItem('retour_apres_profil');window.location.href=ret2;}}});
-document.getElementById('btnEnvoyerKYC').addEventListener('click',async function(){const type=document.getElementById('typePiece').value;const num=document.getElementById('numPiece').value.trim();if(!num){alert('Mets le numéro de ta pièce');return;}const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");return;}const{error}=await supabaseClient.from('profils').update({kyc_type:type,kyc_numero:num,kyc_statut:'en_attente'}).eq('id',session.user.id);if(error)alert(error.message);else{document.getElementById('msgKYC').innerText="KYC envoyé, en attente de vérification par Admin ✅";document.getElementById('badgeKYC').innerText='KYC : en_attente';}});
+document.getElementById('btnModifierInfos').addEventListener('click', function(){ document.getElementById('infosVue').style.display='none'; document.getElementById('infosForm').style.display='block'; });
+document.getElementById('btnAnnulerInfos').addEventListener('click', function(){ document.getElementById('infosForm').style.display='none'; document.getElementById('infosVue').style.display='block'; });
+document.getElementById('btnModifierKYC').addEventListener('click', function(){ document.getElementById('kycVue').style.display='none'; document.getElementById('kycForm').style.display='block'; document.getElementById('btnModifierKYC').style.display='none'; });
+document.getElementById('btnSauverProfil').addEventListener('click',async function(){var email=document.getElementById('emailProfilInput').value.trim().toLowerCase();if(email&&(!email.includes('@')||email.endsWith('@rocyinter.bj'))){alert("Mets un vrai email, ex: tonnom@gmail.com");return;}const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");window.location.href='connexion.html';return;}var upd={nom:document.getElementById('nomProfil').value.trim(),telephone:document.getElementById('telProfil').value.trim(),ville:document.getElementById('villeProfil').value.trim()};if(email){upd.email=email;upd.email_technique=false;}const{error}=await supabaseClient.from('profils').update(upd).eq('id',session.user.id);if(error)alert(error.message);else{if(email){localStorage.setItem('email_user',email);document.getElementById('emailProfil').innerText=email;}alert("Infos enregistrées ✅");afficherBlocEmail();chargerProfil();}});
+document.getElementById('btnEnvoyerKYC').addEventListener('click',async function(){const type=document.getElementById('typePiece').value;const num=document.getElementById('numPiece').value.trim();if(!num){alert('Mets le numéro de ta pièce');return;}const{data:{session}}=await supabaseClient.auth.getSession();if(!session){alert("Connecte-toi d'abord");return;}const{error}=await supabaseClient.from('profils').update({kyc_type:type,kyc_numero:num,kyc_statut:'en_attente'}).eq('id',session.user.id);if(error)alert(error.message);else{document.getElementById('msgKYC').innerText="KYC envoyé, en attente de vérification par Admin ✅";document.getElementById('badgeKYC').innerText='KYC : en_attente';chargerProfil();}});
 document.getElementById('btnRetrait').addEventListener('click',async function(){
   if(!aVraiEmailProfil()){alert("Va compléter ton vrai email dans Profil pour retirer ton argent.");afficherBlocEmail();document.getElementById('blocEmailProfil').scrollIntoView({behavior:'smooth'});return;}
   const montant=Number(document.getElementById('montantRetrait').value);const moyen=document.getElementById('moyenRetrait').value;const compte=document.getElementById('compteRetrait').value.trim();
@@ -139,6 +235,7 @@ document.getElementById('btnRetrait').addEventListener('click',async function(){
   if(monProfil&&monProfil.kyc_statut!=='verifie'){alert("Tu dois être vérifié KYC pour retirer. Envoie d'abord ton KYC.");return;}
   const{error}=await supabaseClient.from('retraits').insert([{user_id:session.user.id,montant:montant,moyen:moyen,compte:compte,statut:'en_attente'}]);if(error)alert(error.message);else{document.getElementById('msgRetrait').innerText="Demande envoyée, Admin va valider ✅";chargerRetraits(session.user.id);}
 });
+window.ouvrirPaiementPro=ouvrirPaiementPro; window.fermerPaiementPro=fermerPaiementPro; window.confirmerPaiementPro=confirmerPaiementPro;
 chargerProfil();
 </script>
 </body>
