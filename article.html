@@ -24,19 +24,15 @@ h2{color:#0a1a2f;margin:12px 0 5px;font-size:22px}.price{font-size:22px;font-wei
 </style>
 </head>
 <body>
-
 <div class="container">
 <div style="position:relative"><img id="photoProduit" class="main-img" src="" alt="Photo produit"><span id="badgeBoost" style="display:none;position:absolute;top:10px;left:10px" class="badgeBoost" data-original="⭐ À LA UNE - BOOSTÉ">⭐ À LA UNE - BOOSTÉ</span></div>
 <h2 id="nomProduit" data-original="">Chargement...</h2>
 <p class="price"><span id="prixProduit" class="prix" data-prix="0"></span></p>
 <p class="stock"><span id="stockProduit"></span> • <span id="vuesProduit"></span> • <span id="villeProduit" data-original=""></span></p>
 <div id="badgeProZone" style="display:none"><span class="badgePro" data-original="✅ Vendeur Vérifié / PRO">✅ Vendeur Vérifié / PRO</span></div>
-
 <div class="vendeur"><div class="avatar" id="avatarVendeur">V</div><div><b id="nomVendeur">Vendeur</b><br><span id="infoVendeur"></span><br><span id="avisVendeur"></span></div><button id="btnChat" class="btn-chat" onclick="ouvrirChat()" data-original="💬 Discuter de la logistique">💬 Discuter de la logistique</button></div>
-
 <p class="desc" id="descProduit" data-original="" style="margin-top:12px"></p>
 <p><span class="descLink" onclick="ouvrirDesc()" data-original="Description">Description</span></p>
-
 <div id="zoneAcheteur">
 <button onclick="commander()" class="btnCmd" data-original="🛒 COMMANDER sur le site">🛒 COMMANDER sur le site</button>
 <div id="choixPaiement"><b><span data-original="Payer">Payer</span> <span id="totalAPayer"></span></b><br><p style="font-size:13px" data-original="Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité.">Choisis ton pays / ton moyen. Ton argent sera bloqué en sécurité.</p>
@@ -53,18 +49,13 @@ h2{color:#0a1a2f;margin:12px 0 5px;font-size:22px}.price{font-size:22px;font-wei
 <button class="payBtn" onclick="payerAvec('PayPal')" style="background:#003087;color:#fff">PayPal</button>
 <button class="payBtn" onclick="payerAvec('Apple Pay / Google Pay')" style="background:#000;color:#fff">Apple Pay / Google Pay</button>
 <button class="payBtn" onclick="fermerPaiement()" style="background:#fff;border:1px solid #ddd" data-original="Annuler">Annuler</button></div></div>
-
 <div id="zoneVendeur" style="display:none;background:#EFF6FF;padding:12px;border-radius:10px;margin-top:10px;text-align:center;font-size:13px"><span data-original="C'est ton produit. Tu ne peux pas te commander toi-même.">C'est ton produit. Tu ne peux pas te commander toi-même.</span><br><a href="vendeur.html" style="font-weight:800" data-original="→ Aller à mon Tableau Vendeur">→ Aller à mon Tableau Vendeur</a></div>
 </div>
-
 <div id="descPopup" class="overlay" onclick="if(event.target===this) fermerDesc()"><div class="pop"><div style="display:flex;justify-content:space-between;align-items:center"><b style="color:#0066FF" data-original="Description">Description</b><button onclick="fermerDesc()" style="border:none;background:#eee;padding:8px 12px;border-radius:20px;cursor:pointer">✕</button></div><div class="boxJaune"><b data-original="🛡️ Avant de payer, tu vois tout :">🛡️ Avant de payer, tu vois tout :</b><br><span data-original="Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur">Livraison : Mondiale - DHL / Bus / STM - À discuter avec le vendeur</span><br><span data-original="Délai : Selon le pays / ville">Délai : Selon le pays / ville</span><br><span data-original="Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU">Protection : Argent bloqué - Vendeur payé seulement après ton clic COLIS REÇU</span><br><span id="detailPrix"></span><br><small id="commLigne"></small><br><br><b data-original="Comment ça marche ?">Comment ça marche ?</b><br><span data-original="1. Tu commandes → Argent bloqué 2. Le vendeur envoie → Tu suis ton colis 3. Tu reçois → Tu cliques COLIS REÇU 4. Le vendeur est payé Problème ? 48h pour signaler un litige.">1. Tu commandes → Argent bloqué<br>2. Le vendeur envoie → Tu suis ton colis<br>3. Tu reçois → Tu cliques COLIS REÇU<br>4. Le vendeur est payé<br>Problème ? 48h pour signaler un litige.</span></div></div></div>
-
 <div id="chatPopup" class="overlay" onclick="if(event.target===this) fermerChat()"><div class="pop"><div style="display:flex;justify-content:space-between;align-items:center"><b data-original="💬 Discuter de la logistique">💬 Discuter de la logistique</b><button onclick="fermerChat()" style="border:none;background:#eee;padding:8px 12px;border-radius:20px;cursor:pointer">✕</button></div><p style="font-size:12px;color:#666" data-original="Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids ? Pas de négociation de prix. Numéro / WhatsApp / Facebook / email interdits.">Uniquement logistique : Tu es où ? Livraison possible ? Délai ? Poids ? Pas de négociation de prix. Numéro / WhatsApp / Facebook / email interdits.</p><div id="messagesChat"></div><div id="apercuChat"></div><input id="msgChat" data-ph-original="Ex: Tu es où ? Livraison possible ?" placeholder="Ex: Tu es où ? Livraison possible ?"><div class="mediaBar"><label class="mediaBtn"><span data-original="📷 Photo">📷 Photo</span><input type="file" id="photoChat" accept="image/*" hidden></label><label class="mediaBtn"><span data-original="🎥 Vidéo">🎥 Vidéo</span><input type="file" id="videoChat" accept="video/*" hidden></label><button type="button" class="mediaBtn" onclick="toggleAudioChat()" data-original="🎙️ Audio">🎙️ Audio</button></div><div id="zoneAudioChat" style="display:none;background:#FFF8E1;padding:10px;border-radius:10px;margin-top:8px;text-align:center"><b id="timerAudioChat">00:00 / 01:30</b><br><button onclick="demarrerAudioChat()" style="padding:10px 14px;background:#E40000;color:#fff;border:none;border-radius:8px;font-weight:800;margin-top:6px" data-original="● Enregistrer">● Enregistrer</button><button onclick="arreterAudioChat()" style="padding:10px 14px;background:#111;color:#fff;border:none;border-radius:8px;font-weight:800;margin-top:6px" data-original="■ Arrêter">■ Arrêter</button><p style="font-size:11px;color:#666" data-original="Max 1min30. Après 1min30, ça coupe tout seul.">Max 1min30. Après 1min30, ça coupe tout seul.</p><div id="apercuAudioChat"></div></div><button onclick="envoyerMsg()" style="width:100%;padding:11px;margin-top:8px;background:#000;color:#fff;border:none;border-radius:8px" data-original="Envoyer">Envoyer</button><p id="traceWhatsApp" style="font-size:11px;color:#888"></p></div></div>
-
 <div id="notifPopup" class="overlay" onclick="if(event.target===this) fermerNotif()"><div class="pop"><div style="display:flex;justify-content:space-between"><b data-original="🔔 Notifications">🔔 Notifications</b><button onclick="fermerNotif()" style="border:none;background:#eee;padding:8px 12px;border-radius:20px">✕</button></div><div id="notifList" style="margin-top:10px;font-size:14px;line-height:1.6" data-original="Aucune notification">Aucune notification</div></div></div>
-
 <script>
-// ===== ARTICLE.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
+// ===== ARTICLE.HTML V8 SECURISE - CONTENU SEUL - rocy_devise.js V7 chef =====
 function ouvrirDesc(){document.getElementById("descPopup").classList.add("open");mettreAJourPrix()}
 function fermerDesc(){document.getElementById("descPopup").classList.remove("open")}
 function ouvrirChat(){if(cestMonProduit){alert("C'est ton produit.");return}if(!localStorage.getItem("email_user")){localStorage.setItem("retour_apres_connexion","article.html?id="+produitId);alert("Connecte-toi pour discuter.");location.href="connexion.html";return}document.getElementById("chatPopup").classList.add("open");chargerMessages()}
@@ -77,7 +68,27 @@ function deviseActuelle(){return window.RocyDevise?window.RocyDevise():(document
 function monNom(){return localStorage.getItem("nom_user")||localStorage.getItem("nom_complet")||localStorage.getItem("email_user")||"Moi"}
 function masquerNumero(txt){if(!txt)return "";return String(txt).replace(/\d{8,}/g,"********").replace(/\b\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}\b/g,"********")}
 function contientInterdit(txt){var t=String(txt||"").toLowerCase();return /\d{8,}/.test(t)||t.includes("whatsapp")||t.includes("facebook")||t.includes("@")||t.includes("wa.me")||t.includes("+229")||t.includes("+234")||t.includes("telegram")}
-function logAPDP(a){try{var l=JSON.parse(localStorage.getItem("rocy_logs")||"[]");l.push({action:a,produit_id:produitId,date:new Date().toISOString(),email:localStorage.getItem("email_user")||"visiteur"});localStorage.setItem("rocy_logs",JSON.stringify(l));if(supabaseClient)supabaseClient.from("logs").insert([{action:a,produit_id:produitId}]).then(function(){})}catch(e){}}
+function logAPDP(a,extra){try{var l=JSON.parse(localStorage.getItem("rocy_logs")||"[]");l.push(Object.assign({action:a,produit_id:produitId,date:new Date().toISOString(),email:localStorage.getItem("email_user")||"visiteur"},extra||{}));localStorage.setItem("rocy_logs",JSON.stringify(l));if(supabaseClient)supabaseClient.from("logs").insert([{user_id:localStorage.getItem("email_user")||"",email:localStorage.getItem("email_user")||"",action:a,produit_id:produitId,audio_url:(extra&&extra.audio_url)||null,texte_masque:(extra&&extra.texte_masque)||null,date:new Date().toISOString()}]).then(function(){})}catch(e){}}
+// ===== V8 - TRACE SILENCIEUSE POUR ADMIN / POLICE - AUCUN MESSAGE AFFICHE =====
+async function traceSecuriseV8(typeMsg, audioUrl, texteOriginal){
+  if(!supabaseClient) return;
+  var me=localStorage.getItem("email_user")||"";
+  var payload={user_id:me,email:me,action:typeMsg==="audio"?"message_audio_envoye_article":"message_texte_envoye_article",produit_id:produitId,audio_url:audioUrl||null,texte_masque:masquerNumero(texteOriginal||""),date:new Date().toISOString()};
+  try{ await supabaseClient.from("logs").insert([payload]); }catch(e){}
+  if(contientInterdit(texteOriginal||"")){
+    try{ await supabaseClient.from("alertes_admin").insert([{type:"numero_detecte_chat",email:me,auteur_email:me,destinataire_email:vendeurEmail,produit_id:produitId,message_masque:masquerNumero(texteOriginal||""),audio_url:audioUrl||null,nombre_signal:1,statut:"a_verifier",date:new Date().toISOString()}]); }catch(e){}
+  }
+}
+async function uploadAudioV8(blob){
+  if(!supabaseClient) return null;
+  var nom="audios/article_"+produitId+"_"+Date.now()+"_"+Math.floor(Math.random()*10000)+".webm";
+  try{
+    var up=await supabaseClient.storage.from("audios").upload(nom, blob, {contentType:"audio/webm", upsert:false});
+    if(up.error) return null;
+    var pub=supabaseClient.storage.from("audios").getPublicUrl(nom);
+    return pub.data ? pub.data.publicUrl : null;
+  }catch(e){ return null; }
+}
 function chargerSupabase(){if(window.supabase){try{supabaseClient=window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co','sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3')}catch(e){}chargerProduit();envoyerFileAttente();return}var s=document.createElement('script');s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";s.onload=function(){try{supabaseClient=window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co','sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3')}catch(e){}chargerProduit();envoyerFileAttente()};document.head.appendChild(s)}
 chargerSupabase();
 function mettreEnAttente(t,d){try{var f=JSON.parse(localStorage.getItem('file_attente_rocy')||'[]');f.push({type:t,donnees:d,date:new Date().toISOString()});localStorage.setItem('file_attente_rocy',JSON.stringify(f))}catch(e){}}
@@ -88,27 +99,24 @@ function calculerCommission(x){if(window.RocyCalculCommande){var r=window.RocyCa
 function mettreAJourPrix(){var sous=prixProduit*qty;commission=calculerCommission(sous);total=sous;var el=document.getElementById('detailPrix');if(el)el.innerHTML="Livraison : <b>Non incluse - À discuter avec le vendeur dans le Chat</b>";var cl=document.getElementById('commLigne');if(cl)cl.innerText="Commission RocyInter : 8,5% jusqu'à "+window.fmtMontant(500000)+" - 7,5% jusqu'à "+window.fmtMontant(2000000)+" - 6,5% au-delà";var te=document.getElementById('totalAPayer');if(te)te.innerText=window.fmtMontant(total);if(typeof window.RocyConvertirPrixPage==="function")window.RocyConvertirPrixPage()}
 function selectTaille(btn){var all=document.querySelectorAll('.tailles button');if(all)all.forEach(function(b){b.classList.remove('active')});if(btn){btn.classList.add('active');taille=btn.textContent}}
 function changeQty(n){qty+=n;if(qty<1)qty=1;if(qty>10)qty=10;var el=document.getElementById('qty');if(el)el.textContent=qty;mettreAJourPrix()}
-// ===== AUDIO MAX 1min30 - CHAT ARTICLE =====
-var mediaRecorderAudioChat=null, chunksAudioChat=[], timerAudioChat=null, secondesAudioChat=0, audioChatEnCours=null;
+// ===== AUDIO V8 - MAX 1min30 - BLOB GARDE POUR UPLOAD STORAGE =====
+var mediaRecorderAudioChat=null, chunksAudioChat=[], timerAudioChat=null, secondesAudioChat=0, audioChatBlob=null, audioChatUrlPreview=null;
 function fmtTimerChat(s){ var m=Math.floor(s/60); var sec=s%60; return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec)+" / 01:30"; }
 function toggleAudioChat(){ var z=document.getElementById("zoneAudioChat"); z.style.display=(z.style.display==="none"||!z.style.display)?"block":"none"; }
 async function demarrerAudioChat(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ alert("Ton téléphone / navigateur ne permet pas l'audio."); return; }
   try{
     var stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    chunksAudioChat=[]; secondesAudioChat=0;
+    chunksAudioChat=[]; secondesAudioChat=0; audioChatBlob=null;
     mediaRecorderAudioChat=new MediaRecorder(stream);
     mediaRecorderAudioChat.ondataavailable=function(e){ if(e.data.size>0) chunksAudioChat.push(e.data); };
     mediaRecorderAudioChat.onstop=function(){
       stream.getTracks().forEach(function(t){ t.stop(); });
       var blob=new Blob(chunksAudioChat,{type:"audio/webm"});
-      var rd=new FileReader();
-      rd.onload=function(e){
-        audioChatEnCours=e.target.result;
-        mediaChat=audioChatEnCours; mediaChatType="audio";
-        document.getElementById("apercuAudioChat").innerHTML='<audio src="'+audioChatEnCours+'" controls style="width:100%"></audio><br><button onclick="annulerAudioChat()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer l\'audio</button>';
-      };
-      rd.readAsDataURL(blob);
+      audioChatBlob=blob;
+      audioChatUrlPreview=URL.createObjectURL(blob);
+      mediaChat=audioChatUrlPreview; mediaChatType="audio";
+      document.getElementById("apercuAudioChat").innerHTML='<audio src="'+audioChatUrlPreview+'" controls style="width:100%"></audio><br><button onclick="annulerAudioChat()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer l\'audio</button>';
     };
     mediaRecorderAudioChat.start();
     document.getElementById("timerAudioChat").innerText=fmtTimerChat(0);
@@ -121,11 +129,22 @@ async function demarrerAudioChat(){
   }catch(e){ alert("Autorise le micro pour enregistrer l'audio."); }
 }
 function arreterAudioChat(){ clearInterval(timerAudioChat); if(mediaRecorderAudioChat && mediaRecorderAudioChat.state!=="inactive") mediaRecorderAudioChat.stop(); }
-function annulerAudioChat(){ audioChatEnCours=null; if(mediaChatType==="audio"){ mediaChat=null; mediaChatType=null; } document.getElementById("apercuAudioChat").innerHTML=""; }
-async function chargerMessages(){if(!produitId)return;var me=localStorage.getItem("email_user")||"";var liste=[];try{liste=JSON.parse(localStorage.getItem("rocy_msgs")||"[]").filter(function(m){return String(m.produit_id)===String(produitId)})}catch(e){liste=[]}if(supabaseClient){try{var r=await supabaseClient.from('messages').select('*').eq('produit_id',produitId).order('created_at',{ascending:true});if(r.data)r.data.forEach(function(m){var deja=liste.some(function(x){return x.contenu===m.contenu&&String(x.date)===String(m.created_at)});if(!deja)liste.push({auteur_email:m.auteur_email||"",auteur_nom:m.auteur_nom||"Vendeur",contenu:m.contenu||"",media:m.media_url||m.photo||null,media_type:m.media_type||null,date:m.created_at})})}catch(e){}}liste.sort(function(a,b){return new Date(a.date)-new Date(b.date)});var box=document.getElementById('messagesChat');if(!box)return;box.innerHTML="";if(!liste.length)box.innerHTML="<small>Aucun message. Écris le premier.</small>";liste.forEach(function(m){var moi=(m.auteur_email===me);var media="";if(m.media){if(m.media_type==="audio")media='<audio src="'+m.media+'" controls></audio>';else if(m.media_type==="video")media='<video src="'+m.media+'" controls></video>';else media='<img src="'+m.media+'">'}box.innerHTML+="<div><b>"+(moi?"Toi":(m.auteur_nom||"Vendeur"))+" :</b> "+masquerNumero(m.contenu||"")+media+"</div>"});box.scrollTop=box.scrollHeight}
+function annulerAudioChat(){ audioChatBlob=null; audioChatUrlPreview=null; if(mediaChatType==="audio"){ mediaChat=null; mediaChatType=null; } document.getElementById("apercuAudioChat").innerHTML=""; }
+async function chargerMessages(){if(!produitId)return;var me=localStorage.getItem("email_user")||"";var liste=[];try{liste=JSON.parse(localStorage.getItem("rocy_msgs")||"[]").filter(function(m){return String(m.produit_id)===String(produitId)})}catch(e){liste=[]}if(supabaseClient){try{var r=await supabaseClient.from('messages').select('*').eq('produit_id',produitId).order('created_at',{ascending:true});if(r.data)r.data.forEach(function(m){var deja=liste.some(function(x){return (x.contenu===m.contenu&&String(x.date)===String(m.created_at))||(x.media===(m.audio_url||m.media_url))});if(!deja)liste.push({auteur_email:m.auteur_email||"",auteur_nom:m.auteur_nom||"Vendeur",contenu:m.contenu||"",media:m.audio_url||m.media_url||m.photo||null,media_type:m.media_type||(m.audio_url?"audio":null),date:m.created_at})})}catch(e){}}liste.sort(function(a,b){return new Date(a.date)-new Date(b.date)});var box=document.getElementById('messagesChat');if(!box)return;box.innerHTML="";if(!liste.length)box.innerHTML="<small>Aucun message. Écris le premier.</small>";liste.forEach(function(m){var moi=(m.auteur_email===me);var media="";if(m.media){if(m.media_type==="audio")media='<audio src="'+m.media+'" controls></audio>';else if(m.media_type==="video")media='<video src="'+m.media+'" controls></video>';else media='<img src="'+m.media+'">'}box.innerHTML+="<div><b>"+(moi?"Toi":(m.auteur_nom||"Vendeur"))+" :</b> "+masquerNumero(m.contenu||"")+media+"</div>"});box.scrollTop=box.scrollHeight}
 function lireMediaChat(input,type){var f=input.files&&input.files[0];if(!f)return;if(f.size>15*1024*1024){alert("Fichier trop grand, max 15 Mo");return}var rd=new FileReader();rd.onload=function(e){mediaChat=e.target.result;mediaChatType=type;document.getElementById("apercuChat").innerHTML=(type==="video"?'<video src="'+mediaChat+'" controls></video>':'<img src="'+mediaChat+'">')+'<br><button onclick="annulerMediaChat()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer</button>'};rd.readAsDataURL(f)}
 function annulerMediaChat(){mediaChat=null;mediaChatType=null;document.getElementById("apercuChat").innerHTML="";document.getElementById("photoChat").value="";document.getElementById("videoChat").value="";annulerAudioChat();}
-async function envoyerMsg(){if(cestMonProduit)return;var inp=document.getElementById('msgChat');if(!inp)return;var m=inp.value.trim();if(!m&&!mediaChat)return;if(!localStorage.getItem("email_user")){alert("Connecte-toi pour discuter.");location.href="connexion.html";return}if(contientInterdit(m)){alert("⛔ Interdit : numéro / WhatsApp / Facebook / email. Reste sur ROCYINTER pour ta sécurité. 1er signal = avertissement, 2ème = bannissement.");if(supabaseClient){await supabaseClient.from('logs').insert([{user_id:localStorage.getItem("email_user")||"",action:"signal_numero_chat_article_"+produitId,date:new Date().toISOString()}]).catch(()=>{})}return}var me=localStorage.getItem("email_user")||"";var nouveau={produit_id:produitId,produit_nom:nomProduitActuel,produit_photo:produitPhoto,auteur_email:me,auteur_nom:monNom(),destinataire_email:vendeurEmail,destinataire_nom:vendeurNom,contenu:m,media:mediaChat,media_type:mediaChatType,date:new Date().toISOString(),lu:false};try{var all=JSON.parse(localStorage.getItem("rocy_msgs")||"[]");all.push(nouveau);localStorage.setItem("rocy_msgs",JSON.stringify(all))}catch(e){}inp.value='';annulerMediaChat();var z=document.getElementById("zoneAudioChat");if(z)z.style.display="none";chargerMessages();var dd={produit_id:produitId,produit_nom:nomProduitActuel,contenu:m,media_url:mediaChat,media_type:mediaChatType,type:"logistique",auteur_email:me,auteur_nom:monNom(),vendeur_id:vendeurId,destinataire_id:vendeurId,destinataire_email:vendeurEmail,destinataire_nom:vendeurNom,lu:false};if(supabaseClient){var res=await supabaseClient.from('messages').insert([dd]);if(res.error)mettreEnAttente('messages',dd);else envoyerFileAttente()}else mettreEnAttente('messages',dd);logAPDP("message_logistique_envoye");notifierVendeur(m,mediaChatType);alert("Message envoyé au vendeur. Il va te répondre, tu auras une notification 🔔 et tu le retrouves dans Messages.")}
+async function envoyerMsg(){if(cestMonProduit)return;var inp=document.getElementById('msgChat');if(!inp)return;var m=inp.value.trim();if(!m&&!mediaChat)return;if(!localStorage.getItem("email_user")){alert("Connecte-toi pour discuter.");location.href="connexion.html";return}if(contientInterdit(m)){alert("⛔ Interdit : numéro / WhatsApp / Facebook / email. Reste sur ROCYINTER pour ta sécurité. 1er signal = avertissement, 2ème = bannissement.");if(supabaseClient){await supabaseClient.from('logs').insert([{user_id:localStorage.getItem("email_user")||"",email:localStorage.getItem("email_user")||"",action:"signal_numero_chat_article_"+produitId,produit_id:produitId,texte_masque:masquerNumero(m),date:new Date().toISOString()}]).catch(()=>{});await supabaseClient.from('alertes_admin').insert([{type:"numero_detecte_chat",email:localStorage.getItem("email_user")||"",auteur_email:localStorage.getItem("email_user")||"",destinataire_email:vendeurEmail,produit_id:produitId,message_masque:masquerNumero(m),statut:"a_verifier",date:new Date().toISOString()}]).catch(()=>{})}return}var me=localStorage.getItem("email_user")||"";
+  // V8 : upload audio vers Storage avant envoi
+  var audioUrlFinal=null;
+  if(mediaChatType==="audio" && audioChatBlob){
+    audioUrlFinal=await uploadAudioV8(audioChatBlob);
+    if(!audioUrlFinal){ alert("Échec envoi audio, réessaie."); return; }
+  }
+  var mediaFinal = mediaChatType==="audio" ? audioUrlFinal : mediaChat;
+  var nouveau={produit_id:produitId,produit_nom:nomProduitActuel,produit_photo:produitPhoto,auteur_email:me,auteur_nom:monNom(),destinataire_email:vendeurEmail,destinataire_nom:vendeurNom,contenu:m,media:mediaFinal,media_type:mediaChatType,date:new Date().toISOString(),lu:false};try{var all=JSON.parse(localStorage.getItem("rocy_msgs")||"[]");all.push(nouveau);localStorage.setItem("rocy_msgs",JSON.stringify(all))}catch(e){}inp.value='';annulerMediaChat();var z=document.getElementById("zoneAudioChat");if(z)z.style.display="none";chargerMessages();var dd={produit_id:produitId,produit_nom:nomProduitActuel,contenu:m,media_url:mediaFinal,audio_url:mediaChatType==="audio"?audioUrlFinal:null,media_type:mediaChatType,type:"logistique",auteur_email:me,auteur_nom:monNom(),vendeur_id:vendeurId,destinataire_id:vendeurId,destinataire_email:vendeurEmail,destinataire_nom:vendeurNom,lu:false,duree:secondesAudioChat||0};if(supabaseClient){var res=await supabaseClient.from('messages').insert([dd]);if(res.error)mettreEnAttente('messages',dd);else envoyerFileAttente()}else mettreEnAttente('messages',dd);
+  // V8 trace silencieuse
+  await traceSecuriseV8(mediaChatType, audioUrlFinal, m);
+  logAPDP("message_logistique_envoye",{audio_url:audioUrlFinal,texte_masque:masquerNumero(m)});notifierVendeur(m,mediaChatType);alert("Message envoyé au vendeur. Il va te répondre, tu auras une notification 🔔 et tu le retrouves dans Messages.")}
 function notifierVendeur(txt,type){try{var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");n.push({produit_id:produitId,produit:nomProduitActuel,produit_photo:produitPhoto,pour:vendeurEmail||vendeurId,de:localStorage.getItem("email_user")||"",nom_autre:monNom(),texte:txt||(type==="audio"?"🎙️ Audio":type==="video"?"🎥 Vidéo":"📷 Photo"),date:new Date().toISOString(),lu:false});localStorage.setItem("rocy_notifs",JSON.stringify(n))}catch(e){}}
 function afficherNotifs(){try{var me=localStorage.getItem("email_user")||"";var myId=localStorage.getItem("user_id")||"";var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");var miens=n.filter(function(x){return x.pour===me||x.pour===myId||x.produit_id===produitId});var box=document.getElementById("notifList");if(!miens.length){if(box)box.innerHTML="Aucune notification";return}if(box)box.innerHTML=miens.map(function(x){return '<div style="background:#f9f9f9;padding:10px;border-radius:8px;margin-bottom:8px;cursor:pointer" onclick="ouvrirChatDepuisNotif()">💬 <b>'+(x.produit||"Produit")+'</b><br>'+masquerNumero(x.texte)+'<br><small>'+(x.de||"")+'</small><br><u>Continuer la discussion</u> • <u onclick="event.stopPropagation();location.href=\'messages.html\'">Voir dans Messages</u></div>'}).join("")}catch(e){}}
 function ouvrirChatDepuisNotif(){fermerNotif();document.getElementById("chatPopup").classList.add("open");chargerMessages();try{var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");n.forEach(function(x){x.lu=true});localStorage.setItem("rocy_notifs",JSON.stringify(n))}catch(e){}}
