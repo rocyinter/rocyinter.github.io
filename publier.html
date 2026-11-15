@@ -21,7 +21,6 @@ textarea{resize:vertical}
 .boost-box.bloque{background:#fff;border:1px solid #ddd}
 .prix-total{background:#111;color:#fff;padding:12px;border-radius:10px;text-align:center;margin:10px 0;font-size:14px;line-height:1.7}
 #previewPhoto{width:100%;border-radius:10px;margin-top:8px;display:none}
-#calculBox{display:none;background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:10px;margin-top:10px;font-size:14px}
 #msgSecurite{display:none;background:#FFF3E8;border:1px solid #FFC107;padding:12px;border-radius:10px;font-size:13px;color:#333}
 .compteur{background:#EFF6FF;border:1px solid #BFDBFE;padding:12px;border-radius:10px;font-size:14px;line-height:1.6;margin:10px 0}
 .compteur.bloque{background:#FCE4EC;border-color:#E40000}
@@ -52,12 +51,6 @@ textarea{resize:vertical}
 <label data-original="Prix de vente (F CFA) *">Prix de vente (F CFA) *</label>
 <input type="number" id="prixProduit" data-ph-original="Ex: 285000" placeholder="Ex: 285000" oninput="calculerCommissionPublier()">
 
-<div id="calculBox">
-<p style="margin:4px 0"><span data-original="Commission RocyInter :">Commission RocyInter :</span> <b id="txtCommission">-</b></p>
-<p style="margin:4px 0"><span data-original="Tu vas recevoir :">Tu vas recevoir :</span> <b id="txtRecevoir">-</b></p>
-<small id="txtTaux" style="color:#666">-</small>
-</div>
-
 <label data-original="Catégorie *">Catégorie *</label>
 <select id="categorieProduit">
 <option data-original="Téléphones">Téléphones</option><option data-original="Ordinateurs">Ordinateurs</option><option data-original="Vêtements">Vêtements</option><option data-original="Chaussures">Chaussures</option><option data-original="Motos / Voitures">Motos / Voitures</option><option data-original="Maison">Maison</option><option data-original="Autre">Autre</option>
@@ -84,7 +77,6 @@ textarea{resize:vertical}
 <span data-original="Annonce : GRATUIT">Annonce : GRATUIT</span><br>
 <span id="ligneBoost">Booster 7 jours : 0 F</span><br>
 <b id="totalPublier">Total à payer : 0 F</b><br>
-<small data-original="Publier est gratuit. Ne jamais supprimer un produit après une vente, c'est toi qui supprimes manuellement.">Publier est gratuit. Ne jamais supprimer un produit après une vente, c'est toi qui supprimes manuellement.</small>
 </div>
 
 <label data-original="Choisir le paiement du Booster (si coché) *">Choisir le paiement du Booster (si coché) *</label>
@@ -111,20 +103,14 @@ function getSupabase(){ if(supabaseClient) return supabaseClient; if(window.supa
 function aVraiEmail(){ var email=localStorage.getItem('email_user')||''; if(!email) return false; if(email.endsWith('@rocyinter.bj')) return false; if(!email.includes('@')) return false; return true; }
 function calculerCommissionPublier(){
   var prixEl=document.getElementById('prixProduit'); if(!prixEl) return null;
-  const prix=parseFloat(prixEl.value)||0; var box=document.getElementById('calculBox');
-  if(prix<=0){ if(box) box.style.display='none'; return null; }
-  var r=calcCommission(prix); var commission=r.commission; var recevoir=r.vendeurReçoit||r.montantVendeur; var taux=r.taux;
-  if(box) box.style.display='block';
-  document.getElementById('txtCommission').innerText=fmt(commission)+" ("+(taux*100)+"%)";
-  document.getElementById('txtRecevoir').innerText=fmt(recevoir);
-  document.getElementById('txtTaux').innerText=taux===0.085?"Palier : 8,5% jusqu'à 500 000 F":taux===0.075?"Palier : 7,5% jusqu'à 2 000 000 F":"Palier : 6,5% au-delà de 2 000 000 F";
-  return {commission:commission, recevoir:recevoir, taux:taux};
+  const prix=parseFloat(prixEl.value)||0;
+  if(prix<=0){ return null; }
+  var r=calcCommission(prix);
+  return {commission:r.commission, recevoir:r.vendeurReçoit||r.montantVendeur, taux:r.taux};
 }
 let isPro=false, nombreProduits=0, boostGratuitMois=false;
 let _idEnModification=null, _produitEnModification=null, _boostDejaActif=false;
 function estProProfil(p){ return p && (p.statut==='pro' || p.abonnement==='pro' || p.is_pro===true || p.type_compte==='pro' || p.statut_vendeur==='pro'); }
-
-// CORRECTION 1 : Si on est en modification, on charge le produit
 async function chargerProduitAModifier(){
   var params = new URLSearchParams(window.location.search);
   var id = params.get('id');
@@ -149,7 +135,6 @@ async function chargerProduitAModifier(){
     if(img){ img.src = p.photo; img.style.display = 'block'; }
   }
   calculerCommissionPublier();
-  // CORRECTION BOOST : si deja booste, on bloque la case
   var maintenant = new Date();
   var finBoost = p.boost_fin ? new Date(p.boost_fin) : null;
   if((p.boost || p.booster) && finBoost && maintenant < finBoost){
@@ -163,17 +148,21 @@ async function chargerProduitAModifier(){
     if(info){ info.style.color = "#111"; info.innerText = "✅ Ce produit est deja BOOSTÉ - Reste " + reste + " jour(s). Tu ne peux pas re-booster avant la fin."; }
   }
 }
-
 async function chargerCompteur(){
   var sb=getSupabase(); var userId=localStorage.getItem('user_id'); var email=localStorage.getItem('email_user')||'';
   isPro=false; nombreProduits=0;
   if(sb && userId){ try{ var rp=await sb.from('profils').select('*').eq('id',userId).single(); if(rp.data){ isPro=estProProfil(rp.data); var fin=rp.data.fin_pro||rp.data.pro_fin||rp.data.date_fin_pro; if(isPro && fin && new Date(fin).getTime() < Date.now()) isPro=false; } }catch(e){} }
   if(!isPro && localStorage.getItem('statut_user')==='pro') isPro=true;
+  var listeIds = {};
   if(sb){
-    try{ var r=await sb.from('produits').select('id',{count:'exact'}).eq('vendeur_id',userId); if(r.count!==null && r.count!==undefined) nombreProduits=r.count; else if(r.data) nombreProduits=r.data.length; }catch(e){}
-    if(nombreProduits===0){ try{ var r2=await sb.from('produits').select('id').eq('email_vendeur',email); if(r2.data) nombreProduits=r2.data.length; }catch(e){} }
-  } else {
-    try{ var cache=JSON.parse(localStorage.getItem('rocy_mes_produits')||"[]"); nombreProduits=cache.length; }catch(e){}
+    try{ var r1=await sb.from('produits').select('id').eq('vendeur_id',userId); if(r1.data) r1.data.forEach(function(x){ listeIds[x.id]=true; }); }catch(e){}
+    if(email){
+      try{ var r2=await sb.from('produits').select('id').eq('email_vendeur',email); if(r2.data) r2.data.forEach(function(x){ listeIds[x.id]=true; }); }catch(e){}
+    }
+    nombreProduits = Object.keys(listeIds).length;
+  }
+  if(nombreProduits===0){
+    try{ var cache=JSON.parse(localStorage.getItem('rocy_mes_produits')||"[]"); if(cache.length>0) nombreProduits=cache.length; }catch(e){}
   }
   if(isPro){
     var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1);
@@ -184,13 +173,22 @@ async function chargerCompteur(){
 }
 function majCompteurUI(){
   var box=document.getElementById('compteurBox'); var txt=document.getElementById('compteurTexte'); var det=document.getElementById('compteurDetail'); var btnPro=document.getElementById('btnPasserProCompteur');
-  // En modification, on ne bloque pas meme si 5 produits, car on ne cree pas un nouveau
-  var bloque=!isPro && !_idEnModification && nombreProduits>=5;
-  if(isPro){ txt.innerText="Tu as "+nombreProduits+" produits - Illimité PRO ⭐"; det.innerText="PRO : illimité, badge doré, en haut de l'Accueil."; box.classList.remove('bloque'); if(btnPro) btnPro.style.display='none'; }
-  else if(bloque){ txt.innerText="Tu as "+nombreProduits+" / 5 produits - LIMITE ATTEINTE"; det.innerText="Passe PRO pour publier plus - 2 000 F / mois, illimité."; box.classList.add('bloque'); if(btnPro) btnPro.style.display='block'; }
+  if(isPro){
+    if(box) box.style.display='none';
+    var txtBoostPro=document.getElementById('txtBoostInfo');
+    if(txtBoostPro && !_boostDejaActif){
+      if(boostGratuitMois) txtBoostPro.innerText="🎉 PRO : 1 Booster gratuit ce mois-ci";
+      else txtBoostPro.innerText="PRO : Booster gratuit du mois déjà utilisé → 500 F / 7 jours";
+    }
+    majTotalPublier();
+    return;
+  }
+  if(box) box.style.display='block';
+  var bloque = !_idEnModification && nombreProduits>=5;
+  if(bloque){ txt.innerText="Tu as "+nombreProduits+" / 5 produits - LIMITE ATTEINTE"; det.innerText="Passe PRO pour publier plus - 2 000 F / mois, illimité."; box.classList.add('bloque'); if(btnPro) btnPro.style.display='block'; }
   else { txt.innerText="Tu as "+nombreProduits+" / 5 produits"; det.innerText="GRATUIT : 5 produits max. PRO : illimité."; box.classList.remove('bloque'); if(btnPro) btnPro.style.display='none'; }
   var txtBoost=document.getElementById('txtBoostInfo');
-  if(txtBoost && !_boostDejaActif){ if(isPro && boostGratuitMois) txtBoost.innerText="🎉 PRO : 1 Booster gratuit ce mois-ci"; else if(isPro) txtBoost.innerText="PRO : Booster gratuit du mois déjà utilisé → 500 F / 7 jours"; else txtBoost.innerText="Booster : 500 F / 7 jours"; }
+  if(txtBoost && !_boostDejaActif){ txtBoost.innerText="Booster : 500 F / 7 jours"; }
   majTotalPublier();
   if(typeof window.traduireTouteLaPage==="function") window.traduireTouteLaPage();
 }
@@ -214,13 +212,11 @@ async function publierProduit(e){
     return;
   }
   var msg2=document.getElementById('msgSecurite'); if(msg2) msg2.style.display='none';
-  // BLOCAGE GRATUIT 6EME - sauf en modification
   if(!isPro && !_idEnModification && nombreProduits>=5){
     alert("Tu as déjà 5 produits (GRATUIT). Passe PRO pour publier plus - 2 000 F / mois, illimité.");
     document.getElementById('compteurBox').scrollIntoView({behavior:'smooth'});
     return;
   }
-  // SECURITE BOOST : si deja booste, on force boost = false
   if(_boostDejaActif){
     alert("Ce produit est deja boosté. Tu ne peux pas re-booster avant la fin.");
     document.getElementById('boostProduit').checked = false;
@@ -247,8 +243,6 @@ async function publierProduit(e){
   var dateBoostFin=null; if(boost){ dateBoostFin=new Date(); dateBoostFin.setDate(dateBoostFin.getDate()+7); }
   var boostGratuitUtilise=false;
   if(boost && isPro && boostGratuitMois){ boostGratuitUtilise=true; var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1); localStorage.setItem('rocy_boost_gratuit_'+mois,'oui'); }
-
-  // CORRECTION 2 : si modification, on fait UPDATE, pas INSERT
   if(_idEnModification){
     var updateData = { nom:nom, titre:nom, prix:Number(prix), commission:calc.commission, montant_vendeur:calc.recevoir, categorie:categorie, ville:ville, livraison:livraison, description:desc, paiement:paiement, methode_paiement:paiement };
     if(photoData) { updateData.photo = photoData; updateData.photo_url = photoData; updateData.image = photoData; }
@@ -259,7 +253,6 @@ async function publierProduit(e){
     window.location.href="vendeur.html?id="+_idEnModification;
     return;
   }
-
   const {data,error}=await sb.from('produits').insert([{
     nom:nom,titre:nom,prix:Number(prix),commission:calc.commission,montant_vendeur:calc.recevoir,
     categorie:categorie,ville:ville,livraison:livraison,description:desc,photo:photoData,photo_url:photoData,image:photoData,
