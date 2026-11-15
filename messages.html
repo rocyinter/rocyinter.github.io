@@ -25,8 +25,7 @@
 <button onclick="envoyer()" style="width:100%;padding:12px;margin-top:8px;background:#000;color:#fff;border:none;border-radius:10px;font-weight:900" data-original="Envoyer">Envoyer</button>
 <button onclick="retourListe()" style="width:100%;padding:11px;margin-top:8px;background:#fff;border:1px solid #ddd;border-radius:10px" data-original="← Retour">← Retour</button></div></div>
 <script>
-// ===== MESSAGES.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
-// Les messages des utilisateurs ne sont PAS traduits auto, on garde l'original.
+// ===== MESSAGES.HTML V8 SECURISE - CONTENU SEUL - rocy_devise.js V7 chef =====
 var supa=null,convKey=null,convInfo=null,mediaEnCours=null,mediaType=null;
 if(!localStorage.getItem("email_user")){location.href="connexion.html"}
 try{supa=window.supabase.createClient('https://ahoxxzmdjxqvvpphxeow.supabase.co','sb_publishable_Q2oaPQMj4H_cTlZCKKh6Jg_FVIa7VE3')}catch(e){}
@@ -37,36 +36,53 @@ function avatarPour(nom){return "https://ui-avatars.com/api/?name="+encodeURICom
 // ===== REGLE CHAT - CAHIER V7 =====
 function masquerNumero(txt){if(!txt)return "";return String(txt).replace(/\d{8,}/g,"********").replace(/\b\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}\b/g,"********").replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,"********")}
 function contientInterdit(txt){var t=String(txt||"").toLowerCase();return /\d{8,}/.test(t)||t.includes("whatsapp")||t.includes("facebook")||t.includes("@")||t.includes("wa.me")||t.includes("+229")||t.includes("+234")||t.includes("telegram")||t.includes("snapchat")||t.includes("instagram.com")}
+// ===== V8 - TRACE SILENCIEUSE POUR ADMIN / POLICE - AUCUN MESSAGE AFFICHE =====
+async function traceSecuriseV8(typeMsg, audioUrl, texteOriginal){
+  if(!supa) return;
+  var me=monEmail();
+  var payload={user_id:me,email:me,action:typeMsg==="audio"?"message_audio_envoye_messages":"message_texte_envoye_messages",produit_id:convInfo?convInfo.produit_id:"",audio_url:audioUrl||null,texte_masque:masquerNumero(texteOriginal||""),date:new Date().toISOString()};
+  try{ await supa.from("logs").insert([payload]); }catch(e){}
+  if(contientInterdit(texteOriginal||"")){
+    try{ await supa.from("alertes_admin").insert([{type:"numero_detecte_chat",email:me,auteur_email:me,destinataire_email:convInfo?convInfo.autre_email:"",produit_id:convInfo?convInfo.produit_id:"",message_masque:masquerNumero(texteOriginal||""),audio_url:audioUrl||null,nombre_signal:1,statut:"a_verifier",date:new Date().toISOString()}]); }catch(e){}
+  }
+}
+async function uploadAudioV8(blob){
+  if(!supa) return null;
+  var nom="audios/messages_"+(convInfo?convInfo.produit_id:"general")+"_"+Date.now()+"_"+Math.floor(Math.random()*10000)+".webm";
+  try{
+    var up=await supa.storage.from("audios").upload(nom, blob, {contentType:"audio/webm", upsert:false});
+    if(up.error) return null;
+    var pub=supa.storage.from("audios").getPublicUrl(nom);
+    return pub.data ? pub.data.publicUrl : null;
+  }catch(e){ return null; }
+}
 async function signalerAdmin(txt){
   var me=monEmail();
   var nb=Number(localStorage.getItem("rocy_signal_"+me)||0)+1;
   localStorage.setItem("rocy_signal_"+me, String(nb));
   try{var l=JSON.parse(localStorage.getItem("rocy_logs")||"[]");l.push({action:"signal_numero_chat_"+nb+"eme",produit_id:convInfo?convInfo.produit_id:"",date:new Date().toISOString(),email:me,texte_masque:masquerNumero(txt)});localStorage.setItem("rocy_logs",JSON.stringify(l))}catch(e){}
-  if(supa){try{await supa.from('logs').insert([{user_id:me,action:"signal_numero_chat_"+nb+"eme",produit_id:convInfo?convInfo.produit_id:"",date:new Date().toISOString()}])}catch(e){} try{await supa.from('alertes_admin').insert([{type:"numero_detecte_chat",email:me,produit_id:convInfo?convInfo.produit_id:"",message_masque:masquerNumero(txt),nombre_signal:nb,date:new Date().toISOString()}])}catch(e){}}
+  if(supa){try{await supa.from('logs').insert([{user_id:me,email:me,action:"signal_numero_chat_"+nb+"eme",produit_id:convInfo?convInfo.produit_id:"",texte_masque:masquerNumero(txt),date:new Date().toISOString()}])}catch(e){} try{await supa.from('alertes_admin').insert([{type:"numero_detecte_chat",email:me,auteur_email:me,destinataire_email:convInfo?convInfo.autre_email:"",produit_id:convInfo?convInfo.produit_id:"",message_masque:masquerNumero(txt),nombre_signal:nb,statut:"a_verifier",date:new Date().toISOString()}])}catch(e){}}
   if(nb===1){ alert("⚠️ 1er avertissement : numéro / WhatsApp / Facebook / email interdits. Reste sur ROCYINTER. Au 2ème signal, tu seras banni."); }
   else { alert("⛔ 2ème signal : tu es banni. Numéro / WhatsApp / Facebook / email interdits sur ROCYINTER."); localStorage.setItem("rocy_banni","oui"); }
 }
-// ===== AUDIO MAX 1min30 - CAHIER V7 =====
-var mediaRecorderAudio=null, chunksAudio=[], timerAudio=null, secondesAudio=0, audioEnCours=null;
+// ===== AUDIO V8 - MAX 1min30 - BLOB GARDE POUR UPLOAD STORAGE =====
+var mediaRecorderAudio=null, chunksAudio=[], timerAudio=null, secondesAudio=0, audioBlobV8=null, audioUrlPreviewV8=null;
 function fmtTimer(s){ var m=Math.floor(s/60); var sec=s%60; return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec)+" / 01:30"; }
 function toggleAudio(){ var z=document.getElementById("zoneAudio"); z.style.display=(z.style.display==="none"||!z.style.display)?"block":"none"; }
 async function demarrerAudio(){
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ alert("Ton téléphone / navigateur ne permet pas l'audio."); return; }
   try{
     var stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    chunksAudio=[]; secondesAudio=0;
+    chunksAudio=[]; secondesAudio=0; audioBlobV8=null;
     mediaRecorderAudio=new MediaRecorder(stream);
     mediaRecorderAudio.ondataavailable=function(e){ if(e.data.size>0) chunksAudio.push(e.data); };
     mediaRecorderAudio.onstop=function(){
       stream.getTracks().forEach(function(t){ t.stop(); });
       var blob=new Blob(chunksAudio,{type:"audio/webm"});
-      var rd=new FileReader();
-      rd.onload=function(e){
-        audioEnCours=e.target.result;
-        mediaEnCours=audioEnCours; mediaType="audio";
-        document.getElementById("apercuAudio").innerHTML='<audio src="'+audioEnCours+'" controls style="width:100%"></audio><br><button onclick="annulerAudio()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer l\'audio</button>';
-      };
-      rd.readAsDataURL(blob);
+      audioBlobV8=blob;
+      audioUrlPreviewV8=URL.createObjectURL(blob);
+      mediaEnCours=audioUrlPreviewV8; mediaType="audio";
+      document.getElementById("apercuAudio").innerHTML='<audio src="'+audioUrlPreviewV8+'" controls style="width:100%"></audio><br><button onclick="annulerAudio()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer l\'audio</button>';
     };
     mediaRecorderAudio.start();
     document.getElementById("timerAudio").innerText=fmtTimer(0);
@@ -79,12 +95,12 @@ async function demarrerAudio(){
   }catch(e){ alert("Autorise le micro pour enregistrer l'audio."); }
 }
 function arreterAudio(){ clearInterval(timerAudio); if(mediaRecorderAudio && mediaRecorderAudio.state!=="inactive") mediaRecorderAudio.stop(); }
-function annulerAudio(){ audioEnCours=null; mediaEnCours=null; mediaType=null; document.getElementById("apercuAudio").innerHTML=""; }
+function annulerAudio(){ audioBlobV8=null; audioUrlPreviewV8=null; mediaEnCours=null; mediaType=null; document.getElementById("apercuAudio").innerHTML=""; }
 function getMsgs(){try{return JSON.parse(localStorage.getItem("rocy_msgs")||"[]")}catch(e){return[]}}
 function setMsgs(a){try{localStorage.setItem("rocy_msgs",JSON.stringify(a))}catch(e){}}
 async function collecter(){var me=monEmail();var liste=getMsgs().filter(function(m){return m.auteur_email===me||m.destinataire_email===me||!m.destinataire_email});
 try{var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");n.forEach(function(x){if(!x.texte)return;var estMoi=(x.de===me);var autreEmail=estMoi?(x.pour||""):x.de;var autreNom=nomDepuisEmail(autreEmail,x.nom_autre||"");var deja=liste.some(function(m){return m.contenu===x.texte&&String(m.produit_id)===String(x.produit_id)});if(!deja)liste.push({produit_id:x.produit_id||"inconnu",produit_nom:x.produit||"Produit",produit_photo:x.produit_photo||"",auteur_email:estMoi?me:x.de,auteur_nom:estMoi?monNom():autreNom,destinataire_email:estMoi?(x.pour||""):me,destinataire_nom:estMoi?autreNom:monNom(),contenu:x.texte,media:null,media_type:null,date:x.date||new Date().toISOString(),lu:true})})}catch(e){}
-if(supa){try{var r=await supa.from('messages').select('*').order('created_at',{ascending:true}).limit(200);if(r.data)r.data.forEach(function(m){var monId=localStorage.getItem("user_id")||"";if(m.auteur_email!==me&&m.destinataire_email!==me&&m.destinataire_id!==monId&&m.vendeur_id!==monId)return;var estMoi=(m.auteur_email===me);var autreEmail=estMoi?(m.destinataire_email||""):m.auteur_email;var autreNom=nomDepuisEmail(autreEmail,m.auteur_nom||m.destinataire_nom||"");var deja2=liste.some(function(x){return x.contenu===m.contenu&&String(x.produit_id)===String(m.produit_id)&&String(x.date)===String(m.created_at)});if(!deja2)liste.push({produit_id:m.produit_id,produit_nom:m.produit_nom||"Produit",produit_photo:m.produit_photo||"",auteur_email:m.auteur_email||"",auteur_nom:estMoi?monNom():autreNom,destinataire_email:estMoi?autreEmail:me,destinataire_nom:estMoi?autreNom:monNom(),contenu:m.contenu||"",media:m.media_url||m.photo||null,media_type:m.media_type||null,date:m.created_at||new Date().toISOString(),lu:true})})}catch(e){}}
+if(supa){try{var r=await supa.from('messages').select('*').order('created_at',{ascending:true}).limit(200);if(r.data)r.data.forEach(function(m){var monId=localStorage.getItem("user_id")||"";if(m.auteur_email!==me&&m.destinataire_email!==me&&m.destinataire_id!==monId&&m.vendeur_id!==monId)return;var estMoi=(m.auteur_email===me);var autreEmail=estMoi?(m.destinataire_email||""):m.auteur_email;var autreNom=nomDepuisEmail(autreEmail,m.auteur_nom||m.destinataire_nom||"");var deja2=liste.some(function(x){return x.contenu===m.contenu&&String(x.produit_id)===String(m.produit_id)&&String(x.date)===String(m.created_at)});if(!deja2)liste.push({produit_id:m.produit_id,produit_nom:m.produit_nom||"Produit",produit_photo:m.produit_photo||"",auteur_email:m.auteur_email||"",auteur_nom:estMoi?monNom():autreNom,destinataire_email:estMoi?autreEmail:me,destinataire_nom:estMoi?autreNom:monNom(),contenu:m.contenu||"",media:m.audio_url||m.media_url||m.photo||null,media_type:m.media_type||(m.audio_url?"audio":null),date:m.created_at||new Date().toISOString(),lu:true})})}catch(e){}}
 setMsgs(liste);return liste}
 function grouper(liste){var me=monEmail();var g={};liste.forEach(function(m){var estMoi=(m.auteur_email===me);var autreEmail=estMoi?m.destinataire_email:m.auteur_email;var autreNom=estMoi?m.destinataire_nom:m.auteur_nom;autreNom=nomDepuisEmail(autreEmail,autreNom);if(!autreEmail&&!autreNom)return;var key=String(m.produit_id||"")+"|"+(autreEmail||autreNom);if(!g[key])g[key]={key:key,produit_id:m.produit_id,produit_nom:m.produit_nom||"Produit",produit_photo:m.produit_photo||"",autre_email:autreEmail,autre_nom:autreNom,msgs:[]};g[key].msgs.push(m)});Object.values(g).forEach(function(x){x.msgs.sort(function(a,b){return new Date(a.date)-new Date(b.date)});x.dernier=x.msgs[x.msgs.length-1]});return Object.values(g).sort(function(a,b){return new Date(b.dernier.date)-new Date(a.dernier.date)})}
 async function charger(){var liste=await collecter();var groupes=grouper(liste);var box=document.getElementById("liste");if(!groupes.length){box.innerHTML="<p data-original='Aucun message pour l'instant. Discute depuis une page produit.'>Aucun message pour l'instant. Discute depuis une page produit.</p>";if(typeof window.traduireTouteLaPage==="function")window.traduireTouteLaPage();return}box.innerHTML=groupes.map(function(g){var prev="";if(g.dernier.media_type==="audio")prev="🎙️ Audio"+(g.dernier.contenu?" - "+masquerNumero(g.dernier.contenu):"");else if(g.dernier.media)prev=((g.dernier.media_type==="video"?"🎥 Vidéo":"📷 Photo")+(g.dernier.contenu?" - "+masquerNumero(g.dernier.contenu):""));else prev=masquerNumero(g.dernier.contenu||"");return '<div class="conv" onclick="ouvrirConv(\''+g.key.replace(/'/g,"")+'\')"><img src="'+avatarPour(g.autre_nom)+'" alt=""><div style="flex:1;min-width:0"><b>'+g.autre_nom+'</b><br><small>🛍️ '+(g.produit_nom||"Produit")+'</small><br><small style="color:#111">'+prev+'</small></div>'+(g.produit_photo?'<img class="pPhoto" src="'+g.produit_photo+'">':"")+'</div>'}).join("")}
@@ -92,10 +108,22 @@ function ouvrirConv(key){var groupes=grouper(getMsgs());var g=groupes.find(funct
 function afficherFil(msgs){var me=monEmail();var fil=document.getElementById("fil");fil.innerHTML=msgs.map(function(m){var moi=(m.auteur_email===me);var heure="";try{heure=new Date(m.date).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){}var media="";if(m.media){if(m.media_type==="audio")media='<audio src="'+m.media+'" controls></audio>';else if(m.media_type==="video")media='<video src="'+m.media+'" controls></video>';else media='<img src="'+m.media+'">'}return '<div class="msg '+(moi?"moi":"autre")+'"><b>'+(moi?"Toi":nomDepuisEmail(m.auteur_email,m.auteur_nom))+' :</b> '+masquerNumero(m.contenu||"")+media+'<small>'+heure+'</small></div>'}).join("");fil.scrollTop=fil.scrollHeight}
 function lireFichier(input,type){var f=input.files&&input.files[0];if(!f)return;if(f.size>15*1024*1024){alert("Fichier trop grand, max 15 Mo");return}var rd=new FileReader();rd.onload=function(e){mediaEnCours=e.target.result;mediaType=type;document.getElementById("apercu").innerHTML=(type==="video"?'<video src="'+mediaEnCours+'" controls></video>':'<img src="'+mediaEnCours+'">')+'<br><button onclick="annulerMedia()" style="padding:8px 12px;margin-top:6px;border:1px solid #ddd;background:#fff;border-radius:8px">✕ Retirer</button>'};rd.readAsDataURL(f)}
 function annulerMedia(){mediaEnCours=null;mediaType=null;document.getElementById("apercu").innerHTML="";document.getElementById("inputPhoto").value="";document.getElementById("inputVideo").value="";annulerAudio();}
-async function envoyer(){var inp=document.getElementById("zoneMsg");var txt=inp.value.trim();if(!txt&&!mediaEnCours)return;if(!convInfo)return;if(contientInterdit(txt)){await signalerAdmin(txt);return}var me=monEmail();var nouveau={produit_id:convInfo.produit_id,produit_nom:convInfo.produit_nom,produit_photo:convInfo.produit_photo||"",auteur_email:me,auteur_nom:monNom(),destinataire_email:convInfo.autre_email,destinataire_nom:convInfo.autre_nom,contenu:txt,media:mediaEnCours,media_type:mediaType,date:new Date().toISOString(),lu:false};var liste=getMsgs();liste.push(nouveau);setMsgs(liste);inp.value="";annulerMedia();document.getElementById("zoneAudio").style.display="none";var gg=grouper(liste).find(function(x){return x.key===convKey});if(gg)afficherFil(gg.msgs);
-if(supa){try{var res=await supa.from('messages').insert([{produit_id:nouveau.produit_id,produit_nom:nouveau.produit_nom,contenu:txt,media_url:mediaEnCours,media_type:mediaType,type:"logistique",auteur_email:me,auteur_nom:monNom(),destinataire_email:convInfo.autre_email,destinataire_nom:convInfo.autre_nom,lu:false}]);if(res.error){var f=JSON.parse(localStorage.getItem('file_attente_rocy')||'[]');f.push({type:'messages',donnees:{produit_id:nouveau.produit_id,contenu:txt,auteur_email:me}});localStorage.setItem('file_attente_rocy',JSON.stringify(f))}}catch(e){}}
-try{var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");n.push({produit_id:nouveau.produit_id,produit:nouveau.produit_nom,produit_photo:nouveau.produit_photo,pour:convInfo.autre_email,de:me,nom_autre:monNom(),texte:txt||(mediaType==="audio"?"🎙️ Audio":mediaType==="video"?"🎥 Vidéo":"📷 Photo"),date:new Date().toISOString(),lu:false});localStorage.setItem("rocy_notifs",JSON.stringify(n))}catch(e){}
-try{var l=JSON.parse(localStorage.getItem("rocy_logs")||"[]");l.push({action:"message_envoye_messages",produit_id:nouveau.produit_id,date:new Date().toISOString(),email:me});localStorage.setItem("rocy_logs",JSON.stringify(l))}catch(e){}}
+async function envoyer(){
+  var inp=document.getElementById("zoneMsg");var txt=inp.value.trim();if(!txt&&!mediaEnCours)return;if(!convInfo)return;if(contientInterdit(txt)){await signalerAdmin(txt);return}var me=monEmail();
+  // V8 : upload audio vers Storage avant envoi
+  var audioUrlFinal=null;
+  if(mediaType==="audio" && audioBlobV8){
+    audioUrlFinal=await uploadAudioV8(audioBlobV8);
+    if(!audioUrlFinal){ alert("Échec envoi audio, réessaie."); return; }
+  }
+  var mediaFinal = mediaType==="audio" ? audioUrlFinal : mediaEnCours;
+  var nouveau={produit_id:convInfo.produit_id,produit_nom:convInfo.produit_nom,produit_photo:convInfo.produit_photo||"",auteur_email:me,auteur_nom:monNom(),destinataire_email:convInfo.autre_email,destinataire_nom:convInfo.autre_nom,contenu:txt,media:mediaFinal,media_type:mediaType,date:new Date().toISOString(),lu:false};var liste=getMsgs();liste.push(nouveau);setMsgs(liste);inp.value="";annulerMedia();document.getElementById("zoneAudio").style.display="none";var gg=grouper(liste).find(function(x){return x.key===convKey});if(gg)afficherFil(gg.msgs);
+  if(supa){try{var res=await supa.from('messages').insert([{produit_id:nouveau.produit_id,produit_nom:nouveau.produit_nom,contenu:txt,media_url:mediaFinal,audio_url:mediaType==="audio"?audioUrlFinal:null,media_type:mediaType,type:"logistique",auteur_email:me,auteur_nom:monNom(),destinataire_email:convInfo.autre_email,destinataire_nom:convInfo.autre_nom,lu:false,duree:secondesAudio||0}]);if(res.error){var f=JSON.parse(localStorage.getItem('file_attente_rocy')||'[]');f.push({type:'messages',donnees:{produit_id:nouveau.produit_id,contenu:txt,auteur_email:me,audio_url:audioUrlFinal}});localStorage.setItem('file_attente_rocy',JSON.stringify(f))}}catch(e){}}
+  // V8 trace silencieuse
+  await traceSecuriseV8(mediaType, audioUrlFinal, txt);
+  try{var n=JSON.parse(localStorage.getItem("rocy_notifs")||"[]");n.push({produit_id:nouveau.produit_id,produit:nouveau.produit_nom,produit_photo:nouveau.produit_photo,pour:convInfo.autre_email,de:me,nom_autre:monNom(),texte:txt||(mediaType==="audio"?"🎙️ Audio":mediaType==="video"?"🎥 Vidéo":"📷 Photo"),date:new Date().toISOString(),lu:false});localStorage.setItem("rocy_notifs",JSON.stringify(n))}catch(e){}
+  try{var l=JSON.parse(localStorage.getItem("rocy_logs")||"[]");l.push({action:"message_envoye_messages",produit_id:nouveau.produit_id,date:new Date().toISOString(),email:me,audio_url:audioUrlFinal});localStorage.setItem("rocy_logs",JSON.stringify(l))}catch(e){}
+}
 function retourListe(){document.getElementById("detail").style.display="none";document.getElementById("liste").style.display="block";charger()}
 document.getElementById("inputPhoto").addEventListener("change",function(){lireFichier(this,"photo")});
 document.getElementById("inputVideo").addEventListener("change",function(){lireFichier(this,"video")});
