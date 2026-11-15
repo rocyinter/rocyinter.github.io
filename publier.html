@@ -18,6 +18,7 @@ textarea{resize:vertical}
 .btn{width:100%;background:#FFC107;color:#111;border:none;padding:15px;border-radius:10px;font-weight:800;font-size:16px;cursor:pointer;margin-top:10px}
 .btn:disabled{background:#ccc;cursor:not-allowed}
 .boost-box{background:#FFF8E1;padding:12px;border-radius:10px;margin:10px 0;font-size:14px}.boost-box input{width:auto}
+.boost-box.bloque{background:#fff;border:1px solid #ddd}
 .prix-total{background:#111;color:#fff;padding:12px;border-radius:10px;text-align:center;margin:10px 0;font-size:14px;line-height:1.7}
 #previewPhoto{width:100%;border-radius:10px;margin-top:8px;display:none}
 #calculBox{display:none;background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:10px;margin-top:10px;font-size:14px}
@@ -31,7 +32,7 @@ textarea{resize:vertical}
 <a class="retour" href="javascript:history.back()" data-original="← Retour">← Retour</a>
 
 <div class="container">
-<h2 data-original="Publier mon produit">Publier mon produit</h2>
+<h2 id="titrePage" data-original="Publier mon produit">Publier mon produit</h2>
 <p class="sub" data-original="Publier est gratuit pour tout le monde.">Publier est gratuit pour tout le monde.</p>
 <p id="msgSecurite" data-original="Pour ta sécurité, ton email n'est pas encore enregistré. Tu ne peux pas publier tant que ton email n'est pas enregistré. Va sur Connexion pour ajouter ton vrai email.">Pour ta sécurité, ton email n'est pas encore enregistré. Tu ne peux pas publier tant que ton email n'est pas enregistré. Va sur Connexion pour ajouter ton vrai email.</p>
 
@@ -73,7 +74,7 @@ textarea{resize:vertical}
 <label data-original="Description">Description</label>
 <textarea id="descProduit" rows="3" data-ph-original="Etat, couleur, livraison mondiale..." placeholder="Etat, couleur, livraison mondiale..."></textarea>
 
-<div class="boost-box">
+<div class="boost-box" id="boostBox">
 <input type="checkbox" id="boostProduit" onchange="majTotalPublier()"> <b data-original="⭐ BOOSTER mon produit">⭐ BOOSTER mon produit</b><br>
 <small data-original="Être en haut pendant 7 jours. 500 F / 7 jours pour tous. 1 gratuit / mois pour le PRO.">Être en haut pendant 7 jours. 500 F / 7 jours pour tous. 1 gratuit / mois pour le PRO.</small>
 <p id="txtBoostInfo" style="font-size:12px;color:#059669;margin:5px 0 0" data-original="Booster : 500 F / 7 jours">Booster : 500 F / 7 jours</p>
@@ -95,7 +96,6 @@ textarea{resize:vertical}
 </div>
 
 <script>
-// ===== PUBLIER.HTML - CONTENU SEUL - TOUT LE RESTE VIENT DE rocy_devise.js V7 =====
 function fmt(v){ if(window.fmtMontant) return window.fmtMontant(v); return Math.round(v).toLocaleString('fr-FR')+" F"; }
 function calcCommission(prix){ if(window.RocyCalculCommande) return window.RocyCalculCommande(prix); var tx = prix<=500000?0.085:prix<=2000000?0.075:0.065; var c=Math.round(prix*tx); return {commission:c, vendeurReçoit:prix-c, montantVendeur:prix-c, taux:tx}; }
 function protegerPublier(){
@@ -121,21 +121,60 @@ function calculerCommissionPublier(){
   return {commission:commission, recevoir:recevoir, taux:taux};
 }
 let isPro=false, nombreProduits=0, boostGratuitMois=false;
+let _idEnModification=null, _produitEnModification=null, _boostDejaActif=false;
 function estProProfil(p){ return p && (p.statut==='pro' || p.abonnement==='pro' || p.is_pro===true || p.type_compte==='pro' || p.statut_vendeur==='pro'); }
+
+// CORRECTION 1 : Si on est en modification, on charge le produit
+async function chargerProduitAModifier(){
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  if(!id) return;
+  _idEnModification = id;
+  var titre = document.getElementById('titrePage');
+  if(titre) titre.innerText = "Modifier mon produit";
+  var sb = getSupabase();
+  if(!sb) return;
+  var res = await sb.from('produits').select('*').eq('id', id).single();
+  if(res.error || !res.data) return;
+  var p = res.data;
+  _produitEnModification = p;
+  document.getElementById('nomProduit').value = p.nom || p.titre || "";
+  document.getElementById('prixProduit').value = p.prix || "";
+  document.getElementById('villeProduit').value = p.ville || "";
+  document.getElementById('descProduit').value = p.description || "";
+  if(p.categorie) document.getElementById('categorieProduit').value = p.categorie;
+  if(p.livraison) document.getElementById('livraisonProduit').value = p.livraison;
+  if(p.photo){
+    var img = document.getElementById('previewPhoto');
+    if(img){ img.src = p.photo; img.style.display = 'block'; }
+  }
+  calculerCommissionPublier();
+  // CORRECTION BOOST : si deja booste, on bloque la case
+  var maintenant = new Date();
+  var finBoost = p.boost_fin ? new Date(p.boost_fin) : null;
+  if((p.boost || p.booster) && finBoost && maintenant < finBoost){
+    _boostDejaActif = true;
+    var reste = Math.ceil((finBoost - maintenant) / (1000*60*60*24));
+    var check = document.getElementById('boostProduit');
+    if(check){ check.checked = false; check.disabled = true; }
+    var box = document.getElementById('boostBox');
+    if(box) box.classList.add('bloque');
+    var info = document.getElementById('txtBoostInfo');
+    if(info){ info.style.color = "#111"; info.innerText = "✅ Ce produit est deja BOOSTÉ - Reste " + reste + " jour(s). Tu ne peux pas re-booster avant la fin."; }
+  }
+}
+
 async function chargerCompteur(){
   var sb=getSupabase(); var userId=localStorage.getItem('user_id'); var email=localStorage.getItem('email_user')||'';
   isPro=false; nombreProduits=0;
-  // Vérifier PRO dans profils
   if(sb && userId){ try{ var rp=await sb.from('profils').select('*').eq('id',userId).single(); if(rp.data){ isPro=estProProfil(rp.data); var fin=rp.data.fin_pro||rp.data.pro_fin||rp.data.date_fin_pro; if(isPro && fin && new Date(fin).getTime() < Date.now()) isPro=false; } }catch(e){} }
   if(!isPro && localStorage.getItem('statut_user')==='pro') isPro=true;
-  // Compter mes produits
   if(sb){
     try{ var r=await sb.from('produits').select('id',{count:'exact'}).eq('vendeur_id',userId); if(r.count!==null && r.count!==undefined) nombreProduits=r.count; else if(r.data) nombreProduits=r.data.length; }catch(e){}
     if(nombreProduits===0){ try{ var r2=await sb.from('produits').select('id').eq('email_vendeur',email); if(r2.data) nombreProduits=r2.data.length; }catch(e){} }
   } else {
     try{ var cache=JSON.parse(localStorage.getItem('rocy_mes_produits')||"[]"); nombreProduits=cache.length; }catch(e){}
   }
-  // Booster gratuit PRO : 1 / mois
   if(isPro){
     var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1);
     var deja=localStorage.getItem('rocy_boost_gratuit_'+mois);
@@ -145,23 +184,24 @@ async function chargerCompteur(){
 }
 function majCompteurUI(){
   var box=document.getElementById('compteurBox'); var txt=document.getElementById('compteurTexte'); var det=document.getElementById('compteurDetail'); var btnPro=document.getElementById('btnPasserProCompteur');
-  var bloque=!isPro && nombreProduits>=5;
+  // En modification, on ne bloque pas meme si 5 produits, car on ne cree pas un nouveau
+  var bloque=!isPro && !_idEnModification && nombreProduits>=5;
   if(isPro){ txt.innerText="Tu as "+nombreProduits+" produits - Illimité PRO ⭐"; det.innerText="PRO : illimité, badge doré, en haut de l'Accueil."; box.classList.remove('bloque'); if(btnPro) btnPro.style.display='none'; }
   else if(bloque){ txt.innerText="Tu as "+nombreProduits+" / 5 produits - LIMITE ATTEINTE"; det.innerText="Passe PRO pour publier plus - 2 000 F / mois, illimité."; box.classList.add('bloque'); if(btnPro) btnPro.style.display='block'; }
   else { txt.innerText="Tu as "+nombreProduits+" / 5 produits"; det.innerText="GRATUIT : 5 produits max. PRO : illimité."; box.classList.remove('bloque'); if(btnPro) btnPro.style.display='none'; }
   var txtBoost=document.getElementById('txtBoostInfo');
-  if(txtBoost){ if(isPro && boostGratuitMois) txtBoost.innerText="🎉 PRO : 1 Booster gratuit ce mois-ci"; else if(isPro) txtBoost.innerText="PRO : Booster gratuit du mois déjà utilisé → 500 F / 7 jours"; else txtBoost.innerText="Booster : 500 F / 7 jours"; }
+  if(txtBoost && !_boostDejaActif){ if(isPro && boostGratuitMois) txtBoost.innerText="🎉 PRO : 1 Booster gratuit ce mois-ci"; else if(isPro) txtBoost.innerText="PRO : Booster gratuit du mois déjà utilisé → 500 F / 7 jours"; else txtBoost.innerText="Booster : 500 F / 7 jours"; }
   majTotalPublier();
   if(typeof window.traduireTouteLaPage==="function") window.traduireTouteLaPage();
 }
 function majTotalPublier(){
   var boostEl=document.getElementById('boostProduit'); const boost=boostEl?boostEl.checked:false;
   var prixBoost=0;
-  if(boost){ if(isPro && boostGratuitMois) prixBoost=0; else prixBoost=500; }
+  if(boost && !_boostDejaActif){ if(isPro && boostGratuitMois) prixBoost=0; else prixBoost=500; }
   const total=prixBoost;
   var ligne=document.getElementById('ligneBoost'); if(ligne) ligne.innerText=boost?('Booster 7 jours : '+fmt(prixBoost)+(prixBoost===0?' (Gratuit)':'')):'Booster 7 jours : Non';
   var tot=document.getElementById('totalPublier'); if(tot) tot.innerText='Total à payer : '+fmt(total);
-  var btn=document.getElementById('btnPublier'); if(btn) btn.innerText=total===0?'Publier gratuitement - Paiement sécurisé':'Publier + Booster : '+fmt(total)+' - Paiement sécurisé';
+  var btn=document.getElementById('btnPublier'); if(btn) btn.innerText=_idEnModification ? (total===0?'Enregistrer mes modifications':'Enregistrer + Booster : '+fmt(total)) : (total===0?'Publier gratuitement - Paiement sécurisé':'Publier + Booster : '+fmt(total)+' - Paiement sécurisé');
   return total;
 }
 async function publierProduit(e){
@@ -174,11 +214,16 @@ async function publierProduit(e){
     return;
   }
   var msg2=document.getElementById('msgSecurite'); if(msg2) msg2.style.display='none';
-  // BLOCAGE GRATUIT 6EME
-  if(!isPro && nombreProduits>=5){
+  // BLOCAGE GRATUIT 6EME - sauf en modification
+  if(!isPro && !_idEnModification && nombreProduits>=5){
     alert("Tu as déjà 5 produits (GRATUIT). Passe PRO pour publier plus - 2 000 F / mois, illimité.");
     document.getElementById('compteurBox').scrollIntoView({behavior:'smooth'});
     return;
+  }
+  // SECURITE BOOST : si deja booste, on force boost = false
+  if(_boostDejaActif){
+    alert("Ce produit est deja boosté. Tu ne peux pas re-booster avant la fin.");
+    document.getElementById('boostProduit').checked = false;
   }
   const nom=document.getElementById('nomProduit').value.trim();
   const prix=parseFloat(document.getElementById('prixProduit').value)||0;
@@ -186,7 +231,7 @@ async function publierProduit(e){
   const ville=document.getElementById('villeProduit').value.trim();
   const livraison=document.getElementById('livraisonProduit').value;
   const desc=document.getElementById('descProduit').value;
-  const boost=document.getElementById('boostProduit').checked;
+  const boost=document.getElementById('boostProduit').checked && !_boostDejaActif;
   const paiement=document.getElementById('paiementProduit').value;
   const photoInput=document.getElementById('photoProduit');
   if(!nom||!prix||!ville){ alert("Mets le nom, le prix et la ville / pays du produit"); return; }
@@ -195,13 +240,26 @@ async function publierProduit(e){
   const btn=document.getElementById('btnPublier'); btn.innerText="Envoi en cours..."; btn.disabled=true;
   let photoData="";
   if(photoInput&&photoInput.files&&photoInput.files[0]){ photoData=await new Promise(function(resolve){ const l=new FileReader(); l.onload=function(ev){resolve(ev.target.result)}; l.readAsDataURL(photoInput.files[0]); }); }
+  else if(_produitEnModification && _produitEnModification.photo){ photoData = _produitEnModification.photo; }
   var sb=getSupabase();
   if(!sb){ alert("Erreur : pas de connexion. Réessaie."); btn.disabled=false; majTotalPublier(); return; }
   const userId=localStorage.getItem('user_id'); const nomVendeur=localStorage.getItem('nom_user')||''; const telVendeur=localStorage.getItem('telephone_user')||''; const emailVendeur=localStorage.getItem('email_user')||'';
   var dateBoostFin=null; if(boost){ dateBoostFin=new Date(); dateBoostFin.setDate(dateBoostFin.getDate()+7); }
-  // Si PRO utilise son booster gratuit du mois, on le marque
   var boostGratuitUtilise=false;
   if(boost && isPro && boostGratuitMois){ boostGratuitUtilise=true; var mois=new Date().getFullYear()+'-'+(new Date().getMonth()+1); localStorage.setItem('rocy_boost_gratuit_'+mois,'oui'); }
+
+  // CORRECTION 2 : si modification, on fait UPDATE, pas INSERT
+  if(_idEnModification){
+    var updateData = { nom:nom, titre:nom, prix:Number(prix), commission:calc.commission, montant_vendeur:calc.recevoir, categorie:categorie, ville:ville, livraison:livraison, description:desc, paiement:paiement, methode_paiement:paiement };
+    if(photoData) { updateData.photo = photoData; updateData.photo_url = photoData; updateData.image = photoData; }
+    if(boost){ updateData.boost = true; updateData.boost_gratuit = boostGratuitUtilise; updateData.boost_fin = dateBoostFin.toISOString(); updateData.frais_boost = prixBoost; updateData.total_paye = total; }
+    var resUp = await sb.from('produits').update(updateData).eq('id', _idEnModification);
+    if(resUp.error){ alert("Erreur Supabase : "+resUp.error.message); btn.disabled=false; majTotalPublier(); return; }
+    alert("✅ Modifications enregistrées !"+(boost?" Booster activé 7 jours.":""));
+    window.location.href="vendeur.html?id="+_idEnModification;
+    return;
+  }
+
   const {data,error}=await sb.from('produits').insert([{
     nom:nom,titre:nom,prix:Number(prix),commission:calc.commission,montant_vendeur:calc.recevoir,
     categorie:categorie,ville:ville,livraison:livraison,description:desc,photo:photoData,photo_url:photoData,image:photoData,
@@ -216,9 +274,10 @@ async function publierProduit(e){
   window.location.href="vendeur.html?id="+nouveauId;
 }
 window.calculerCommissionPublier=calculerCommissionPublier; window.majTotalPublier=majTotalPublier; window.publierProduit=publierProduit;
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', async function(){
   protegerPublier();
-  chargerCompteur(); majTotalPublier(); calculerCommissionPublier();
+  await chargerProduitAModifier();
+  await chargerCompteur(); majTotalPublier(); calculerCommissionPublier();
   var photoInput=document.getElementById('photoProduit');
   if(photoInput){ photoInput.addEventListener('change', function(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=function(ev){ const img=document.getElementById('previewPhoto'); if(img){ img.src=ev.target.result; img.style.display='block'; } }; reader.readAsDataURL(file); }); }
 });
